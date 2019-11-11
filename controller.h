@@ -26,6 +26,7 @@ private:
 
 public slots:
     void fileDoubleClicked(const QModelIndex &index);
+    void goBack();
 };
 
 #endif // CONTROLLER_H

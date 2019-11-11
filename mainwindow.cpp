@@ -17,7 +17,8 @@ MainWindow::~MainWindow() {
 
 void MainWindow::setController(Controller *controller) {
     this->controller = controller;
-    QObject::connect(ui->fileList, &QAbstractItemView::doubleClicked, controller, &Controller::fileDoubleClicked);
+    connect(ui->fileList, &QAbstractItemView::doubleClicked, controller, &Controller::fileDoubleClicked);
+    connect(ui->backButton, &QPushButton::clicked, controller, &Controller::goBack);
 }
 
 void MainWindow::setFileList(QList<QStandardItem*> files) {
