@@ -16,9 +16,13 @@ public:
     void setView(MainWindow *view);
     void setModel(Model *model);
 
+    void showGroups();
+
 private:
     MainWindow *view;
     Model *model;
+
+    QStringList path;
 
 public slots:
     void fileDoubleClicked(const QModelIndex &index);

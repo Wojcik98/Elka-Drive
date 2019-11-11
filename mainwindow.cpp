@@ -8,6 +8,7 @@
 MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent), ui(new Ui::MainWindow) {
     ui->setupUi(this);
     ui->fileList->setEditTriggers(QAbstractItemView::NoEditTriggers);
+    ui->fileList->setModel(&fileListModel);
 }
 
 MainWindow::~MainWindow() {
@@ -19,7 +20,7 @@ void MainWindow::setController(Controller *controller) {
     QObject::connect(ui->fileList, &QAbstractItemView::doubleClicked, controller, &Controller::fileDoubleClicked);
 }
 
-void MainWindow::setFileList(QStringList files) {
-    fileListModel = new QStringListModel(files);
-    ui->fileList->setModel(fileListModel);
+void MainWindow::setFileList(QList<QStandardItem*> files) {
+    fileListModel.clear();
+    fileListModel.appendColumn(files);
 }

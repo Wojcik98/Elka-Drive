@@ -8,6 +8,9 @@ class Model : public QObject {
 
 public:
     Model();
+
+    QList<QStandardItem*> getGroups();
+    QList<QStandardItem*> getPath(QString path);
 };
 
 #endif // MODEL_H

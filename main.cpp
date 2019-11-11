@@ -13,8 +13,8 @@ int main(int argc, char *argv[]) {
 
     controller.setModel(&model);
     controller.setView(&view);
-
     view.setController(&controller);
+    controller.showGroups();
 
     view.show();
 

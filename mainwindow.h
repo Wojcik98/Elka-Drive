@@ -20,11 +20,11 @@ public:
     ~MainWindow();
 
     void setController(Controller *controller);
-    void setFileList(QStringList files);
+    void setFileList(QList<QStandardItem*> files);
 
 private:
     Ui::MainWindow *ui;
-    QAbstractItemModel *fileListModel;
+    QStandardItemModel fileListModel;
     Controller *controller;
 };
 

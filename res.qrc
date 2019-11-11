@@ -1,0 +1,8 @@
+<RCC>
+    <qresource>
+        <file>icons/panda.jpg</file>
+        <file>icons/misc.png</file>
+        <file>icons/folder.png</file>
+        <file>icons/group.png</file>
+    </qresource>
+</RCC>
