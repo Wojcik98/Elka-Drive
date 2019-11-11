@@ -19,16 +19,29 @@ void Controller::showGroups() {
     view->setFileList(groups);
 }
 
-void Controller::fileDoubleClicked(const QModelIndex &index) {
-    qDebug() << "clicked: " << index.data().toString();
+void Controller::requestDownload(const QModelIndex &index) {
+    auto filename = index.data().toString();
+    qDebug() << "download: " << filename;
+    model->requestDownload(path.join("/") + filename);
+}
 
-    if (index.data(Qt::UserRole + 1).toString() == "folder" || index.data(Qt::UserRole + 1).toString() == "group") {
-        path.append(index.data().toString());
+void Controller::requestDelete(const QModelIndex &index) {
+    auto filename = index.data().toString();
+    model->requestDelete(path.join("/") + filename);
+}
+
+void Controller::fileDoubleClicked(const QModelIndex &index) {
+    auto filename = index.data().toString();
+    auto type = index.data(Qt::UserRole + 1).toString();
+    qDebug() << "clicked: " << filename;
+
+    if (type == "folder" || type == "group") {
+        path.append(filename);
         qDebug() << "get " << path.join("/");
         auto result = model->getPath(path.join("/"));
         view->setFileList(result);
     } else {
-        qDebug() << "Download!";
+        requestDownload(index);
     }
 }
 

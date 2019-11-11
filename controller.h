@@ -25,6 +25,8 @@ private:
     QStringList path;
 
 public slots:
+    void requestDownload(const QModelIndex &index);
+    void requestDelete(const QModelIndex &index);
     void fileDoubleClicked(const QModelIndex &index);
     void goBack();
 };

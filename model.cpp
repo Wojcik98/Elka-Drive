@@ -1,4 +1,5 @@
 #include <QtGlobal>
+#include <QtDebug>
 
 #include "model.h"
 
@@ -33,4 +34,12 @@ QList<QStandardItem*> Model::getPath(QString path) {
     }
 
     return result;
+}
+
+void Model::requestDelete(QString path) {
+    qDebug() << "Delete!";
+}
+
+void Model::requestDownload(QString path) {
+    qDebug() << "Download!";
 }

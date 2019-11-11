@@ -11,6 +11,9 @@ public:
 
     QList<QStandardItem*> getGroups();
     QList<QStandardItem*> getPath(QString path);
+
+    void requestDelete(QString path);
+    void requestDownload(QString path);
 };
 
 #endif // MODEL_H

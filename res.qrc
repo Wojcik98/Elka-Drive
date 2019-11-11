@@ -4,5 +4,7 @@
         <file>icons/misc.png</file>
         <file>icons/folder.png</file>
         <file>icons/group.png</file>
+        <file>icons/delete.png</file>
+        <file>icons/save.png</file>
     </qresource>
 </RCC>

@@ -9,6 +9,29 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent), ui(new Ui::MainWi
     ui->setupUi(this);
     ui->fileList->setEditTriggers(QAbstractItemView::NoEditTriggers);
     ui->fileList->setModel(&fileListModel);
+
+    ui->fileList->setContextMenuPolicy(Qt::CustomContextMenu);
+    connect(ui->fileList, &QListView::customContextMenuRequested, [this](QPoint pos) {
+        QModelIndex *index = new QModelIndex(ui->fileList->indexAt(pos));
+
+        QMenu *menu = new QMenu(this);
+
+        auto download = new QAction(QIcon(":/icons/save.png"), "Download", this);
+        connect(download, &QAction::triggered, controller, [this, index]() {
+            controller->requestDownload(*index);
+            delete index;
+        });
+        menu->addAction(download);
+
+        auto del = new QAction(QIcon(":/icons/delete.png"), "Delete", this);
+        connect(del, &QAction::triggered, controller, [this, index]() {
+            controller->requestDelete(*index);
+            delete index;
+        });
+        menu->addAction(del);
+
+        menu->popup(ui->fileList->viewport()->mapToGlobal(pos));
+    });
 }
 
 MainWindow::~MainWindow() {
