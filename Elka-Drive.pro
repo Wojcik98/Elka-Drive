@@ -1,4 +1,5 @@
 TEMPLATE = subdirs
 
 SUBDIRS += \
-    Elka-Drive-Desktop
+    Elka-Drive-Desktop \
+    ProcessResponse
