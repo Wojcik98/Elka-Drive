@@ -3,25 +3,27 @@ name: CI
 on: [push]
 
 jobs:
-  install-qt:
-    runs-on: ubuntu-latest
+#   install-qt:
+#     runs-on: ubuntu-latest
 
-    steps:
-    - name: Install Qt
-      uses: jurplel/install-qt-action@v2
+#     steps:
+#     - name: Install Qt
+#       uses: jurplel/install-qt-action@v2
 
   tests:
     runs-on: ubuntu-latest
-    needs: [install-qt]
+#     needs: [install-qt]
 
     steps:
     - name: Run tests
-      run: |
-        cd ..
-        pwd
-        ls -a
-        ls -a ..
-        cd ProcessResponse
-        qmake
-        make
-        ./test
+      working-directory: ${{ github.workspace }}
+      run: ls -la
+#       run: |
+#         cd ..
+#         pwd
+#         ls -a
+#         ls -a ..
+#         cd ProcessResponse
+#         qmake
+#         make
+#         ./test
