@@ -15,6 +15,7 @@ jobs:
 #     needs: [install-qt]
 
     steps:
+    - uses: actions/checkout@v1
     - name: Run tests
 #      working-directory: ${{ github.workspace }}
       run: ls -la
