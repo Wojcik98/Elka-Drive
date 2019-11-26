@@ -8,7 +8,7 @@ QT       += testlib core gui
 
 greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 
-TARGET = tst_processresponsetest
+TARGET = test
 CONFIG   += console
 CONFIG   -= app_bundle
 
@@ -26,7 +26,7 @@ DEFINES += QT_DEPRECATED_WARNINGS
 #DEFINES += QT_DISABLE_DEPRECATED_BEFORE=0x060000    # disables all the APIs deprecated before Qt 6.0.0
 
 INCDIR = ../Elka-Drive-Desktop
-INCLUDEPATH += INCDIR
+INCLUDEPATH += $$INCDIR
 HEADERS += $$INCDIR/model.h
 SOURCES += $$INCDIR/model.cpp
 
