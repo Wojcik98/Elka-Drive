@@ -1,0 +1,25 @@
+name: Release
+
+on:
+  push:
+    tags:
+      - 'v*.*'
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v1
+    - name: Build
+      run: |
+        cd Elka-Drive-Desktop
+        qmake
+        make
+        cd ..
+    - name: Release
+      uses: softprops/action-gh-release@v1
+      with:
+        files: Elka-Drive-Desktop/Elka-Drive-Desktop
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
