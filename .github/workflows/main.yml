@@ -15,10 +15,12 @@ jobs:
     needs: [install-qt]
 
     steps:
-    - name: Run a multi-line script
+    - name: Run tests
       run: |
+        cd ..
         pwd
         ls -a
+        ls -a ..
         cd ProcessResponse
         qmake
         make
