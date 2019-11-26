@@ -3,28 +3,35 @@ name: CI
 on: [push]
 
 jobs:
-#   install-qt:
-#     runs-on: ubuntu-latest
-
-#     steps:
-#     - name: Install Qt
-#       uses: jurplel/install-qt-action@v2
-
-  tests:
+  prepare:
     runs-on: ubuntu-latest
-#     needs: [install-qt]
 
     steps:
     - uses: actions/checkout@v1
+
+    - name: Install Qt
+      uses: jurplel/install-qt-action@v2
+
+  tests:
+    runs-on: ubuntu-latest
+    needs: [prepare]
+
+    steps:
     - name: Run tests
-#      working-directory: ${{ github.workspace }}
-      run: ls -la
-#       run: |
-#         cd ..
-#         pwd
-#         ls -a
-#         ls -a ..
-#         cd ProcessResponse
-#         qmake
-#         make
-#         ./test
+      run: |
+        cd ProcessResponse
+        qmake
+        make
+        ./test
+
+  build:
+    runs-on: ubuntu-latest
+    needs: [prepare]
+
+    steps:
+    - name: Build
+      run: |
+        cd Elka-Drive-Desktop
+        qmake
+        make
+
