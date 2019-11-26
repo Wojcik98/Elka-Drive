@@ -33,7 +33,7 @@ void ProcessResponseTest::testLogin_data() {
 }
 
 void ProcessResponseTest::testLogin() {
-    QFETCH(QString, data);  // TODO write own test
+    QFETCH(QString, data);
     QVERIFY2(true, "Failure");
 }
 
