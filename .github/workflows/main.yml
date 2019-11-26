@@ -17,6 +17,7 @@ jobs:
     needs: [prepare]
 
     steps:
+    - uses: actions/checkout@v1
     - name: Run tests
       run: |
         cd ProcessResponse
@@ -29,6 +30,7 @@ jobs:
     needs: [prepare]
 
     steps:
+    - uses: actions/checkout@v1
     - name: Build
       run: |
         cd Elka-Drive-Desktop
