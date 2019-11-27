@@ -11,11 +11,14 @@ jobs:
     - name: Install Qt
       uses: jurplel/install-qt-action@v2
 
-    - name: Run tests
+    - name: Build tests
       run: |
         cd ProcessResponse
         qmake
         make
+    - name: Run tests
+      run: |
+        cd ProcessResponse
         ./test
 
   build:
