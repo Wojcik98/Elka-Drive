@@ -27,10 +27,16 @@ DEFINES += QT_DEPRECATED_WARNINGS
 
 INCDIR = ../Elka-Drive-Desktop
 INCLUDEPATH += $$INCDIR
-HEADERS += $$INCDIR/model.h
-SOURCES += $$INCDIR/model.cpp
+HEADERS += \
+    $$INCDIR/model.h \
+    $$INCDIR/apibridge.h \
+    mockbridge.h
+SOURCES += \
+    $$INCDIR/model.cpp \
+    $$INCDIR/apibridge.cpp \
+    mockbridge.cpp
 
 SOURCES += \
-        tst_processresponsetest.cpp 
+    tst_processresponsetest.cpp
 
 DEFINES += SRCDIR=\\\"$$PWD/\\\"

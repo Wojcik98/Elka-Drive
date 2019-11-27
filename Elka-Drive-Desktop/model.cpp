@@ -1,9 +1,11 @@
-#include <QtGlobal>
+#include <exception>
 #include <QtDebug>
+#include <QtGlobal>
+#include <QJsonObject>
 
 #include "model.h"
 
-Model::Model() {
+Model::Model(APIBridge *bridge) : bridge(bridge) {
 
 }
 
@@ -42,4 +44,18 @@ void Model::requestDelete(QString path) {
 
 void Model::requestDownload(QString path) {
     qDebug() << "Download!";
+}
+
+bool Model::login(QString user, QString password) {
+    QJsonObject response = bridge->requestLogin(user, password);
+
+    QJsonValue value = response[QString("success")];
+    if (value == QJsonValue::Undefined) {
+        throw std::invalid_argument("No 'success' key!");
+    }
+    if (!value.isBool()) {
+        throw std::invalid_argument("'success' is not bool!");
+    }
+
+    return value.toBool();
 }

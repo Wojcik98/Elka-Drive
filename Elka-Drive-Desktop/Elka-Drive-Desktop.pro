@@ -24,18 +24,22 @@ DEFINES += QT_DEPRECATED_WARNINGS
 
 
 SOURCES += \
-        main.cpp \
-        mainwindow.cpp \
+    apibridge.cpp \
+    main.cpp \
+    mainwindow.cpp \
     controller.cpp \
-    model.cpp
+    model.cpp \
+    webbridge.cpp
 
 HEADERS += \
-        mainwindow.h \
+    mainwindow.h \
     controller.h \
-    model.h
+    model.h \
+    apibridge.h \
+    webbridge.h
 
 FORMS += \
-        mainwindow.ui
+    mainwindow.ui
 
 RESOURCES += \
     res.qrc
