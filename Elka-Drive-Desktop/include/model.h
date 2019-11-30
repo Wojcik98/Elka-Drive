@@ -2,7 +2,7 @@
 #define MODEL_H
 
 #include <QStandardItemModel>
-#include "apibridge.h"
+#include "include/apibridge.h"
 
 class Model : public QObject {
     Q_OBJECT

@@ -3,7 +3,7 @@
 #include <QtGlobal>
 #include <QJsonObject>
 
-#include "model.h"
+#include "include/model.h"
 
 Model::Model(APIBridge *bridge) : bridge(bridge) {
 

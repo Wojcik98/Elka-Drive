@@ -1,7 +1,7 @@
 #ifndef WEBBRIDGE_H
 #define WEBBRIDGE_H
 
-#include "apibridge.h"
+#include "include/apibridge.h"
 
 class WebBridge : public APIBridge
 {

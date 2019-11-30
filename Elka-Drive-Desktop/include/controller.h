@@ -4,7 +4,7 @@
 #include <QObject>
 
 #include "mainwindow.h"
-#include "model.h"
+#include "include/model.h"
 
 class MainWindow;
 

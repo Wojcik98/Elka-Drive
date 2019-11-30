@@ -4,7 +4,7 @@
 #include <QMainWindow>
 
 #include "controller.h"
-#include "model.h"
+#include "include/model.h"
 
 class Controller;
 

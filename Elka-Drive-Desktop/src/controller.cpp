@@ -1,6 +1,6 @@
 #include <QtDebug>
 
-#include "controller.h"
+#include "include/controller.h"
 
 Controller::Controller() {
 

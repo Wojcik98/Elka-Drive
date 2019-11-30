@@ -1,7 +1,7 @@
 #ifndef MOCKBRIDGE_H
 #define MOCKBRIDGE_H
 
-#include "apibridge.h"
+#include "include/apibridge.h"
 
 class MockBridge : public APIBridge {
 public:

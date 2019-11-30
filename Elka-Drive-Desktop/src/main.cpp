@@ -1,9 +1,9 @@
 #include <QApplication>
 
-#include "webbridge.h"
-#include "mainwindow.h"
-#include "controller.h"
-#include "model.h"
+#include "include/webbridge.h"
+#include "include/mainwindow.h"
+#include "include/controller.h"
+#include "include/model.h"
 
 int main(int argc, char *argv[]) {
     QApplication a(argc, argv);

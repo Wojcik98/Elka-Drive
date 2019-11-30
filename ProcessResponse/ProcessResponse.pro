@@ -25,18 +25,19 @@ DEFINES += QT_DEPRECATED_WARNINGS
 # You can also select to disable deprecated APIs only up to a certain version of Qt.
 #DEFINES += QT_DISABLE_DEPRECATED_BEFORE=0x060000    # disables all the APIs deprecated before Qt 6.0.0
 
-INCDIR = ../Elka-Drive-Desktop
+INCDIR = ../Elka-Drive-Desktop/
+SRCDIR = ../Elka-Drive-Desktop/
 INCLUDEPATH += $$INCDIR
 HEADERS += \
-    $$INCDIR/model.h \
-    $$INCDIR/apibridge.h \
-    mockbridge.h
+    $$INCDIR/include/model.h \
+    $$INCDIR/include/apibridge.h \
+    include/mockbridge.h
 SOURCES += \
-    $$INCDIR/model.cpp \
-    $$INCDIR/apibridge.cpp \
-    mockbridge.cpp
+    $$SRCDIR/src/model.cpp \
+    $$SRCDIR/src/apibridge.cpp \
+    src/mockbridge.cpp
 
 SOURCES += \
-    tst_processresponsetest.cpp
+    src/tst_processresponsetest.cpp
 
 DEFINES += SRCDIR=\\\"$$PWD/\\\"

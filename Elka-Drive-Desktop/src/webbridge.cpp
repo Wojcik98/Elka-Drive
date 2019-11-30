@@ -1,4 +1,4 @@
-#include "webbridge.h"
+#include "include/webbridge.h"
 
 WebBridge::WebBridge() {
 

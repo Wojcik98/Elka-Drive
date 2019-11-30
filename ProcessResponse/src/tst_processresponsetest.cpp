@@ -1,7 +1,7 @@
 #include <QString>
 #include <QtTest>
-#include "model.h"
-#include "mockbridge.h"
+#include "include/model.h"
+#include "include/mockbridge.h"
 
 class ProcessResponseTest : public QObject {
     Q_OBJECT
