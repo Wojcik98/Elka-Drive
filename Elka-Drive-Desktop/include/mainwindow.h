@@ -3,20 +3,21 @@
 
 #include <QMainWindow>
 
-#include "controller.h"
-#include "include/model.h"
+#include "include/controller.h"
+#include "include/view.h"
 
 class Controller;
+class View;
 
 namespace Ui {
 class MainWindow;
 }
 
-class MainWindow : public QMainWindow {
+class MainWindow : public View {
     Q_OBJECT
 
 public:
-    explicit MainWindow(QWidget *parent = 0);
+    explicit MainWindow(QWidget *parent = nullptr);
     ~MainWindow();
 
     void setController(Controller *controller);

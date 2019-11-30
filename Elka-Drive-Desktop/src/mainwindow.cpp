@@ -3,9 +3,11 @@
 #include <QUrl>
 
 #include "include/mainwindow.h"
+#include "include/view.h"
+#include "include/controller.h"
 #include "ui_mainwindow.h"
 
-MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent), ui(new Ui::MainWindow) {
+MainWindow::MainWindow(QWidget *parent) : View(parent), ui(new Ui::MainWindow) {
     ui->setupUi(this);
     ui->fileList->setEditTriggers(QAbstractItemView::NoEditTriggers);
     ui->fileList->setModel(&fileListModel);

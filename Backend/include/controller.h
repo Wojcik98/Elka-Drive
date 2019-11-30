@@ -3,23 +3,23 @@
 
 #include <QObject>
 
-#include "mainwindow.h"
+#include "include/view.h"
 #include "include/model.h"
 
-class MainWindow;
+class View;
 
 class Controller : public QObject {
     Q_OBJECT
 public:
     explicit Controller();
 
-    void setView(MainWindow *view);
+    void setView(View *view);
     void setModel(Model *model);
 
     void showGroups();
 
 private:
-    MainWindow *view;
+    View *view;
     Model *model;
 
     QStringList path;
