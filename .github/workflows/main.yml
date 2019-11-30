@@ -3,7 +3,7 @@ name: CI
 on: [push]
 
 jobs:
-  tests:
+  Build and test:
     runs-on: ubuntu-latest
 
     steps:
@@ -11,27 +11,11 @@ jobs:
     - name: Install Qt
       uses: jurplel/install-qt-action@v2
 
-    - name: Build tests
+    - name: Build app
       run: |
-        cd ProcessResponse
         qmake
         make
     - name: Run tests
       run: |
         cd ProcessResponse
         ./test
-
-  build:
-    runs-on: ubuntu-latest
-
-    steps:
-    - uses: actions/checkout@v1
-    - name: Install Qt
-      uses: jurplel/install-qt-action@v2
-
-    - name: Build
-      run: |
-        cd Elka-Drive-Desktop
-        qmake
-        make
-
