@@ -15,10 +15,8 @@ jobs:
       uses: jurplel/install-qt-action@v2
     - name: Build
       run: |
-        cd Elka-Drive-Desktop
         qmake
         make
-        cd ..
     - name: Release
       uses: softprops/action-gh-release@v1
       with:
