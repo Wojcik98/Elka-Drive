@@ -3,7 +3,7 @@ name: CI
 on: [push]
 
 jobs:
-  Build and test:
+  integration:
     runs-on: ubuntu-latest
 
     steps:
@@ -17,5 +17,4 @@ jobs:
         make
     - name: Run tests
       run: |
-        cd ProcessResponse
-        ./test
+        ./ProcessResponse/test
