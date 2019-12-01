@@ -1,12 +1,9 @@
 name: Release
 
-on:
-  push:
-    tags:
-      - 'v*.*'
+on: [push]  # for tests
 
 jobs:
-  build:
+  build-linux:
     runs-on: ubuntu-latest
     steps:
     - name: Checkout
@@ -27,5 +24,28 @@ jobs:
       uses: softprops/action-gh-release@v1
       with:
         files: Elka-Drive-Desktop/Elka-Drive-Desktop
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+  build-windows:
+    runs-on: windows-latest
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v1
+    - name: Install Qt
+      run: |
+        git clone https://code.qt.io/qt/qt5.git
+        cd qt5
+        git checkout 5.12
+        perl init-repository
+        ./configure.bat -static
+    - name: Build
+      run: |
+        qt5/bin/qmake.exe -config release
+        mingw32-make.exe
+    - name: Release
+      uses: softprops/action-gh-release@v1
+      with:
+        files: Elka-Drive-Desktop/release/Elka-Drive-Desktop.exe
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
