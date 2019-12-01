@@ -3,7 +3,7 @@ name: CI
 on: [push]
 
 jobs:
-  integration:
+  integration-ubuntu:
     runs-on: ubuntu-latest
 
     steps:
@@ -18,3 +18,21 @@ jobs:
     - name: Run tests
       run: |
         ./ProcessResponse/test
+
+  integration-windows:
+    runs-on: windows-latest
+
+    steps:
+    - uses: actions/checkout@v1
+    - name: Install Qt
+      uses: jurplel/install-qt-action@v2
+      with:
+        arch: win64_mingw73
+
+    - name: Build app
+      run: |
+        qmake.exe
+        mingw64-make.exe
+    - name: Run tests
+      run: |
+        ./ProcessResponse/release/test.exe
