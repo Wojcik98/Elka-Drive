@@ -25,9 +25,14 @@ DEFINES += QT_DEPRECATED_WARNINGS
 INCLUDEPATH += \
     ../Backend
 
-LIBS += \
-    -L../Backend \
-    -lBackend
+win32 {
+    LIBS += -L../Backend/release \
+        -lBackend
+}
+unix {
+    LIBS += -L../Backend \
+        -lBackend
+}
 
 SOURCES += \
     src/main.cpp \
