@@ -12,10 +12,16 @@ jobs:
     - name: Checkout
       uses: actions/checkout@v1
     - name: Install Qt
-      uses: jurplel/install-qt-action@v2
+      run: |
+        git clone https://code.qt.io/qt/qt5.git
+        cd qt5
+        git checkout 5.12
+        perl init-repository
+        ./configure -static
+        make
     - name: Build
       run: |
-        qmake
+        qt5/bin/qmake -config release
         make
     - name: Release
       uses: softprops/action-gh-release@v1
