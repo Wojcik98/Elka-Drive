@@ -32,7 +32,7 @@ jobs:
     - name: Build app
       run: |
         qmake.exe
-        mingw64-make.exe
+        mingw32-make.exe
     - name: Run tests
       run: |
         ./ProcessResponse/release/test.exe
