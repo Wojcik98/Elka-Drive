@@ -1,6 +1,7 @@
 #ifndef MOCKBRIDGE_H
 #define MOCKBRIDGE_H
 
+#include "include/response.h"
 #include "include/apibridge.h"
 
 class MockBridge : public APIBridge {
@@ -8,10 +9,10 @@ public:
     MockBridge();
     virtual void requestLogin(QString user, QString password);
 
-    void setResponse(QJsonObject response);
+    void setResponse(Response resopnse);
 
 private:
-    QJsonObject response;
+    Response response;
 };
 
 #endif // MOCKBRIDGE_H

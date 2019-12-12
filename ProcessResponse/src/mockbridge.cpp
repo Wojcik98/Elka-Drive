@@ -1,14 +1,13 @@
 #include "include/mockbridge.h"
 
-MockBridge::MockBridge() {
+MockBridge::MockBridge() : response(Response(0, QByteArray(), Response::Type::LOGIN)) {
 
 }
 
 void MockBridge::requestLogin(QString user, QString password) {
-//    return response;
-    // TODO impl
+    emit gotResponse(response);
 }
 
-void MockBridge::setResponse(QJsonObject response) {
+void MockBridge::setResponse(Response response) {
     this->response = response;
 }
