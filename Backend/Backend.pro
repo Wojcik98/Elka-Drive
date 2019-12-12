@@ -21,6 +21,7 @@ DEFINES += QT_DEPRECATED_WARNINGS
 #DEFINES += QT_DISABLE_DEPRECATED_BEFORE=0x060000    # disables all the APIs deprecated before Qt 6.0.0
 
 SOURCES += \
+    src/response.cpp \
     src/apibridge.cpp \
     src/controller.cpp \
     src/logindialog.cpp \
@@ -33,6 +34,7 @@ HEADERS += \
     include/controller.h \
     include/logindialog.h \
     include/model.h \
+    include/response.h \
     include/view.h \
     include/webbridge.h
 

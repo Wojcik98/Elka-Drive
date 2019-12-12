@@ -4,6 +4,7 @@
 #include <QJsonObject>
 #include <QObject>
 #include <QString>
+#include "response.h"
 
 class APIBridge : public QObject {
 Q_OBJECT
@@ -14,7 +15,7 @@ public:
     virtual void requestLogin(QString user, QString password) = 0;
 
 signals:
-    void gotReply(QJsonObject reply);
+    void gotResponse(Response response);    // TODO reference?
 };
 
 #endif // APIBRIDGE_H

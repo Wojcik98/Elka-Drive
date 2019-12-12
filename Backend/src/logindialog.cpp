@@ -97,8 +97,6 @@ void LoginDialog::slotTryLogin() {
 }
 
 void LoginDialog::slotLoginResponse(bool success) {
-    qDebug() << "recivin...";
-    buttons->button(QDialogButtonBox::Ok)->setText(tr("gha"));
     if (success) {
         close();
     } else {

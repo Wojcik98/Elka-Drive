@@ -8,6 +8,13 @@ Controller::Controller() {
 
 void Controller::setModel(Model *model) {
     this->model = model;
+
+    connect(
+        model,
+        &Model::loginStatus,
+        this,
+        &Controller::loginSuccess
+    );
 }
 
 void Controller::setView(View *view) {
@@ -22,25 +29,22 @@ void Controller::checkLogin() {
     //loginDialog->setUsername(); // optional
     connect(
         loginDialog,
-        SIGNAL(tryLogin(QString&, QString&)),
+        &LoginDialog::tryLogin,
         this,
-        SLOT(slotTryUserLogin(QString&, QString&))
+        &Controller::slotTryUserLogin
     );
 
     connect(
         this,
-        SIGNAL(loginSuccess(bool)),
+        &Controller::loginSuccess,
         loginDialog,
-        SLOT(slotLoginResponse(bool))
+        &LoginDialog::slotLoginResponse
     );
     loginDialog->exec();
 }
 
 void Controller::slotTryUserLogin(QString& user, QString& password) {
-    bool success = model->requestLogin(user, password);
-
-    qDebug() << "emitin...";
-    emit loginSuccess(success);
+    model->requestLogin(user, password);
 }
 
 void Controller::showGroups() {

@@ -15,9 +15,12 @@ private:
     QString mainUrl;
     QNetworkAccessManager manager;
     QNetworkReply *reply;
+    Response::Type requestType;
+    QByteArray dataRead;
 
 public slots:
-    void networkReplyProgress();
+    void networkReplyReady();
+    void networkReplyFinished();
 };
 
 #endif // WEBBRIDGE_H

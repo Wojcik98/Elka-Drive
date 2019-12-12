@@ -10,26 +10,27 @@ class Model : public QObject {
 public:
     Model(APIBridge *bridge);
 
-    bool requestLogin(QString user, QString password);
     bool isLogged();
 
     QList<QStandardItem*> getGroups();
     QList<QStandardItem*> getPath(QString path);
 
+    void requestLogin(QString user, QString password);
     void requestDelete(QString path);
     void requestDownload(QString path);
     void requestPath(QString path);
 
 private:
+    void handleLoginResponse(Response response);
+
     APIBridge *bridge;
     bool logged = false;
 
 signals:
-    void loginResponse(bool success);
+    void loginStatus(bool success);
 
 public slots:
-    void slotLoginResponse(bool success);
-    void newItems(QList<QStandardItem*>&);
+    void gotResponse(Response response);
 };
 
 #endif // MODEL_H

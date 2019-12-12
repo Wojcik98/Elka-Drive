@@ -6,7 +6,12 @@
 #include "include/model.h"
 
 Model::Model(APIBridge *bridge) : bridge(bridge) {
-
+    connect(
+        bridge,
+        &APIBridge::gotResponse,
+        this,
+        &Model::gotResponse
+    );
 }
 
 QList<QStandardItem*> Model::getGroups() {
@@ -49,28 +54,26 @@ void Model::requestDownload(QString path) {
     qDebug() << "Download!";
 }
 
-bool Model::requestLogin(QString user, QString password) {
+void Model::requestLogin(QString user, QString password) {
     bridge->requestLogin(user, password);
-    return true; // TODO impl
-//    QJsonValue value = response[QString("success")];
-//    if (value == QJsonValue::Undefined) {
-//        throw std::invalid_argument("No 'success' key!");
-//    }
-//    if (!value.isBool()) {
-//        throw std::invalid_argument("'success' is not bool!");
-//    }
-
-//    return value.toBool();
 }
 
 bool Model::isLogged() {
     return logged;
 }
 
-void Model::newItems(QList<QStandardItem*>&) {
-    // TODO impl
+void Model::gotResponse(Response response) {
+    switch (response.getType()) {
+        case Response::Type::LOGIN:
+            handleLoginResponse(response);
+            break;
+        case Response::Type::REGISTER:
+            break;
+    }
 }
 
-void Model::slotLoginResponse(bool resp) {
-    // TODO impl
+void Model::handleLoginResponse(Response response) {
+    const int STATUS_OK = 302;
+    bool success = response.getStatus() == STATUS_OK;
+    emit loginStatus(success);
 }
