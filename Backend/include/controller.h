@@ -3,8 +3,9 @@
 
 #include <QObject>
 
-#include "include/view.h"
+#include "include/logindialog.h"
 #include "include/model.h"
+#include "include/view.h"
 
 class View;
 
@@ -16,6 +17,7 @@ public:
     void setView(View *view);
     void setModel(Model *model);
 
+    void checkLogin();
     void showGroups();
 
 private:
@@ -24,11 +26,15 @@ private:
 
     QStringList path;
 
+signals:
+    void loginSuccess(bool success);
+
 public slots:
     void requestDownload(const QModelIndex &index);
     void requestDelete(const QModelIndex &index);
     void fileDoubleClicked(const QModelIndex &index);
     void goBack();
+    void slotTryUserLogin(QString& user, QString& password);
 };
 
 #endif // CONTROLLER_H

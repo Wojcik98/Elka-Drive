@@ -1,5 +1,4 @@
-QT += gui
-QT += core
+QT += core gui network
 
 greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 
@@ -24,6 +23,7 @@ DEFINES += QT_DEPRECATED_WARNINGS
 SOURCES += \
     src/apibridge.cpp \
     src/controller.cpp \
+    src/logindialog.cpp \
     src/model.cpp \
     src/view.cpp \
     src/webbridge.cpp
@@ -31,6 +31,7 @@ SOURCES += \
 HEADERS += \
     include/apibridge.h \
     include/controller.h \
+    include/logindialog.h \
     include/model.h \
     include/view.h \
     include/webbridge.h

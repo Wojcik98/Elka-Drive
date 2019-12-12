@@ -8,7 +8,7 @@
 int main(int argc, char *argv[]) {
     QApplication a(argc, argv);
 
-    WebBridge bridge;
+    WebBridge bridge("https://elkadrive.herokuapp.com");
 
     MainWindow view;
     Model model(&bridge);
@@ -20,6 +20,7 @@ int main(int argc, char *argv[]) {
     controller.showGroups();
 
     view.show();
+    controller.checkLogin();
 
     return a.exec();
 }

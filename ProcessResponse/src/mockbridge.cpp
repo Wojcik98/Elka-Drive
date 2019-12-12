@@ -4,8 +4,9 @@ MockBridge::MockBridge() {
 
 }
 
-QJsonObject MockBridge::requestLogin(QString user, QString password) {
-    return response;
+void MockBridge::requestLogin(QString user, QString password) {
+//    return response;
+    // TODO impl
 }
 
 void MockBridge::setResponse(QJsonObject response) {

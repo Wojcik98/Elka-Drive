@@ -14,6 +14,35 @@ void Controller::setView(View *view) {
     this->view = view;
 }
 
+void Controller::checkLogin() {
+    if (model->isLogged()) {
+        return;
+    }
+    LoginDialog* loginDialog = new LoginDialog();
+    //loginDialog->setUsername(); // optional
+    connect(
+        loginDialog,
+        SIGNAL(tryLogin(QString&, QString&)),
+        this,
+        SLOT(slotTryUserLogin(QString&, QString&))
+    );
+
+    connect(
+        this,
+        SIGNAL(loginSuccess(bool)),
+        loginDialog,
+        SLOT(slotLoginResponse(bool))
+    );
+    loginDialog->exec();
+}
+
+void Controller::slotTryUserLogin(QString& user, QString& password) {
+    bool success = model->requestLogin(user, password);
+
+    qDebug() << "emitin...";
+    emit loginSuccess(success);
+}
+
 void Controller::showGroups() {
     auto groups = model->getGroups();
     view->setFileList(groups);

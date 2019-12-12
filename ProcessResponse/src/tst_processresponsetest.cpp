@@ -50,7 +50,7 @@ void ProcessResponseTest::testLogin() {
 
     auto json = QJsonDocument::fromJson(response.toUtf8()).object();
     bridge.setResponse(json);
-    bool success = model->login(user, password);
+    bool success = model->requestLogin(user, password);
     QCOMPARE(success, expected);
 }
 
@@ -58,14 +58,14 @@ void ProcessResponseTest::testNoKey() {
     QString response = "{\"success\": 3.451}";
     auto json = QJsonDocument::fromJson(response.toUtf8()).object();
     bridge.setResponse(json);
-    QVERIFY_EXCEPTION_THROWN(model->login(user, password), std::invalid_argument);
+    QVERIFY_EXCEPTION_THROWN(model->requestLogin(user, password), std::invalid_argument);
 }
 
 void ProcessResponseTest::testWrongType() {
     QString response = "{\"other\": true}";
     auto json = QJsonDocument::fromJson(response.toUtf8()).object();
     bridge.setResponse(json);
-    QVERIFY_EXCEPTION_THROWN(model->login(user, password), std::invalid_argument);
+    QVERIFY_EXCEPTION_THROWN(model->requestLogin(user, password), std::invalid_argument);
 }
 
 QTEST_APPLESS_MAIN(ProcessResponseTest)

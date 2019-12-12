@@ -6,7 +6,7 @@
 class MockBridge : public APIBridge {
 public:
     MockBridge();
-    QJsonObject requestLogin(QString user, QString password);
+    virtual void requestLogin(QString user, QString password);
 
     void setResponse(QJsonObject response);
 

@@ -38,6 +38,9 @@ QList<QStandardItem*> Model::getPath(QString path) {
     return result;
 }
 
+void Model::requestPath(QString path) {
+}
+
 void Model::requestDelete(QString path) {
     qDebug() << "Delete!";
 }
@@ -46,16 +49,28 @@ void Model::requestDownload(QString path) {
     qDebug() << "Download!";
 }
 
-bool Model::login(QString user, QString password) {
-    QJsonObject response = bridge->requestLogin(user, password);
+bool Model::requestLogin(QString user, QString password) {
+    bridge->requestLogin(user, password);
+    return true; // TODO impl
+//    QJsonValue value = response[QString("success")];
+//    if (value == QJsonValue::Undefined) {
+//        throw std::invalid_argument("No 'success' key!");
+//    }
+//    if (!value.isBool()) {
+//        throw std::invalid_argument("'success' is not bool!");
+//    }
 
-    QJsonValue value = response[QString("success")];
-    if (value == QJsonValue::Undefined) {
-        throw std::invalid_argument("No 'success' key!");
-    }
-    if (!value.isBool()) {
-        throw std::invalid_argument("'success' is not bool!");
-    }
+//    return value.toBool();
+}
 
-    return value.toBool();
+bool Model::isLogged() {
+    return logged;
+}
+
+void Model::newItems(QList<QStandardItem*>&) {
+    // TODO impl
+}
+
+void Model::slotLoginResponse(bool resp) {
+    // TODO impl
 }
