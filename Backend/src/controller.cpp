@@ -2,8 +2,14 @@
 
 #include "include/controller.h"
 
-Controller::Controller() {
-
+Controller::Controller(QApplication *app) : app(app) {
+    connect(
+        this,
+        &Controller::closeApp,
+        app,
+        &QApplication::quit,
+        Qt::QueuedConnection
+    );
 }
 
 void Controller::setModel(Model *model) {
@@ -25,26 +31,40 @@ void Controller::checkLogin() {
     if (model->isLogged()) {
         return;
     }
-    LoginDialog* loginDialog = new LoginDialog();
-    //loginDialog->setUsername(); // optional
+    loginDialog = new LoginDialog();
+
     connect(
         loginDialog,
         &LoginDialog::tryLogin,
         this,
         &Controller::slotTryUserLogin
     );
-
     connect(
         this,
         &Controller::loginSuccess,
         loginDialog,
         &LoginDialog::slotLoginResponse
     );
+    connect(
+        loginDialog,
+        &LoginDialog::rejected,
+        this,
+        &Controller::loginDialogClosed
+    );
+
     loginDialog->exec();
 }
 
 void Controller::slotTryUserLogin(QString& user, QString& password) {
     model->requestLogin(user, password);
+}
+
+void Controller::loginDialogClosed() {
+    loginDialog->deleteLater();
+
+    if (!model->isLogged()) {
+        emit closeApp();
+    }
 }
 
 void Controller::showGroups() {

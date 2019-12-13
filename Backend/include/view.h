@@ -17,6 +17,11 @@ public:
 
     virtual void setController(Controller *controller) = 0;
     virtual void setFileList(QList<QStandardItem*> files) = 0;
+
+protected:
+    void showEvent(QShowEvent *ev);
+
+    Controller *controller;
 };
 
 #endif // VIEW_H

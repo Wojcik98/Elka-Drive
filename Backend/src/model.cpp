@@ -75,6 +75,6 @@ void Model::gotResponse(Response response) {
 void Model::handleLoginResponse(Response response) {
     const int STATUS_OK = 302;
     bool success = response.getStatus() == STATUS_OK;
-    emit loginStatus(success);
     logged = success;
+    emit loginStatus(success);
 }

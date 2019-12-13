@@ -6,21 +6,20 @@
 #include "include/model.h"
 
 int main(int argc, char *argv[]) {
-    QApplication a(argc, argv);
+    QApplication app(argc, argv);
 
     WebBridge bridge("https://elkadrive.herokuapp.com");
 
     MainWindow view;
     Model model(&bridge);
-    Controller controller;
+    Controller controller(&app);
 
     controller.setModel(&model);
     controller.setView(&view);
     view.setController(&controller);
-    controller.showGroups();
+//    controller.showGroups();
 
     view.show();
-    controller.checkLogin();
 
-    return a.exec();
+    return app.exec();
 }

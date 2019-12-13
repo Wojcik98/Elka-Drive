@@ -1,6 +1,7 @@
 #ifndef CONTROLLER_H
 #define CONTROLLER_H
 
+#include <QApplication>
 #include <QObject>
 
 #include "include/logindialog.h"
@@ -12,7 +13,7 @@ class View;
 class Controller : public QObject {
     Q_OBJECT
 public:
-    explicit Controller();
+    explicit Controller(QApplication *app);
 
     void setView(View *view);
     void setModel(Model *model);
@@ -21,12 +22,15 @@ public:
     void showGroups();
 
 private:
+    QApplication *app;
     View *view;
     Model *model;
+    LoginDialog* loginDialog;
 
     QStringList path;
 
 signals:
+    void closeApp();
     void loginSuccess(bool success);
 
 public slots:
@@ -35,6 +39,7 @@ public slots:
     void fileDoubleClicked(const QModelIndex &index);
     void goBack();
     void slotTryUserLogin(QString& user, QString& password);
+    void loginDialogClosed();
 };
 
 #endif // CONTROLLER_H

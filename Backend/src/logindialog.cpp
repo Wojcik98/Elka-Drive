@@ -36,9 +36,9 @@ void LoginDialog::setUpGUI() {
     // connects slots
     connect(
         buttons->button(QDialogButtonBox::Cancel),
-        SIGNAL(clicked()),
+        &QPushButton::clicked,
         this,
-        SLOT(close())   // TODO separate signal
+        &LoginDialog::reject
     );
 
     connect(
@@ -72,7 +72,6 @@ void LoginDialog::setUsername(QString &username) {
 
     if (!found) {
         int index = comboUsername->count();
-        qDebug() << "Select username " << index;
         comboUsername->addItem(username);
 
         comboUsername->setCurrentIndex(index);
