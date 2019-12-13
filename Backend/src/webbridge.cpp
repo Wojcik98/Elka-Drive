@@ -3,11 +3,13 @@
 #include <QDebug>
 
 WebBridge::WebBridge(QString mainUrl) : mainUrl(mainUrl) {
-
+    reply = nullptr;
 }
 
 void WebBridge::requestLogin(QString user, QString password) {
-    // TODO check if we are not already requesting something
+    if (reply != nullptr) {
+        return;
+    }
     auto url = QUrl(mainUrl + "/login");
     auto request = QNetworkRequest(url);
     request.setHeader(QNetworkRequest::ContentTypeHeader,
@@ -44,6 +46,7 @@ void WebBridge::networkReplyFinished() {
     emit gotResponse(response);
 
     reply->deleteLater();
+    reply = nullptr;
 }
 
 void WebBridge::networkReplyReady() {

@@ -86,6 +86,7 @@ void LoginDialog::setPassword(QString &password) {
 }
 
 void LoginDialog::slotTryLogin() {
+    buttons->button(QDialogButtonBox::Ok)->setEnabled(false);
     QString username = comboUsername->currentText();
     QString password = editPassword->text();
 
@@ -100,6 +101,7 @@ void LoginDialog::slotLoginResponse(bool success) {
         close();
     } else {
         labelError->setText("Cannot login!");
+        buttons->button(QDialogButtonBox::Ok)->setEnabled(true);
     }
 }
 
