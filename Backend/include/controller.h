@@ -40,6 +40,7 @@ public slots:
     void goBack();
     void slotTryUserLogin(QString& user, QString& password);
     void loginDialogClosed();
+    void groupsReceived(QList<QStandardItem*> groups);
 };
 
 #endif // CONTROLLER_H

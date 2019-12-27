@@ -7,7 +7,8 @@ class Response {
 public:
     enum Type {
         LOGIN,
-        REGISTER
+        REGISTER,
+        GROUPS
     };
 
     Response(int statusCode, QByteArray body, Response::Type type);

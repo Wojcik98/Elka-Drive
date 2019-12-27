@@ -18,6 +18,8 @@ private:
     QLabel *labelUsername;
     QLabel *labelPassword;
     QLabel *labelError;
+    QLabel *spinnerLabel;
+    QMovie *spinnerMovie;
     QComboBox *comboUsername;
     QLineEdit *editPassword;
     QDialogButtonBox *buttons;
@@ -26,6 +28,7 @@ private:
 
 public:
     explicit LoginDialog(QWidget *parent=nullptr);
+    ~LoginDialog();
 
     void setUsername(QString &username);
     void setPassword(QString &password);

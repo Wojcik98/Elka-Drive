@@ -1,3 +1,4 @@
+#include <QMovie>
 #include "include/logindialog.h"
 
 LoginDialog::LoginDialog(QWidget *parent) : QDialog(parent) {
@@ -5,6 +6,10 @@ LoginDialog::LoginDialog(QWidget *parent) : QDialog(parent) {
     setUpGUI();
     setWindowTitle(tr("User Login"));
     setModal(true);
+}
+
+LoginDialog::~LoginDialog() {
+    spinnerMovie->deleteLater();
 }
 
 void LoginDialog::setUpGUI() {
@@ -33,6 +38,12 @@ void LoginDialog::setUpGUI() {
     buttons->button(QDialogButtonBox::Ok)->setText(tr("Login"));
     buttons->button(QDialogButtonBox::Cancel)->setText(tr("Close"));
 
+    // spinner
+    spinnerLabel = new QLabel(this);
+    spinnerMovie = new QMovie(":/gifs/spinner.gif");
+    spinnerMovie->start();
+    spinnerLabel->setMovie(spinnerMovie);
+
     // connects slots
     connect(
         buttons->button(QDialogButtonBox::Cancel),
@@ -43,22 +54,23 @@ void LoginDialog::setUpGUI() {
 
     connect(
         buttons->button(QDialogButtonBox::Ok),
-        SIGNAL(clicked()),
+        &QPushButton::clicked,
         this,
-        SLOT(slotTryLogin())
+        &LoginDialog::slotTryLogin
     );
 
     // place components into the dialog
     formGridLayout->addWidget(labelUsername, 0, 0);
-    formGridLayout->addWidget(comboUsername, 0, 1);
+    formGridLayout->addWidget(comboUsername, 0, 1, 1, 2);
     formGridLayout->addWidget(labelPassword, 1, 0);
     formGridLayout->addWidget(editPassword, 1, 1);
-    formGridLayout->addWidget(editPassword, 1, 1);
+    formGridLayout->addWidget(editPassword, 1, 1, 1, 2);
     formGridLayout->addWidget(labelError, 2, 0, 1, 2);
     formGridLayout->addWidget(buttons, 3, 0, 1, 2);
+    formGridLayout->addWidget(spinnerLabel, 3, 2);
 
     setLayout(formGridLayout);
-
+    spinnerLabel->hide();
 }
 
 void LoginDialog::setUsername(QString &username) {
@@ -86,6 +98,7 @@ void LoginDialog::setPassword(QString &password) {
 }
 
 void LoginDialog::slotTryLogin() {
+    spinnerLabel->show();
     buttons->button(QDialogButtonBox::Ok)->setEnabled(false);
     QString username = comboUsername->currentText();
     QString password = editPassword->text();
@@ -102,6 +115,8 @@ void LoginDialog::slotLoginResponse(bool success) {
     } else {
         labelError->setText("Cannot login!");
         buttons->button(QDialogButtonBox::Ok)->setEnabled(true);
+        qDebug() << "hide ";
+        spinnerLabel->hide();
     }
 }
 

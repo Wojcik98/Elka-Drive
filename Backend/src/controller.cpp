@@ -21,6 +21,12 @@ void Controller::setModel(Model *model) {
         this,
         &Controller::loginSuccess
     );
+    connect(
+        model,
+        &Model::groupsReceived,
+        this,
+        &Controller::groupsReceived
+    );
 }
 
 void Controller::setView(View *view) {
@@ -65,10 +71,12 @@ void Controller::loginDialogClosed() {
     if (!model->isLogged()) {
         emit closeApp();
     }
+
+    qDebug("groups");
+    model->requestGroups();
 }
 
-void Controller::showGroups() {
-    auto groups = model->getGroups();
+void Controller::groupsReceived(QList<QStandardItem*> groups) {
     view->setFileList(groups);
 }
 
@@ -108,7 +116,6 @@ void Controller::goBack() {
     } else if (path.length() == 1) {
         path.pop_back();
         qDebug() << "get groups";
-        auto groups = model->getGroups();
-        view->setFileList(groups);
+        model->requestGroups();
     }
 }

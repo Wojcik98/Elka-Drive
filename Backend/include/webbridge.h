@@ -10,6 +10,7 @@ class WebBridge : public APIBridge {
 public:
     WebBridge(QString mainUrl);
     virtual void requestLogin(QString user, QString password);
+    virtual void requestGroups();
 
 private:
     QString mainUrl;

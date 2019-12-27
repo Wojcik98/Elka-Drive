@@ -8,6 +8,7 @@ class MockBridge : public APIBridge {
 public:
     MockBridge();
     virtual void requestLogin(QString user, QString password);
+    virtual void requestGroups();
 
     void setResponse(Response resopnse);
 

@@ -1,7 +1,8 @@
 #include <exception>
 #include <QtDebug>
 #include <QtGlobal>
-#include <QJsonObject>
+#include <QJsonArray>
+#include <QJsonDocument>
 
 #include "include/model.h"
 
@@ -12,17 +13,6 @@ Model::Model(APIBridge *bridge) : bridge(bridge) {
         this,
         &Model::gotResponse
     );
-}
-
-QList<QStandardItem*> Model::getGroups() {
-    QList<QStandardItem*> result;
-
-    QStandardItem *group = new QStandardItem(QIcon(":/icons/group.png"), "Panda");
-    group->setData(QVariant("group"));
-    result.append(group);
-
-    return result;
-//    return getPath("/");
 }
 
 QList<QStandardItem*> Model::getPath(QString path) {
@@ -41,6 +31,10 @@ QList<QStandardItem*> Model::getPath(QString path) {
     }
 
     return result;
+}
+
+void Model::requestGroups() {
+    bridge->requestGroups();
 }
 
 void Model::requestPath(QString path) {
@@ -69,6 +63,9 @@ void Model::gotResponse(Response response) {
             break;
         case Response::Type::REGISTER:
             break;
+        case Response::Type::GROUPS:
+            handleGroupsResponse(response);
+            break;
     }
 }
 
@@ -77,4 +74,27 @@ void Model::handleLoginResponse(Response response) {
     bool success = response.getStatus() == STATUS_OK;
     logged = success;
     emit loginStatus(success);
+}
+
+void Model::handleGroupsResponse(Response response) {
+    const int STATUS_OK = 200;
+    if (response.getStatus() != STATUS_OK) {
+        qDebug() << "Groups response not ok";
+        return;
+    }
+
+    QList<QStandardItem*> groups;
+    auto groupsRaw = QJsonDocument::fromJson(response.getBody());
+
+    auto array = groupsRaw.array();
+
+    for (auto groupRaw : array) {
+        QJsonObject obj = groupRaw.toObject();
+        QString name = obj["name"].toString();
+        QStandardItem *group = new QStandardItem(QIcon(":/icons/group.png"), name);
+        group->setData(QVariant("group"));
+        groups.append(group);
+    }
+
+    emit groupsReceived(groups);
 }
