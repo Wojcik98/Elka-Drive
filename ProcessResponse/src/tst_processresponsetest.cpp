@@ -1,5 +1,6 @@
 #include <QString>
 #include <QtTest>
+#include <QSignalSpy>
 #include "include/model.h"
 #include "include/mockbridge.h"
 
@@ -21,8 +22,6 @@ private Q_SLOTS:
     void cleanupTestCase();
     void testLogin_data();
     void testLogin();
-    void testNoKey();
-    void testWrongType();
 };
 
 ProcessResponseTest::ProcessResponseTest() {
@@ -37,35 +36,28 @@ void ProcessResponseTest::cleanupTestCase() {
 }
 
 void ProcessResponseTest::testLogin_data() {
-    QTest::addColumn<QString>("response");
+    QTest::addColumn<QString>("responseBody");
+    QTest::addColumn<int>("responseStatus");
     QTest::addColumn<bool>("expected");
 
-    QTest::newRow("Correct login") << "{\"success\": true}" << true;
-    QTest::newRow("Failed login") << "{\"success\": false}" << false;
+    QTest::newRow("Correct login") << "" << 302 << true;
+    QTest::newRow("Failed login") << "" << 401 << false;
 }
 
 void ProcessResponseTest::testLogin() {
-    QFETCH(QString, response);
+    QSignalSpy spy(model, &Model::loginStatus);
+
+    QFETCH(QString, responseBody);
+    QFETCH(int, responseStatus);
     QFETCH(bool, expected);
 
-    auto json = QJsonDocument::fromJson(response.toUtf8()).object();
-    bridge.setResponse(json);
-    bool success = model->login(user, password);
-    QCOMPARE(success, expected);
-}
+    auto response = Response(responseStatus, responseBody.toUtf8(), Response::Type::LOGIN);
+    bridge.setResponse(response);
+    model->requestLogin(user, password);
+    QCOMPARE(spy.count(), 1);
 
-void ProcessResponseTest::testNoKey() {
-    QString response = "{\"success\": 3.451}";
-    auto json = QJsonDocument::fromJson(response.toUtf8()).object();
-    bridge.setResponse(json);
-    QVERIFY_EXCEPTION_THROWN(model->login(user, password), std::invalid_argument);
-}
-
-void ProcessResponseTest::testWrongType() {
-    QString response = "{\"other\": true}";
-    auto json = QJsonDocument::fromJson(response.toUtf8()).object();
-    bridge.setResponse(json);
-    QVERIFY_EXCEPTION_THROWN(model->login(user, password), std::invalid_argument);
+    QList<QVariant> arguments = spy.takeFirst();
+    QCOMPARE(arguments.at(0).toBool(), expected);
 }
 
 QTEST_APPLESS_MAIN(ProcessResponseTest)

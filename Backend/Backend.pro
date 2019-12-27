@@ -1,5 +1,4 @@
-QT += gui
-QT += core
+QT += core gui network
 
 greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 
@@ -22,8 +21,10 @@ DEFINES += QT_DEPRECATED_WARNINGS
 #DEFINES += QT_DISABLE_DEPRECATED_BEFORE=0x060000    # disables all the APIs deprecated before Qt 6.0.0
 
 SOURCES += \
+    src/response.cpp \
     src/apibridge.cpp \
     src/controller.cpp \
+    src/logindialog.cpp \
     src/model.cpp \
     src/view.cpp \
     src/webbridge.cpp
@@ -31,9 +32,14 @@ SOURCES += \
 HEADERS += \
     include/apibridge.h \
     include/controller.h \
+    include/logindialog.h \
     include/model.h \
+    include/response.h \
     include/view.h \
     include/webbridge.h
+
+RESOURCES += \
+    resources/res.qrc
 
 # Default rules for deployment.
 unix {

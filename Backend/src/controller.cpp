@@ -2,20 +2,81 @@
 
 #include "include/controller.h"
 
-Controller::Controller() {
-
+Controller::Controller(QApplication *app) : app(app) {
+    connect(
+        this,
+        &Controller::closeApp,
+        app,
+        &QApplication::quit,
+        Qt::QueuedConnection
+    );
 }
 
 void Controller::setModel(Model *model) {
     this->model = model;
+
+    connect(
+        model,
+        &Model::loginStatus,
+        this,
+        &Controller::loginSuccess
+    );
+    connect(
+        model,
+        &Model::groupsReceived,
+        this,
+        &Controller::groupsReceived
+    );
 }
 
 void Controller::setView(View *view) {
     this->view = view;
 }
 
-void Controller::showGroups() {
-    auto groups = model->getGroups();
+void Controller::checkLogin() {
+    if (model->isLogged()) {
+        return;
+    }
+    loginDialog = new LoginDialog();
+
+    connect(
+        loginDialog,
+        &LoginDialog::tryLogin,
+        this,
+        &Controller::slotTryUserLogin
+    );
+    connect(
+        this,
+        &Controller::loginSuccess,
+        loginDialog,
+        &LoginDialog::slotLoginResponse
+    );
+    connect(
+        loginDialog,
+        &LoginDialog::rejected,
+        this,
+        &Controller::loginDialogClosed
+    );
+
+    loginDialog->exec();
+}
+
+void Controller::slotTryUserLogin(QString& user, QString& password) {
+    model->requestLogin(user, password);
+}
+
+void Controller::loginDialogClosed() {
+    loginDialog->deleteLater();
+
+    if (!model->isLogged()) {
+        emit closeApp();
+    }
+
+    qDebug("groups");
+    model->requestGroups();
+}
+
+void Controller::groupsReceived(QList<QStandardItem*> groups) {
     view->setFileList(groups);
 }
 
@@ -55,7 +116,6 @@ void Controller::goBack() {
     } else if (path.length() == 1) {
         path.pop_back();
         qDebug() << "get groups";
-        auto groups = model->getGroups();
-        view->setFileList(groups);
+        model->requestGroups();
     }
 }

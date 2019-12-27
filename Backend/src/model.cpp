@@ -1,23 +1,18 @@
 #include <exception>
 #include <QtDebug>
 #include <QtGlobal>
-#include <QJsonObject>
+#include <QJsonArray>
+#include <QJsonDocument>
 
 #include "include/model.h"
 
 Model::Model(APIBridge *bridge) : bridge(bridge) {
-
-}
-
-QList<QStandardItem*> Model::getGroups() {
-    QList<QStandardItem*> result;
-
-    QStandardItem *group = new QStandardItem(QIcon(":/icons/group.png"), "Panda");
-    group->setData(QVariant("group"));
-    result.append(group);
-
-    return result;
-//    return getPath("/");
+    connect(
+        bridge,
+        &APIBridge::gotResponse,
+        this,
+        &Model::gotResponse
+    );
 }
 
 QList<QStandardItem*> Model::getPath(QString path) {
@@ -38,6 +33,13 @@ QList<QStandardItem*> Model::getPath(QString path) {
     return result;
 }
 
+void Model::requestGroups() {
+    bridge->requestGroups();
+}
+
+void Model::requestPath(QString path) {
+}
+
 void Model::requestDelete(QString path) {
     qDebug() << "Delete!";
 }
@@ -46,16 +48,53 @@ void Model::requestDownload(QString path) {
     qDebug() << "Download!";
 }
 
-bool Model::login(QString user, QString password) {
-    QJsonObject response = bridge->requestLogin(user, password);
+void Model::requestLogin(QString user, QString password) {
+    bridge->requestLogin(user, password);
+}
 
-    QJsonValue value = response[QString("success")];
-    if (value == QJsonValue::Undefined) {
-        throw std::invalid_argument("No 'success' key!");
+bool Model::isLogged() {
+    return logged;
+}
+
+void Model::gotResponse(Response response) {
+    switch (response.getType()) {
+        case Response::Type::LOGIN:
+            handleLoginResponse(response);
+            break;
+        case Response::Type::REGISTER:
+            break;
+        case Response::Type::GROUPS:
+            handleGroupsResponse(response);
+            break;
     }
-    if (!value.isBool()) {
-        throw std::invalid_argument("'success' is not bool!");
+}
+
+void Model::handleLoginResponse(Response response) {
+    const int STATUS_OK = 302;
+    bool success = response.getStatus() == STATUS_OK;
+    logged = success;
+    emit loginStatus(success);
+}
+
+void Model::handleGroupsResponse(Response response) {
+    const int STATUS_OK = 200;
+    if (response.getStatus() != STATUS_OK) {
+        qDebug() << "Groups response not ok";
+        return;
     }
 
-    return value.toBool();
+    QList<QStandardItem*> groups;
+    auto groupsRaw = QJsonDocument::fromJson(response.getBody());
+
+    auto array = groupsRaw.array();
+
+    for (auto groupRaw : array) {
+        QJsonObject obj = groupRaw.toObject();
+        QString name = obj["name"].toString();
+        QStandardItem *group = new QStandardItem(QIcon(":/icons/group.png"), name);
+        group->setData(QVariant("group"));
+        groups.append(group);
+    }
+
+    emit groupsReceived(groups);
 }

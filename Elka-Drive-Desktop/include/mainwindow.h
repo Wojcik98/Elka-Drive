@@ -26,7 +26,6 @@ public:
 private:
     Ui::MainWindow *ui;
     QStandardItemModel fileListModel;
-    Controller *controller;
 };
 
 #endif // MAINWINDOW_H
