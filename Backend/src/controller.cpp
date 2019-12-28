@@ -90,15 +90,15 @@ void Controller::pathReceived(QList<QStandardItem*> path) {
     view->setFileList(path);
 }
 
-void Controller::requestDownload(const QModelIndex &index) {
-    auto filename = index.data().toString();
-    qDebug() << "download: " << filename;
-    model->requestDownload(path.join("/") + filename);
-}
-
 void Controller::requestDelete(const QModelIndex &index) {
     auto filename = index.data().toString();
     model->requestDelete(path.join("/") + filename);
+}
+
+void Controller::requestDownload(const QModelIndex &index) {
+    auto id = index.data(Model::ID_ROLE).toInt();
+    qDebug() << "Download " << id;
+    model->requestDownload(QString::number((id)));
 }
 
 void Controller::fileDoubleClicked(const QModelIndex &index) {

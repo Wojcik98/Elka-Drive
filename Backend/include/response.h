@@ -2,6 +2,7 @@
 #define RESPONSE_H
 
 #include <QByteArray>
+#include <QString>
 
 class Response {
 public:
@@ -9,18 +10,21 @@ public:
         LOGIN,
         REGISTER,
         GROUPS,
-        PATH
+        PATH,
+        FILE
     };
 
-    Response(int statusCode, QByteArray body, Response::Type type);
+    Response(int statusCode, QByteArray body, Response::Type type, QString name);
     int getStatus();
     QByteArray getBody();
     Response::Type getType();
+    QString getName();
 
 private:
     int statusCode;
     QByteArray body;
     Response::Type type;
+    QString name;
 };
 
 #endif // RESPONSE_H

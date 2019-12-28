@@ -14,6 +14,7 @@ class Controller : public QObject {
     Q_OBJECT
 public:
     explicit Controller(QApplication *app);
+    void requestDownload(const QModelIndex &index);
 
     void setView(View *view);
     void setModel(Model *model);
@@ -34,7 +35,6 @@ signals:
     void loginSuccess(bool success);
 
 public slots:
-    void requestDownload(const QModelIndex &index);
     void requestDelete(const QModelIndex &index);
     void fileDoubleClicked(const QModelIndex &index);
     void goBack();

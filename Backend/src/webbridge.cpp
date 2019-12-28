@@ -1,6 +1,7 @@
 #include "include/webbridge.h"
 #include <QUrlQuery>
 #include <QDebug>
+#include <QNetworkReply>
 
 WebBridge::WebBridge(QString mainUrl) : mainUrl(mainUrl) {
     reply = nullptr;
@@ -96,6 +97,33 @@ void WebBridge::requestPath(QString path) {
     );
 }
 
+void WebBridge::requestDownload(QString id) {
+    if (reply != nullptr) {
+        qDebug() << "Another request in progress!";
+        return;
+    }
+    dataRead.clear();
+    auto url = QUrl(mainUrl + "/files/" + id);
+
+    auto request = QNetworkRequest(url);
+
+    requestType = Response::Type::FILE;
+    reply = manager.get(request);
+
+    connect(
+        reply,
+        &QNetworkReply::finished,
+        this,
+        &WebBridge::networkReplyFinished
+    );
+    connect(
+        reply,
+        &QIODevice::readyRead,
+        this,
+        &WebBridge::networkReplyReady
+    );
+}
+
 void WebBridge::networkReplyFinished() {
     QVariant statusCode = reply->attribute(QNetworkRequest::HttpStatusCodeAttribute);
 
@@ -105,7 +133,8 @@ void WebBridge::networkReplyFinished() {
         // TODO try again, if still failing show pop-up
     }
 
-    Response response(statusCode.toInt(), dataRead, requestType);
+    QString name = reply->rawHeader("Content-Disposition");
+    Response response(statusCode.toInt(), dataRead, requestType, name);
 
     reply->deleteLater();
     reply = nullptr;

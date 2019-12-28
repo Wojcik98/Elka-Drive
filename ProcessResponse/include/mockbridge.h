@@ -10,6 +10,7 @@ public:
     virtual void requestLogin(QString user, QString password);
     virtual void requestGroups();
     virtual void requestPath(QString path);
+    virtual void requestDownload(QString id);
 
     void setResponse(Response resopnse);
 

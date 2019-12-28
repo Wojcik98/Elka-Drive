@@ -1,6 +1,7 @@
 #include <exception>
 #include <QtDebug>
 #include <QtGlobal>
+#include <QFile>
 #include <QJsonArray>
 #include <QJsonDocument>
 
@@ -23,12 +24,12 @@ void Model::requestPath(QString path) {
     bridge->requestPath(path);
 }
 
-void Model::requestDelete(QString path) {
+void Model::requestDelete(QString id) {
     qDebug() << "Delete!";
 }
 
-void Model::requestDownload(QString path) {
-    qDebug() << "Download!";
+void Model::requestDownload(QString id) {
+    bridge->requestDownload(id);
 }
 
 void Model::requestLogin(QString user, QString password) {
@@ -51,6 +52,9 @@ void Model::gotResponse(Response response) {
             break;
         case Response::Type::PATH:
             handlePathResponse(response);
+            break;
+        case Response::Type::FILE:
+            handleFileResponse(response);
             break;
     }
 }
@@ -91,7 +95,7 @@ void Model::handleGroupsResponse(Response response) {
 void Model::handlePathResponse(Response response) {
     const int STATUS_OK = 200;
     if (response.getStatus() != STATUS_OK) {
-        qDebug() << "Groups response not ok";
+        qDebug() << "Path response not ok";
         return;
     }
 
@@ -103,7 +107,7 @@ void Model::handlePathResponse(Response response) {
     for (auto groupRaw : array) {
         QJsonObject obj = groupRaw.toObject();
         QString name = obj["name"].toString();
-        qDebug() << obj;
+        auto id = QString::number(obj["id"].toInt());
         auto isDir = obj["dir"].toBool();
 
         QStandardItem *current;
@@ -114,8 +118,35 @@ void Model::handlePathResponse(Response response) {
             current = new QStandardItem(QIcon(":/icons/misc.png"), name);
             current->setData(QVariant("file"));
         }
+        current->setData(QVariant(id), ID_ROLE);
         dir.append(current);
     }
 
     emit pathReceived(dir);
+}
+
+void Model::handleFileResponse(Response response) {
+    const int STATUS_OK = 200;
+    if (response.getStatus() != STATUS_OK) {
+        qDebug() << "Download response not ok";
+        return;
+    }
+
+    auto content = response.getBody();
+    QString rawName = response.getName();
+    qDebug() << "Downloaded raw:" << rawName;
+    QString name = rawName
+            .right(rawName.size() - rawName.indexOf('=') - 2);
+    name.chop(1);
+    qDebug() << "Downloaded:" << name;
+
+    QFile file(name);
+    if (!file.open(QIODevice::WriteOnly)) {
+        qDebug() << "Error opening file!";
+    }
+
+    QTextStream stream(&file);
+    stream << content;
+
+    file.close();
 }

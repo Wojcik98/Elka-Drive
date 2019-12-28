@@ -1,6 +1,6 @@
 #include "include/mockbridge.h"
 
-MockBridge::MockBridge() : response(Response(0, QByteArray(), Response::Type::LOGIN)) {
+MockBridge::MockBridge() : response(Response(0, QByteArray(), Response::Type::LOGIN, "")) {
 
 }
 
@@ -13,6 +13,10 @@ void MockBridge::requestGroups() {
 }
 
 void MockBridge::requestPath(QString path) {
+    emit gotResponse(response);
+}
+
+void MockBridge::requestDownload(QString id) {
     emit gotResponse(response);
 }
 

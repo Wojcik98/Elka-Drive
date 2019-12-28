@@ -25,6 +25,7 @@ private:
     void handleLoginResponse(Response response);
     void handleGroupsResponse(Response response);
     void handlePathResponse(Response response);
+    void handleFileResponse(Response response);
 
     APIBridge *bridge;
     bool logged = false;
