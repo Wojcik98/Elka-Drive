@@ -27,6 +27,12 @@ void Controller::setModel(Model *model) {
         this,
         &Controller::groupsReceived
     );
+    connect(
+        model,
+        &Model::pathReceived,
+        this,
+        &Controller::pathReceived
+    );
 }
 
 void Controller::setView(View *view) {
@@ -80,6 +86,10 @@ void Controller::groupsReceived(QList<QStandardItem*> groups) {
     view->setFileList(groups);
 }
 
+void Controller::pathReceived(QList<QStandardItem*> path) {
+    view->setFileList(path);
+}
+
 void Controller::requestDownload(const QModelIndex &index) {
     auto filename = index.data().toString();
     qDebug() << "download: " << filename;
@@ -93,14 +103,18 @@ void Controller::requestDelete(const QModelIndex &index) {
 
 void Controller::fileDoubleClicked(const QModelIndex &index) {
     auto filename = index.data().toString();
-    auto type = index.data(Qt::UserRole + 1).toString();
+    auto type = index.data(Model::TYPE_ROLE).toString();
     qDebug() << "clicked: " << filename;
 
-    if (type == "folder" || type == "group") {
+    if (type == "group") {
+        auto id = index.data(Model::ID_ROLE).toString();
+        path.append(id);
+        qDebug() << "get " << path.join("/");
+        model->requestPath(path.join("/"));
+    } else if (type == "folder") {
         path.append(filename);
         qDebug() << "get " << path.join("/");
-        auto result = model->getPath(path.join("/"));
-        view->setFileList(result);
+        model->requestPath(path.join("/"));
     } else {
         requestDownload(index);
     }
@@ -111,8 +125,7 @@ void Controller::goBack() {
     if (path.length() > 1) {
         path.pop_back();
         qDebug() << "get " << path.join("/");
-        auto result = model->getPath(path.join("/"));
-        view->setFileList(result);
+        model->requestPath(path.join("/"));
     } else if (path.length() == 1) {
         path.pop_back();
         qDebug() << "get groups";

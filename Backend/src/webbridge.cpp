@@ -64,6 +64,38 @@ void WebBridge::requestGroups() {
     );
 }
 
+void WebBridge::requestPath(QString path) {
+    if (reply != nullptr) {
+        qDebug() << "Another request in progress!";
+        return;
+    }
+    dataRead.clear();
+    auto url = QUrl(mainUrl + "/files/dir");
+    QUrlQuery query;
+    query.addQueryItem("path", path);
+    url.setQuery(query.query());
+
+    auto request = QNetworkRequest(url);
+    request.setHeader(QNetworkRequest::ContentTypeHeader,
+        "application/x-www-form-urlencoded");
+
+    requestType = Response::Type::PATH;
+    reply = manager.get(request);
+
+    connect(
+        reply,
+        &QNetworkReply::finished,
+        this,
+        &WebBridge::networkReplyFinished
+    );
+    connect(
+        reply,
+        &QIODevice::readyRead,
+        this,
+        &WebBridge::networkReplyReady
+    );
+}
+
 void WebBridge::networkReplyFinished() {
     QVariant statusCode = reply->attribute(QNetworkRequest::HttpStatusCodeAttribute);
 

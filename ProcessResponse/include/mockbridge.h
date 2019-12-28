@@ -9,6 +9,7 @@ public:
     MockBridge();
     virtual void requestLogin(QString user, QString password);
     virtual void requestGroups();
+    virtual void requestPath(QString path);
 
     void setResponse(Response resopnse);
 

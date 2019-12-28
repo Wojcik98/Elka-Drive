@@ -47,6 +47,7 @@ void MainWindow::setController(Controller *controller) {
 }
 
 void MainWindow::setFileList(QList<QStandardItem*> files) {
+    // TODO delete
     fileListModel.clear();
     fileListModel.appendColumn(files);
 }

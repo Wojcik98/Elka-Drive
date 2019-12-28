@@ -11,6 +11,7 @@ public:
     WebBridge(QString mainUrl);
     virtual void requestLogin(QString user, QString password);
     virtual void requestGroups();
+    virtual void requestPath(QString path);
 
 private:
     QString mainUrl;

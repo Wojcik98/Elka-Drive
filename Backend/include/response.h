@@ -8,7 +8,8 @@ public:
     enum Type {
         LOGIN,
         REGISTER,
-        GROUPS
+        GROUPS,
+        PATH
     };
 
     Response(int statusCode, QByteArray body, Response::Type type);

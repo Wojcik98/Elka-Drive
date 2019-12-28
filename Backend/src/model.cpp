@@ -15,29 +15,12 @@ Model::Model(APIBridge *bridge) : bridge(bridge) {
     );
 }
 
-QList<QStandardItem*> Model::getPath(QString path) {
-    QList<QStandardItem*> result;
-
-    for (int i = 0; i < qrand() % 5; ++i) {
-        QStandardItem *folder = new QStandardItem(QIcon(":/icons/folder.png"), "Folder " + QString::number(i));
-        folder->setData(QVariant("folder"));
-        result.append(folder);
-    }
-
-    for (int i = 0; i < qrand() % 5; ++i) {
-        QStandardItem *file = new QStandardItem(QIcon(":/icons/misc.png"), "Misc 4" + QString::number(i));
-        file->setData(QVariant("misc"));
-        result.append(file);
-    }
-
-    return result;
-}
-
 void Model::requestGroups() {
     bridge->requestGroups();
 }
 
 void Model::requestPath(QString path) {
+    bridge->requestPath(path);
 }
 
 void Model::requestDelete(QString path) {
@@ -66,6 +49,9 @@ void Model::gotResponse(Response response) {
         case Response::Type::GROUPS:
             handleGroupsResponse(response);
             break;
+        case Response::Type::PATH:
+            handlePathResponse(response);
+            break;
     }
 }
 
@@ -91,10 +77,45 @@ void Model::handleGroupsResponse(Response response) {
     for (auto groupRaw : array) {
         QJsonObject obj = groupRaw.toObject();
         QString name = obj["name"].toString();
+        auto id = QString::number(obj["id"].toInt());
+        qDebug() << id;
         QStandardItem *group = new QStandardItem(QIcon(":/icons/group.png"), name);
         group->setData(QVariant("group"));
+        group->setData(QVariant(id), ID_ROLE);
         groups.append(group);
     }
 
     emit groupsReceived(groups);
+}
+
+void Model::handlePathResponse(Response response) {
+    const int STATUS_OK = 200;
+    if (response.getStatus() != STATUS_OK) {
+        qDebug() << "Groups response not ok";
+        return;
+    }
+
+    QList<QStandardItem*> dir;
+    auto dirRaw = QJsonDocument::fromJson(response.getBody());
+
+    auto array = dirRaw.array();
+
+    for (auto groupRaw : array) {
+        QJsonObject obj = groupRaw.toObject();
+        QString name = obj["name"].toString();
+        qDebug() << obj;
+        auto isDir = obj["dir"].toBool();
+
+        QStandardItem *current;
+        if (isDir) {
+            current = new QStandardItem(QIcon(":/icons/folder.png"), name);
+            current->setData(QVariant("folder"));
+        } else {
+            current = new QStandardItem(QIcon(":/icons/misc.png"), name);
+            current->setData(QVariant("file"));
+        }
+        dir.append(current);
+    }
+
+    emit pathReceived(dir);
 }
