@@ -1,11 +1,15 @@
 <RCC>
     <qresource>
         <file>gifs/spinner.gif</file>
+        <file>gifs/spinner2.gif</file>
         <file>icons/panda.jpg</file>
         <file>icons/misc.png</file>
         <file>icons/folder.png</file>
         <file>icons/group.png</file>
         <file>icons/delete.png</file>
         <file>icons/save.png</file>
+        <file>icons/cancel.svg</file>
+        <file>icons/login.svg</file>
+        <file>icons/register.svg</file>
     </qresource>
 </RCC>

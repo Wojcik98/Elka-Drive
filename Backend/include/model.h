@@ -13,6 +13,7 @@ public:
     bool isLogged();
 
     void requestLogin(QString user, QString password);
+    void requestRegister(QString user, QString password);
     void requestDelete(QString path);
     void requestDownload(QString path);
     void requestPath(QString path);
@@ -23,6 +24,7 @@ public:
 
 private:
     void handleLoginResponse(Response response);
+    void handleRegisterResponse(Response response);
     void handleGroupsResponse(Response response);
     void handlePathResponse(Response response);
     void handleFileResponse(Response response);
@@ -32,6 +34,7 @@ private:
 
 signals:
     void loginStatus(bool success);
+    void registerStatus(bool success);
     void groupsReceived(QList<QStandardItem*> groups);
     void pathReceived(QList<QStandardItem*> groups);
 

@@ -23,6 +23,12 @@ void Controller::setModel(Model *model) {
     );
     connect(
         model,
+        &Model::registerStatus,
+        this,
+        &Controller::registerSuccess
+    );
+    connect(
+        model,
         &Model::groupsReceived,
         this,
         &Controller::groupsReceived
@@ -63,12 +69,22 @@ void Controller::checkLogin() {
         this,
         &Controller::loginDialogClosed
     );
+    connect(
+        loginDialog,
+        &LoginDialog::openRegister,
+        this,
+        &Controller::openRegister
+    );
 
     loginDialog->exec();
 }
 
 void Controller::slotTryUserLogin(QString& user, QString& password) {
     model->requestLogin(user, password);
+}
+
+void Controller::slotTryRegister(QString& user, QString& password) {
+    model->requestRegister(user, password);
 }
 
 void Controller::loginDialogClosed() {
@@ -80,6 +96,35 @@ void Controller::loginDialogClosed() {
 
     qDebug("groups");
     model->requestGroups();
+}
+
+void Controller::registerDialogClosed() {
+    registerDialog->deleteLater();
+}
+
+void Controller::openRegister() {
+    registerDialog = new RegisterDialog();
+
+    connect(
+        registerDialog,
+        &RegisterDialog::tryLogin,
+        this,
+        &Controller::slotTryRegister
+    );
+    connect(
+        this,
+        &Controller::registerSuccess,
+        registerDialog,
+        &RegisterDialog::slotRegisterResponse
+    );
+    connect(
+        registerDialog,
+        &RegisterDialog::rejected,
+        this,
+        &Controller::registerDialogClosed
+    );
+
+    registerDialog->exec();
 }
 
 void Controller::groupsReceived(QList<QStandardItem*> groups) {

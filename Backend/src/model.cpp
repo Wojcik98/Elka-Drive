@@ -36,6 +36,10 @@ void Model::requestLogin(QString user, QString password) {
     bridge->requestLogin(user, password);
 }
 
+void Model::requestRegister(QString user, QString password) {
+    bridge->requestRegister(user, password);
+}
+
 bool Model::isLogged() {
     return logged;
 }
@@ -46,6 +50,7 @@ void Model::gotResponse(Response response) {
             handleLoginResponse(response);
             break;
         case Response::Type::REGISTER:
+            handleRegisterResponse(response);
             break;
         case Response::Type::GROUPS:
             handleGroupsResponse(response);
@@ -64,6 +69,12 @@ void Model::handleLoginResponse(Response response) {
     bool success = response.getStatus() == STATUS_OK;
     logged = success;
     emit loginStatus(success);
+}
+
+void Model::handleRegisterResponse(Response response) {
+    const int STATUS_OK = 200;
+    bool success = response.getStatus() == STATUS_OK;
+    emit registerStatus(success);
 }
 
 void Model::handleGroupsResponse(Response response) {

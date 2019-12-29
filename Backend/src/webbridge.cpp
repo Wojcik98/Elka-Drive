@@ -37,6 +37,36 @@ void WebBridge::requestLogin(QString user, QString password) {
     );
 }
 
+void WebBridge::requestRegister(QString user, QString password) {
+    if (reply != nullptr) {
+        qDebug() << "Another request in progress!";
+        return;
+    }
+    auto url = QUrl(mainUrl + "/register");
+    auto request = QNetworkRequest(url);
+    request.setHeader(QNetworkRequest::ContentTypeHeader,
+        "application/x-www-form-urlencoded");
+
+    QUrlQuery postData;
+    postData.addQueryItem("username", user);
+    postData.addQueryItem("password", password);
+    reply = manager.post(request, postData.toString(QUrl::FullyEncoded).toUtf8());
+    requestType = Response::Type::REGISTER;
+
+    connect(
+        reply,
+        &QNetworkReply::finished,
+        this,
+        &WebBridge::networkReplyFinished
+    );
+    connect(
+        reply,
+        &QIODevice::readyRead,
+        this,
+        &WebBridge::networkReplyReady
+    );
+}
+
 void WebBridge::requestGroups() {
     if (reply != nullptr) {
         qDebug() << "Another request in progress!";

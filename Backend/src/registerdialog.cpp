@@ -1,18 +1,17 @@
-#include <QMovie>
-#include "include/logindialog.h"
+#include "include/registerdialog.h"
 
-LoginDialog::LoginDialog(QWidget *parent) : QDialog(parent) {
+RegisterDialog::RegisterDialog(QWidget *parent) : QDialog(parent) {
     setWindowFlags(Qt::Window | Qt::WindowTitleHint | Qt::CustomizeWindowHint);
     setUpGUI();
-    setWindowTitle(tr("User Login"));
+    setWindowTitle(tr("New account"));
     setModal(true);
 }
 
-LoginDialog::~LoginDialog() {
+RegisterDialog::~RegisterDialog() {
     spinnerMovie->deleteLater();
 }
 
-void LoginDialog::setUpGUI() {
+void RegisterDialog::setUpGUI() {
     QGridLayout* formGridLayout = new QGridLayout(this);
 
     comboUsername = new QComboBox(this);
@@ -29,16 +28,13 @@ void LoginDialog::setUpGUI() {
     labelPassword->setText(tr("Password"));
     labelPassword->setBuddy(editPassword);
     labelError->setText("");
-    labelError->setStyleSheet("color: red;");
 
     // initialize buttons
-    loginButton = new QPushButton(QIcon(":/icons/login.svg"), "Login", this);
     registerButton = new QPushButton(QIcon(":/icons/register.svg"), "Register", this);
-    cancelButton = new QPushButton(QIcon(":/icons/cancel.svg"), "Close", this);
-    QHBoxLayout *hbox = new QHBoxLayout();
+    cancelButton = new QPushButton(QIcon(":/icons/cancel.svg"), "Cancel", this);
+    QHBoxLayout *hbox = new QHBoxLayout(this);
     hbox->addWidget(cancelButton);
     hbox->addWidget(registerButton);
-    hbox->addWidget(loginButton);
 
     // spinner
     spinnerLabel = new QLabel(this);
@@ -52,27 +48,21 @@ void LoginDialog::setUpGUI() {
         cancelButton,
         &QPushButton::clicked,
         this,
-        &LoginDialog::reject
-    );
-    connect(
-        loginButton,
-        &QPushButton::clicked,
-        this,
-        &LoginDialog::slotTryLogin
+        &RegisterDialog::reject
     );
     connect(
         registerButton,
         &QPushButton::clicked,
         this,
-        &LoginDialog::openRegister
+        &RegisterDialog::slotTryRegister
     );
 
     // place components into the dialog
     formGridLayout->addWidget(labelUsername, 0, 0);
-    formGridLayout->addWidget(comboUsername, 0, 1);
+    formGridLayout->addWidget(comboUsername, 0, 1, 1, 2);
     formGridLayout->addWidget(labelPassword, 1, 0);
     formGridLayout->addWidget(editPassword, 1, 1);
-    formGridLayout->addWidget(editPassword, 1, 1);
+    formGridLayout->addWidget(editPassword, 1, 1, 1, 2);
     formGridLayout->addWidget(labelError, 2, 0, 1, 2);
     formGridLayout->addLayout(hbox, 3, 0, 1, 2);
 
@@ -80,7 +70,7 @@ void LoginDialog::setUpGUI() {
     spinnerLabel->hide();
 }
 
-void LoginDialog::setUsername(QString &username) {
+void RegisterDialog::setUsername(QString &username) {
     bool found = false;
     for (int i = 0; i < comboUsername->count() && !found; i++) {
         if (comboUsername->itemText(i) == username) {
@@ -100,13 +90,13 @@ void LoginDialog::setUsername(QString &username) {
     editPassword->setFocus();
 }
 
-void LoginDialog::setPassword(QString &password) {
+void RegisterDialog::setPassword(QString &password) {
     editPassword->setText(password);
 }
 
-void LoginDialog::slotTryLogin() {
+void RegisterDialog::slotTryRegister() {
     spinnerLabel->show();
-    loginButton->setEnabled(false);
+    registerButton->setEnabled(false);
     QString username = comboUsername->currentText();
     QString password = editPassword->text();
 
@@ -116,17 +106,18 @@ void LoginDialog::slotTryLogin() {
     );
 }
 
-void LoginDialog::slotLoginResponse(bool success) {
+void RegisterDialog::slotRegisterResponse(bool success) {
     if (success) {
-        close();
+        labelError->setStyleSheet("color: green;");
+        labelError->setText("Register successful!");
     } else {
-        labelError->setText("Cannot login!");
-        loginButton->setEnabled(true);
-        qDebug() << "hide ";
-        spinnerLabel->hide();
+        labelError->setStyleSheet("color: red;");
+        labelError->setText("User exists!");
     }
+    registerButton->setEnabled(true);
+    spinnerLabel->hide();
 }
 
-void LoginDialog::setUsernamesList(const QStringList &usernames) {
+void RegisterDialog::setUsernamesList(const QStringList &usernames) {
     comboUsername->addItems(usernames);
 }

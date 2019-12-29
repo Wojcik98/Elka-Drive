@@ -4,7 +4,7 @@
 #include <QDialog>
 #include <QLabel>
 #include <QPushButton>
-#include <QDialogButtonBox>
+#include <QGroupBox>
 #include <QLineEdit>
 #include <QComboBox>
 #include <QGridLayout>
@@ -22,7 +22,9 @@ private:
     QMovie *spinnerMovie;
     QComboBox *comboUsername;
     QLineEdit *editPassword;
-    QDialogButtonBox *buttons;
+    QPushButton *loginButton;
+    QPushButton *cancelButton;
+    QPushButton *registerButton;
 
     void setUpGUI();
 
@@ -36,6 +38,7 @@ public:
 
 signals:
     void tryLogin(QString &username, QString &password);
+    void openRegister();
 
 public slots:
     void slotTryLogin();

@@ -13,6 +13,7 @@ public:
     APIBridge();
     virtual ~APIBridge();
     virtual void requestLogin(QString user, QString password) = 0;
+    virtual void requestRegister(QString user, QString password) = 0;
     virtual void requestGroups() = 0;
     virtual void requestPath(QString path) = 0;
     virtual void requestDownload(QString id) = 0;
