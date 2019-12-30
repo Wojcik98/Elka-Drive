@@ -16,6 +16,10 @@ void MockBridge::requestGroups() {
     emit gotResponse(response);
 }
 
+void MockBridge::requestNewGroup(QString groupName) {
+    emit gotResponse(response);
+}
+
 void MockBridge::requestPath(QString path) {
     emit gotResponse(response);
 }

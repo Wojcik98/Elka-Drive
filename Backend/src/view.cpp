@@ -17,6 +17,13 @@ View::View(QWidget *parent) : QMainWindow(parent), groupsWidget(this), filesWidg
     groupsWidget.show();
     filesWidget.setLayout(filesButtons);
     filesWidget.hide();
+
+    connect(
+        newButton,
+        &QPushButton::clicked,
+        this,
+        &View::createNewGroup
+    );
 }
 
 View::~View() {

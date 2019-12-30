@@ -10,6 +10,7 @@ public:
         LOGIN,
         REGISTER,
         GROUPS,
+        NEW_GROUP,
         PATH,
         FILE
     };

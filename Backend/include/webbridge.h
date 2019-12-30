@@ -12,6 +12,7 @@ public:
     virtual void requestLogin(QString user, QString password);
     virtual void requestRegister(QString user, QString password);
     virtual void requestGroups();
+    virtual void requestNewGroup(QString groupName);
     virtual void requestPath(QString path);
     virtual void requestDownload(QString id);
 

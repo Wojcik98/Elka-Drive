@@ -20,6 +20,10 @@ void Model::requestGroups() {
     bridge->requestGroups();
 }
 
+void Model::requestNewGroup(QString groupName) {
+    bridge->requestNewGroup(groupName);
+}
+
 void Model::requestPath(QString path) {
     bridge->requestPath(path);
 }
@@ -54,6 +58,9 @@ void Model::gotResponse(Response response) {
             break;
         case Response::Type::GROUPS:
             handleGroupsResponse(response);
+            break;
+        case Response::Type::NEW_GROUP:
+            handleNewGroupResponse(response);
             break;
         case Response::Type::PATH:
             handlePathResponse(response);
@@ -101,6 +108,12 @@ void Model::handleGroupsResponse(Response response) {
     }
 
     emit groupsReceived(groups);
+}
+
+void Model::handleNewGroupResponse(Response response) {
+    int statusCode = response.getStatus();
+
+    emit newGroupStatusCode(statusCode);
 }
 
 void Model::handlePathResponse(Response response) {

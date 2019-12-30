@@ -95,6 +95,36 @@ void WebBridge::requestGroups() {
     );
 }
 
+void WebBridge::requestNewGroup(QString groupName) {
+    if (reply != nullptr) {
+        qDebug() << "Another request in progress!";
+        return;
+    }
+    dataRead.clear();
+    auto url = QUrl(mainUrl + "/groups");
+    auto request = QNetworkRequest(url);
+    request.setHeader(QNetworkRequest::ContentTypeHeader,
+        "application/x-www-form-urlencoded");
+
+    QUrlQuery postData;
+    postData.addQueryItem("name", groupName);
+    reply = manager.post(request, postData.toString(QUrl::FullyEncoded).toUtf8());
+    requestType = Response::Type::NEW_GROUP;
+
+    connect(
+        reply,
+        &QNetworkReply::finished,
+        this,
+        &WebBridge::networkReplyFinished
+    );
+    connect(
+        reply,
+        &QIODevice::readyRead,
+        this,
+        &WebBridge::networkReplyReady
+    );
+}
+
 void WebBridge::requestPath(QString path) {
     if (reply != nullptr) {
         qDebug() << "Another request in progress!";

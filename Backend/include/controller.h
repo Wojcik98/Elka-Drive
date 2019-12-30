@@ -39,6 +39,7 @@ signals:
 
 public slots:
     void openRegister();
+    void requestNewGroup();
     void requestDelete(const QModelIndex &index);
     void fileDoubleClicked(const QModelIndex &index);
     void fileClicked(const QModelIndex &index);
@@ -48,6 +49,7 @@ public slots:
     void loginDialogClosed();
     void registerDialogClosed();
     void groupsReceived(QList<QStandardItem*> groups);
+    void newGroupStatusCode(int statusCode);
     void pathReceived(QList<QStandardItem*> dir);
 };
 

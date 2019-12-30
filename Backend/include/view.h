@@ -32,6 +32,9 @@ protected:
     QPushButton *settingsButton;
     QPushButton *dirButton;
     QPushButton *uploadButton;
+
+signals:
+    void createNewGroup();
 };
 
 #endif // VIEW_H

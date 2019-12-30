@@ -1,5 +1,7 @@
 #include <QtDebug>
 #include <QPushButton>
+#include <QInputDialog>
+#include <QMessageBox>
 
 #include "include/controller.h"
 
@@ -36,6 +38,12 @@ void Controller::setModel(Model *model) {
     );
     connect(
         model,
+        &Model::newGroupStatusCode,
+        this,
+        &Controller::newGroupStatusCode
+    );
+    connect(
+        model,
         &Model::pathReceived,
         this,
         &Controller::pathReceived
@@ -44,6 +52,13 @@ void Controller::setModel(Model *model) {
 
 void Controller::setView(View *view) {
     this->view = view;
+
+    connect(
+        view,
+        &View::createNewGroup,
+        this,
+        &Controller::requestNewGroup
+    );
 }
 
 void Controller::checkLogin() {
@@ -135,6 +150,29 @@ void Controller::groupsReceived(QList<QStandardItem*> groups) {
     view->setSettingsButtonEnabled(false);
 }
 
+void Controller::newGroupStatusCode(int statusCode) {
+    const int STATUS_OK = 200;
+    const int STATUS_NAME_EXIST = 409;
+    const int STATUS_SERVER_ERROR_LOW = 500;
+    const int STATUS_SERVER_ERROR_HIGH = 599;
+
+    if (statusCode == STATUS_OK) {
+        model->requestGroups();
+    } else {
+        QMessageBox msgBox;
+        QString text;
+        if (statusCode == STATUS_NAME_EXIST) {
+            text = "Group with this name already exists.";
+        } else if (STATUS_SERVER_ERROR_LOW < statusCode && statusCode <= STATUS_SERVER_ERROR_HIGH) {
+            text = "Server error, try again. If error persists contact developer.";
+        } else {
+            text = "Unknown error, try again. If error persists contact developer.";
+        }
+        msgBox.setText(text);
+        msgBox.exec();
+    }
+}
+
 void Controller::pathReceived(QList<QStandardItem*> path) {
     view->setFileList(path);
     view->setFilesButtonsVisible();
@@ -149,6 +187,23 @@ void Controller::requestDownload(const QModelIndex &index) {
     auto id = index.data(Model::ID_ROLE).toInt();
     qDebug() << "Download " << id;
     model->requestDownload(QString::number((id)));
+}
+
+void Controller::requestNewGroup() {
+    bool ok;
+
+    QString groupName = QInputDialog::getText(
+        view,
+        "Create new group",
+        "Group name:",
+        QLineEdit::Normal,
+        "",
+        &ok
+    );
+
+    if (ok) {
+        model->requestNewGroup(groupName);
+    }
 }
 
 void Controller::fileDoubleClicked(const QModelIndex &index) {
