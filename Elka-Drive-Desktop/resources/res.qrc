@@ -3,13 +3,18 @@
         <file>gifs/spinner.gif</file>
         <file>gifs/spinner2.gif</file>
         <file>icons/panda.jpg</file>
-        <file>icons/misc.png</file>
-        <file>icons/folder.png</file>
-        <file>icons/group.png</file>
-        <file>icons/delete.png</file>
-        <file>icons/save.png</file>
+        <file>icons/file.svg</file>
+        <file>icons/folder.svg</file>
+        <file>icons/folder_shared.svg</file>
+        <file>icons/delete.svg</file>
+        <file>icons/cloud_download.svg</file>
+        <file>icons/cloud_upload.svg</file>
         <file>icons/cancel.svg</file>
         <file>icons/login.svg</file>
         <file>icons/register.svg</file>
+        <file>icons/add_circle.svg</file>
+        <file>icons/create_new_folder.svg</file>
+        <file>icons/settings.svg</file>
+        <file>icons/arrow_back.svg</file>
     </qresource>
 </RCC>

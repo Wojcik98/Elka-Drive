@@ -1,4 +1,5 @@
 #include <QtDebug>
+#include <QPushButton>
 
 #include "include/controller.h"
 
@@ -43,6 +44,20 @@ void Controller::setModel(Model *model) {
 
 void Controller::setView(View *view) {
     this->view = view;
+
+    QHBoxLayout *groupsButtons = new QHBoxLayout();
+    auto newButton = new QPushButton(QIcon(":/icons/add_circle.svg"), "New");
+    auto settingsButton = new QPushButton(QIcon(":/icons/settings.svg"), "Settings");
+    groupsButtons->addWidget(settingsButton);
+    groupsButtons->addWidget(newButton);
+
+    QHBoxLayout *filesButtons = new QHBoxLayout();
+    auto dirButton = new QPushButton(QIcon(":/icons/create_new_folder.svg"), "New folder");
+    auto uploadButton = new QPushButton(QIcon(":/icons/cloud_upload.svg"), "Upload");
+    filesButtons->addWidget(dirButton);
+    filesButtons->addWidget(uploadButton);
+
+    view->setButtonsLayouts(groupsButtons, filesButtons);
 }
 
 void Controller::checkLogin() {
@@ -129,10 +144,12 @@ void Controller::openRegister() {
 
 void Controller::groupsReceived(QList<QStandardItem*> groups) {
     view->setFileList(groups);
+    view->setGroupsButtonsVisible();
 }
 
 void Controller::pathReceived(QList<QStandardItem*> path) {
     view->setFileList(path);
+    view->setFilesButtonsVisible();
 }
 
 void Controller::requestDelete(const QModelIndex &index) {

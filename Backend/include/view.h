@@ -3,6 +3,7 @@
 
 #include <QMainWindow>
 #include <QStandardItem>
+#include <QLayout>
 
 #include "include/controller.h"
 
@@ -17,11 +18,16 @@ public:
 
     virtual void setController(Controller *controller) = 0;
     virtual void setFileList(QList<QStandardItem*> files) = 0;
+    void setButtonsLayouts(QLayout *groupslayout, QLayout *filesLayout);
+    void setGroupsButtonsVisible();
+    void setFilesButtonsVisible();
 
 protected:
     void showEvent(QShowEvent *ev);
 
     Controller *controller;
+    QWidget groupsWidget;
+    QWidget filesWidget;
 };
 
 #endif // VIEW_H

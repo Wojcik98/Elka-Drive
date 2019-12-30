@@ -18,14 +18,14 @@ MainWindow::MainWindow(QWidget *parent) : View(parent), ui(new Ui::MainWindow) {
 
         QMenu *menu = new QMenu(this);
 
-        auto download = new QAction(QIcon(":/icons/save.png"), "Download", this);
+        auto download = new QAction(QIcon(":/icons/cloud_download"), "Download", this);
         connect(download, &QAction::triggered, controller, [this, index]() {
             controller->requestDownload(*index);
             delete index;
         });
         menu->addAction(download);
 
-        auto del = new QAction(QIcon(":/icons/delete.png"), "Delete", this);
+        auto del = new QAction(QIcon(":/icons/delete.svg"), "Delete", this);
         connect(del, &QAction::triggered, controller, [this, index]() {
             controller->requestDelete(*index);
             delete index;
@@ -34,6 +34,9 @@ MainWindow::MainWindow(QWidget *parent) : View(parent), ui(new Ui::MainWindow) {
 
         menu->popup(ui->fileList->viewport()->mapToGlobal(pos));
     });
+
+    ui->buttonsLayout->addWidget(&groupsWidget, 0, 0);
+    ui->buttonsLayout->addWidget(&filesWidget, 0, 0);
 }
 
 MainWindow::~MainWindow() {

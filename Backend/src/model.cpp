@@ -94,7 +94,7 @@ void Model::handleGroupsResponse(Response response) {
         QString name = obj["name"].toString();
         auto id = QString::number(obj["id"].toInt());
         qDebug() << id;
-        QStandardItem *group = new QStandardItem(QIcon(":/icons/group.png"), name);
+        QStandardItem *group = new QStandardItem(QIcon(":/icons/folder_shared.svg"), name);
         group->setData(QVariant("group"));
         group->setData(QVariant(id), ID_ROLE);
         groups.append(group);
@@ -123,10 +123,10 @@ void Model::handlePathResponse(Response response) {
 
         QStandardItem *current;
         if (isDir) {
-            current = new QStandardItem(QIcon(":/icons/folder.png"), name);
+            current = new QStandardItem(QIcon(":/icons/folder.svg"), name);
             current->setData(QVariant("folder"));
         } else {
-            current = new QStandardItem(QIcon(":/icons/misc.png"), name);
+            current = new QStandardItem(QIcon(":/icons/file.svg"), name);
             current->setData(QVariant("file"));
         }
         current->setData(QVariant(id), ID_ROLE);
