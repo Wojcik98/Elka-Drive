@@ -41,6 +41,7 @@ public slots:
     void openRegister();
     void requestDelete(const QModelIndex &index);
     void fileDoubleClicked(const QModelIndex &index);
+    void fileClicked(const QModelIndex &index);
     void goBack();
     void slotTryUserLogin(QString& user, QString& password);
     void slotTryRegister(QString& user, QString& password);

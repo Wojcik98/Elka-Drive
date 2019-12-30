@@ -18,9 +18,9 @@ public:
 
     virtual void setController(Controller *controller) = 0;
     virtual void setFileList(QList<QStandardItem*> files) = 0;
-    void setButtonsLayouts(QLayout *groupslayout, QLayout *filesLayout);
     void setGroupsButtonsVisible();
     void setFilesButtonsVisible();
+    void setSettingsButtonEnabled(bool enabled);
 
 protected:
     void showEvent(QShowEvent *ev);
@@ -28,6 +28,10 @@ protected:
     Controller *controller;
     QWidget groupsWidget;
     QWidget filesWidget;
+    QPushButton *newButton;
+    QPushButton *settingsButton;
+    QPushButton *dirButton;
+    QPushButton *uploadButton;
 };
 
 #endif // VIEW_H

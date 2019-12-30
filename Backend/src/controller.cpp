@@ -44,20 +44,6 @@ void Controller::setModel(Model *model) {
 
 void Controller::setView(View *view) {
     this->view = view;
-
-    QHBoxLayout *groupsButtons = new QHBoxLayout();
-    auto newButton = new QPushButton(QIcon(":/icons/add_circle.svg"), "New");
-    auto settingsButton = new QPushButton(QIcon(":/icons/settings.svg"), "Settings");
-    groupsButtons->addWidget(settingsButton);
-    groupsButtons->addWidget(newButton);
-
-    QHBoxLayout *filesButtons = new QHBoxLayout();
-    auto dirButton = new QPushButton(QIcon(":/icons/create_new_folder.svg"), "New folder");
-    auto uploadButton = new QPushButton(QIcon(":/icons/cloud_upload.svg"), "Upload");
-    filesButtons->addWidget(dirButton);
-    filesButtons->addWidget(uploadButton);
-
-    view->setButtonsLayouts(groupsButtons, filesButtons);
 }
 
 void Controller::checkLogin() {
@@ -119,6 +105,7 @@ void Controller::registerDialogClosed() {
 
 void Controller::openRegister() {
     registerDialog = new RegisterDialog();
+    // TODO delete
 
     connect(
         registerDialog,
@@ -145,6 +132,7 @@ void Controller::openRegister() {
 void Controller::groupsReceived(QList<QStandardItem*> groups) {
     view->setFileList(groups);
     view->setGroupsButtonsVisible();
+    view->setSettingsButtonEnabled(false);
 }
 
 void Controller::pathReceived(QList<QStandardItem*> path) {
@@ -180,6 +168,10 @@ void Controller::fileDoubleClicked(const QModelIndex &index) {
     } else {
         requestDownload(index);
     }
+}
+
+void Controller::fileClicked(const QModelIndex&) {
+    view->setSettingsButtonEnabled(true);
 }
 
 void Controller::goBack() {
