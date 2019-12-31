@@ -48,6 +48,12 @@ void Controller::setModel(Model *model) {
         this,
         &Controller::pathReceived
     );
+    connect(
+        model,
+        &Model::groupUsersReceived,
+        this,
+        &Controller::groupUsersReceived
+    );
 }
 
 void Controller::setView(View *view) {
@@ -58,6 +64,12 @@ void Controller::setView(View *view) {
         &View::createNewGroup,
         this,
         &Controller::requestNewGroup
+    );
+    connect(
+        view,
+        &View::openGroupSettings,
+        this,
+        &Controller::openGroupSettings
     );
 }
 
@@ -110,7 +122,6 @@ void Controller::loginDialogClosed() {
         emit closeApp();
     }
 
-    qDebug("groups");
     model->requestGroups();
 }
 
@@ -171,6 +182,33 @@ void Controller::newGroupStatusCode(int statusCode) {
         msgBox.setText(text);
         msgBox.exec();
     }
+}
+
+void Controller::openGroupSettings(QModelIndex index) {
+    QString groupName = index.data(Qt::DisplayRole).toString();
+    int groupId = index.data(Model::ID_ROLE).toInt();
+
+    groupSettingsDialog = new GroupSettingsDialog(groupName, groupId, view);
+
+    connect(
+        groupSettingsDialog,
+        &GroupSettingsDialog::requestGroupUsers,
+        this,
+        &Controller::requestGroupUsers
+    );
+    connect(
+        this,
+        &Controller::groupUsersReceived,
+        groupSettingsDialog,
+        &GroupSettingsDialog::groupUsersReceived
+    );
+
+    requestGroupUsers(groupId);
+    groupSettingsDialog->exec();
+}
+
+void Controller::requestGroupUsers(int groupId) {
+    model->requestGroupUsers(groupId);
 }
 
 void Controller::pathReceived(QList<QStandardItem*> path) {

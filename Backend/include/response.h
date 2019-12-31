@@ -12,7 +12,8 @@ public:
         GROUPS,
         NEW_GROUP,
         PATH,
-        FILE
+        FILE,
+        GROUP_USERS
     };
 
     Response(int statusCode, QByteArray body, Response::Type type, QString name);

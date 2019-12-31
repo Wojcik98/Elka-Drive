@@ -44,6 +44,10 @@ void Model::requestRegister(QString user, QString password) {
     bridge->requestRegister(user, password);
 }
 
+void Model::requestGroupUsers(int groupId) {
+    bridge->requestGroupUsers(groupId);
+}
+
 bool Model::isLogged() {
     return logged;
 }
@@ -67,6 +71,9 @@ void Model::gotResponse(Response response) {
             break;
         case Response::Type::FILE:
             handleFileResponse(response);
+            break;
+        case Response::Type::GROUP_USERS:
+            handleGroupUsersResponse(response);
             break;
     }
 }
@@ -100,7 +107,6 @@ void Model::handleGroupsResponse(Response response) {
         QJsonObject obj = groupRaw.toObject();
         QString name = obj["name"].toString();
         auto id = QString::number(obj["id"].toInt());
-        qDebug() << id;
         QStandardItem *group = new QStandardItem(QIcon(":/icons/folder_shared.svg"), name);
         group->setData(QVariant("group"));
         group->setData(QVariant(id), ID_ROLE);
@@ -173,4 +179,24 @@ void Model::handleFileResponse(Response response) {
     stream << content;
 
     file.close();
+}
+
+void Model::handleGroupUsersResponse(Response response) {
+    const int STATUS_OK = 200;
+    if (response.getStatus() != STATUS_OK) {
+        qDebug() << "Group users response not ok";
+        return;
+    }
+
+    QList<User> users;
+    auto respRaw = QJsonDocument::fromJson(response.getBody()).object();
+    auto array = respRaw["users"].toArray();
+
+    for (auto groupRaw : array) {
+        QJsonObject json = groupRaw.toObject();
+        auto user = User::fromJson(json);
+        users.append(user);
+    }
+
+    emit groupUsersReceived(users);
 }

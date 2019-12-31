@@ -25,7 +25,8 @@ public:
 
 private:
     Ui::MainWindow *ui;
-    QStandardItemModel fileListModel;
+
+    virtual void settingsButtonClicked();
 };
 
 #endif // MAINWINDOW_H

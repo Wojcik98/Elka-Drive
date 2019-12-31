@@ -23,8 +23,10 @@ public:
     void setSettingsButtonEnabled(bool enabled);
 
 protected:
+    virtual void settingsButtonClicked() = 0;
     void showEvent(QShowEvent *ev);
 
+    QStandardItemModel fileListModel;
     Controller *controller;
     QWidget groupsWidget;
     QWidget filesWidget;
@@ -35,6 +37,7 @@ protected:
 
 signals:
     void createNewGroup();
+    void openGroupSettings(QModelIndex index);
 };
 
 #endif // VIEW_H

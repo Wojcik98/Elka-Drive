@@ -28,6 +28,10 @@ void MockBridge::requestDownload(QString id) {
     emit gotResponse(response);
 }
 
+void MockBridge::requestGroupUsers(int groupId) {
+    emit gotResponse(response);
+}
+
 void MockBridge::setResponse(Response response) {
     this->response = response;
 }

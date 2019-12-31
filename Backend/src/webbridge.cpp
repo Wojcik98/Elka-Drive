@@ -158,6 +158,7 @@ void WebBridge::requestPath(QString path) {
 }
 
 void WebBridge::requestDownload(QString id) {
+    // TODO save file in fly, don't waste RAM
     if (reply != nullptr) {
         qDebug() << "Another request in progress!";
         return;
@@ -184,10 +185,38 @@ void WebBridge::requestDownload(QString id) {
     );
 }
 
+void WebBridge::requestGroupUsers(int groupId) {
+    if (reply != nullptr) {
+        qDebug() << "Another request in progress!";
+        return;
+    }
+    dataRead.clear();
+    auto url = QUrl(mainUrl + "/groups/" + QString::number(groupId));
+
+    auto request = QNetworkRequest(url);
+    request.setHeader(QNetworkRequest::ContentTypeHeader,
+        "application/x-www-form-urlencoded");
+
+    requestType = Response::Type::GROUP_USERS;
+    reply = manager.get(request);
+
+    connect(
+        reply,
+        &QNetworkReply::finished,
+        this,
+        &WebBridge::networkReplyFinished
+    );
+    connect(
+        reply,
+        &QIODevice::readyRead,
+        this,
+        &WebBridge::networkReplyReady
+    );
+}
+
 void WebBridge::networkReplyFinished() {
     QVariant statusCode = reply->attribute(QNetworkRequest::HttpStatusCodeAttribute);
 
-    qDebug() << statusCode;
     if (reply->error()) {
         qDebug() << "error!";
         // TODO try again, if still failing show pop-up

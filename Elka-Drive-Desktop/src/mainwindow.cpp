@@ -9,6 +9,7 @@
 
 MainWindow::MainWindow(QWidget *parent) : View(parent), ui(new Ui::MainWindow) {
     ui->setupUi(this);
+    ui->fileList->setSelectionMode(QAbstractItemView::SingleSelection);
     ui->fileList->setEditTriggers(QAbstractItemView::NoEditTriggers);
     ui->fileList->setModel(&fileListModel);
 
@@ -41,6 +42,16 @@ MainWindow::MainWindow(QWidget *parent) : View(parent), ui(new Ui::MainWindow) {
 
 MainWindow::~MainWindow() {
     delete ui;
+}
+
+void MainWindow::settingsButtonClicked() {
+    auto selectionModel = ui->fileList->selectionModel();
+    auto list = selectionModel->selectedIndexes();
+
+    if (list.length() > 0) {
+        auto index = list.first();
+        emit openGroupSettings(index);
+    }
 }
 
 void MainWindow::setController(Controller *controller) {

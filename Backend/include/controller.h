@@ -6,6 +6,7 @@
 
 #include "include/logindialog.h"
 #include "include/registerdialog.h"
+#include "include/groupsettingsdialog.h"
 #include "include/model.h"
 #include "include/view.h"
 
@@ -27,8 +28,9 @@ private:
     QApplication *app;
     View *view;
     Model *model;
-    LoginDialog* loginDialog;
-    RegisterDialog* registerDialog;
+    LoginDialog *loginDialog;
+    RegisterDialog *registerDialog;
+    GroupSettingsDialog *groupSettingsDialog;
 
     QStringList path;
 
@@ -36,6 +38,7 @@ signals:
     void closeApp();
     void loginSuccess(bool success);
     void registerSuccess(bool success);
+    void groupUsersReceived(QList<User> users);
 
 public slots:
     void openRegister();
@@ -44,13 +47,15 @@ public slots:
     void fileDoubleClicked(const QModelIndex &index);
     void fileClicked(const QModelIndex &index);
     void goBack();
-    void slotTryUserLogin(QString& user, QString& password);
-    void slotTryRegister(QString& user, QString& password);
+    void slotTryUserLogin(QString &user, QString &password);
+    void slotTryRegister(QString &user, QString &password);
     void loginDialogClosed();
     void registerDialogClosed();
     void groupsReceived(QList<QStandardItem*> groups);
     void newGroupStatusCode(int statusCode);
     void pathReceived(QList<QStandardItem*> dir);
+    void openGroupSettings(QModelIndex index);
+    void requestGroupUsers(int groupId);
 };
 
 #endif // CONTROLLER_H

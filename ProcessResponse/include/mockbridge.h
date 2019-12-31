@@ -13,6 +13,7 @@ public:
     virtual void requestNewGroup(QString groupName);
     virtual void requestPath(QString path);
     virtual void requestDownload(QString id);
+    virtual void requestGroupUsers(int groupId);
 
     void setResponse(Response resopnse);
 
