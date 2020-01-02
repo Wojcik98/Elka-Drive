@@ -35,17 +35,22 @@ private:
 
     void setUpGUI();
     void confirmGroupDelete();
+    void addUser();
+    void removeUser();
 
 signals:
     void requestGroupUsers(int groupId);
-    void requestAddUserToGroup(int userId, int groupId);
-    void requestRemoveUserFromGroup(int userId, int groupId);
+    void requestAddUserToGroup(QString username, int groupId);
+    void requestRemoveUserFromGroup(QString username, int groupId);
     void requestGroupDelete(int groupId);
     void openRegister();
 
 public slots:
     void enableAdvanced(int state);
     void groupUsersReceived(QList<User> users);
+    void groupDeletedReceived();
+    void groupAddUserReceived(bool success);
+    void groupRemoveUserReceived(bool success);
 };
 
 #endif // GROUPSETTINGSDIALOG_H

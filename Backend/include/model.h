@@ -33,6 +33,9 @@ private:
     void handlePathResponse(Response response);
     void handleFileResponse(Response response);
     void handleGroupUsersResponse(Response response);
+    void handleGroupDeleteResponse(Response response);
+    void handleGroupAddUserResponse(Response response);
+    void handleGroupRemoveUserResponse(Response response);
 
     APIBridge *bridge;
     bool logged = false;
@@ -44,9 +47,16 @@ signals:
     void newGroupStatusCode(int statusCode);
     void pathReceived(QList<QStandardItem*> groups);
     void groupUsersReceived(QList<User> users);
+    void groupDeletedReceived();
+    void groupAddUserReceived(bool success);
+    void groupRemoveUserReceived(bool success);
 
 public slots:
     void gotResponse(Response response);
+
+    void requestGroupDelete(int groupId);
+    void requestAddUserToGroup(QString username, int groupId);
+    void requestRemoveUserFromGroup(QString username, int groupId);
 };
 
 #endif // MODEL_H

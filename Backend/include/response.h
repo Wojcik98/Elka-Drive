@@ -13,7 +13,10 @@ public:
         NEW_GROUP,
         PATH,
         FILE,
-        GROUP_USERS
+        GROUP_USERS,
+        GROUP_DELETE,
+        GROUP_ADD_USER,
+        GROUP_REMOVE_USER
     };
 
     Response(int statusCode, QByteArray body, Response::Type type, QString name);

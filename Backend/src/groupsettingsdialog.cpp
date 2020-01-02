@@ -1,6 +1,10 @@
 #include "include/groupsettingsdialog.h"
 #include "include/model.h"
 
+#include <QMessageBox>
+#include <QLineEdit>
+#include <QInputDialog>
+
 GroupSettingsDialog::GroupSettingsDialog(QString groupName, int groupID, QWidget *parent) : QDialog(parent), groupName(groupName), groupId(groupID) {
     setWindowFlags(Qt::Window | Qt::WindowTitleHint | Qt::CustomizeWindowHint);
     setUpGUI();
@@ -26,6 +30,8 @@ void GroupSettingsDialog::setUpGUI() {
 
     // list
     usersList = new QListView(this);
+    usersList->setSelectionMode(QAbstractItemView::SingleSelection);
+    usersList->setEditTriggers(QAbstractItemView::NoEditTriggers);
 
     // delete
     advancedSettingsCheckbox = new QCheckBox("Advanced settings", this);
@@ -50,6 +56,18 @@ void GroupSettingsDialog::setUpGUI() {
         this,
         &GroupSettingsDialog::confirmGroupDelete
     );
+    connect(
+        addUserButton,
+        &QPushButton::clicked,
+        this,
+        &GroupSettingsDialog::addUser
+    );
+    connect(
+        removeUserButton,
+        &QPushButton::clicked,
+        this,
+        &GroupSettingsDialog::removeUser
+    );
 
     // place components into the dialog
     formGridLayout->addLayout(hbox, 0, 0, 1, 2);
@@ -70,6 +88,66 @@ void GroupSettingsDialog::groupUsersReceived(QList<User> users) {
 
     usersModel.clear();
     usersModel.appendColumn(column);
+
+    auto firstIndex = usersModel.index(0, 0);
+    usersList->setCurrentIndex(firstIndex);
+}
+
+void GroupSettingsDialog::addUser() {
+    bool ok;
+
+    QString username = QInputDialog::getText(
+        this,
+        "Add user to group",
+        "Username:",
+        QLineEdit::Normal,
+        "",
+        &ok
+    );
+
+    if (ok) {
+        emit requestAddUserToGroup(username, groupId);
+    }
+}
+
+void GroupSettingsDialog::groupAddUserReceived(bool success) {
+    if (success) {
+        emit requestGroupUsers(groupId);
+    } else {
+        QMessageBox msgBox;
+        msgBox.setText("Could not add user to the group");
+        msgBox.setInformativeText("Make sure the username is correct");
+        msgBox.exec();
+    }
+}
+
+void GroupSettingsDialog::removeUser() {
+    int totalUsers = usersModel.rowCount();
+    if (totalUsers == 1) {
+        QMessageBox msgBox;
+        msgBox.setText("Cannot remove last user!");
+        msgBox.setInformativeText("Perhaps you wanted to delete the group? Check \"Advanced settings\"");
+        msgBox.exec();
+    } else {
+        auto selectionModel = usersList->selectionModel();
+        auto list = selectionModel->selectedIndexes();
+
+        if (list.length() > 0) {
+            auto index = list.first();
+            QString username = index.data(Qt::DisplayRole).toString();
+            emit requestRemoveUserFromGroup(username, groupId);
+        }
+    }
+}
+
+void GroupSettingsDialog::groupRemoveUserReceived(bool success) {
+    if (success) {
+        emit requestGroupUsers(groupId);
+    } else {
+        QMessageBox msgBox;
+        msgBox.setText("Could not remove user from the group");
+        msgBox.exec();
+    }
 }
 
 void GroupSettingsDialog::enableAdvanced(int state) {
@@ -81,6 +159,22 @@ void GroupSettingsDialog::enableAdvanced(int state) {
 }
 
 void GroupSettingsDialog::confirmGroupDelete() {
-    // TODO show dialog
-    emit requestGroupDelete(groupId);
+    QMessageBox msgBox;
+    msgBox.setText("Do you want to delete the group?");
+    msgBox.setInformativeText("This operation will also permamently delete all files in this group!");
+    msgBox.setStandardButtons(QMessageBox::No | QMessageBox::Yes);
+    msgBox.setDefaultButton(QMessageBox::No);
+    int ret = msgBox.exec();
+
+    switch (ret) {
+        case QMessageBox::Yes:
+            emit requestGroupDelete(groupId);
+            break;
+        case QMessageBox::No:
+            break;
+    }
+}
+
+void GroupSettingsDialog::groupDeletedReceived() {
+    close();
 }

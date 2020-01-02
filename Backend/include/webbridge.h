@@ -16,6 +16,9 @@ public:
     virtual void requestPath(QString path);
     virtual void requestDownload(QString id);
     virtual void requestGroupUsers(int groupId);
+    virtual void requestGroupDelete(int groupId);
+    virtual void requestAddUserToGroup(QString username, int groupId);
+    virtual void requestRemoveUserFromGroup(QString username, int groupId);
 
 private:
     QString mainUrl;

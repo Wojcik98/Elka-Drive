@@ -19,6 +19,9 @@ public:
     virtual void requestPath(QString path) = 0;
     virtual void requestDownload(QString id) = 0;
     virtual void requestGroupUsers(int groupId) = 0;
+    virtual void requestGroupDelete(int groupId) = 0;
+    virtual void requestAddUserToGroup(QString username, int groupId) = 0;
+    virtual void requestRemoveUserFromGroup(QString username, int groupId) = 0;
 
 signals:
     void gotResponse(Response response);    // TODO reference?

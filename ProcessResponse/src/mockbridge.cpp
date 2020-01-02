@@ -32,6 +32,18 @@ void MockBridge::requestGroupUsers(int groupId) {
     emit gotResponse(response);
 }
 
+void MockBridge::requestGroupDelete(int groupId) {
+    emit gotResponse(response);
+}
+
+void MockBridge::requestAddUserToGroup(QString username, int groupId) {
+    emit gotResponse(response);
+}
+
+void MockBridge::requestRemoveUserFromGroup(QString username, int groupId) {
+    emit gotResponse(response);
+}
+
 void MockBridge::setResponse(Response response) {
     this->response = response;
 }

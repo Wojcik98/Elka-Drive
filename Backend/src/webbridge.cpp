@@ -9,6 +9,7 @@ WebBridge::WebBridge(QString mainUrl) : mainUrl(mainUrl) {
 
 void WebBridge::requestLogin(QString user, QString password) {
     if (reply != nullptr) {
+        // TODO emit response with error code?
         qDebug() << "Another request in progress!";
         return;
     }
@@ -199,6 +200,95 @@ void WebBridge::requestGroupUsers(int groupId) {
 
     requestType = Response::Type::GROUP_USERS;
     reply = manager.get(request);
+
+    connect(
+        reply,
+        &QNetworkReply::finished,
+        this,
+        &WebBridge::networkReplyFinished
+    );
+    connect(
+        reply,
+        &QIODevice::readyRead,
+        this,
+        &WebBridge::networkReplyReady
+    );
+}
+
+void WebBridge::requestGroupDelete(int groupId) {
+    if (reply != nullptr) {
+        qDebug() << "Another request in progress!";
+        return;
+    }
+    dataRead.clear();
+    auto url = QUrl(mainUrl + "/groups/" + QString::number(groupId));
+
+    auto request = QNetworkRequest(url);
+    request.setHeader(QNetworkRequest::ContentTypeHeader,
+        "application/x-www-form-urlencoded");
+
+    requestType = Response::Type::GROUP_DELETE;
+    reply = manager.deleteResource(request);
+
+    connect(
+        reply,
+        &QNetworkReply::finished,
+        this,
+        &WebBridge::networkReplyFinished
+    );
+    connect(
+        reply,
+        &QIODevice::readyRead,
+        this,
+        &WebBridge::networkReplyReady
+    );
+}
+
+void WebBridge::requestAddUserToGroup(QString username, int groupId) {
+    if (reply != nullptr) {
+        qDebug() << "Another request in progress!";
+        return;
+    }
+    dataRead.clear();
+    auto url = QUrl(mainUrl + "/groups/add/" + QString::number(groupId));
+    auto request = QNetworkRequest(url);
+    request.setHeader(QNetworkRequest::ContentTypeHeader,
+        "application/x-www-form-urlencoded");
+
+    QUrlQuery postData;
+    postData.addQueryItem("username", username);
+    reply = manager.post(request, postData.toString(QUrl::FullyEncoded).toUtf8());
+    requestType = Response::Type::GROUP_ADD_USER;
+
+    connect(
+        reply,
+        &QNetworkReply::finished,
+        this,
+        &WebBridge::networkReplyFinished
+    );
+    connect(
+        reply,
+        &QIODevice::readyRead,
+        this,
+        &WebBridge::networkReplyReady
+    );
+}
+
+void WebBridge::requestRemoveUserFromGroup(QString username, int groupId) {
+    if (reply != nullptr) {
+        qDebug() << "Another request in progress!";
+        return;
+    }
+    dataRead.clear();
+    auto url = QUrl(mainUrl + "/groups/remove/" + QString::number(groupId));
+    auto request = QNetworkRequest(url);
+    request.setHeader(QNetworkRequest::ContentTypeHeader,
+        "application/x-www-form-urlencoded");
+
+    QUrlQuery postData;
+    postData.addQueryItem("username", username);
+    reply = manager.post(request, postData.toString(QUrl::FullyEncoded).toUtf8());
+    requestType = Response::Type::GROUP_REMOVE_USER;
 
     connect(
         reply,

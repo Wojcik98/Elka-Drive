@@ -202,9 +202,46 @@ void Controller::openGroupSettings(QModelIndex index) {
         groupSettingsDialog,
         &GroupSettingsDialog::groupUsersReceived
     );
+    connect(
+        groupSettingsDialog,
+        &GroupSettingsDialog::requestGroupDelete,
+        model,
+        &Model::requestGroupDelete
+    );
+    connect(
+        model,
+        &Model::groupDeletedReceived,
+        groupSettingsDialog,
+        &GroupSettingsDialog::groupDeletedReceived
+    );
+    connect(
+        groupSettingsDialog,
+        &GroupSettingsDialog::requestAddUserToGroup,
+        model,
+        &Model::requestAddUserToGroup
+    );
+    connect(
+        groupSettingsDialog,
+        &GroupSettingsDialog::requestRemoveUserFromGroup,
+        model,
+        &Model::requestRemoveUserFromGroup
+    );
+    connect(
+        model,
+        &Model::groupAddUserReceived,
+        groupSettingsDialog,
+        &GroupSettingsDialog::groupAddUserReceived
+    );
+    connect(
+        model,
+        &Model::groupRemoveUserReceived,
+        groupSettingsDialog,
+        &GroupSettingsDialog::groupRemoveUserReceived
+    );
 
     requestGroupUsers(groupId);
     groupSettingsDialog->exec();
+    model->requestGroups();
 }
 
 void Controller::requestGroupUsers(int groupId) {

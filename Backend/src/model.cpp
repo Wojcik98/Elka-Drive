@@ -48,6 +48,18 @@ void Model::requestGroupUsers(int groupId) {
     bridge->requestGroupUsers(groupId);
 }
 
+void Model::requestGroupDelete(int groupId) {
+    bridge->requestGroupDelete(groupId);
+}
+
+void Model::requestAddUserToGroup(QString username, int groupId) {
+    bridge->requestAddUserToGroup(username, groupId);
+}
+
+void Model::requestRemoveUserFromGroup(QString username, int groupId) {
+    bridge->requestRemoveUserFromGroup(username, groupId);
+}
+
 bool Model::isLogged() {
     return logged;
 }
@@ -74,6 +86,15 @@ void Model::gotResponse(Response response) {
             break;
         case Response::Type::GROUP_USERS:
             handleGroupUsersResponse(response);
+            break;
+        case Response::Type::GROUP_DELETE:
+            handleGroupDeleteResponse(response);
+            break;
+        case Response::Type::GROUP_ADD_USER:
+            handleGroupAddUserResponse(response);
+            break;
+        case Response::Type::GROUP_REMOVE_USER:
+            handleGroupRemoveUserResponse(response);
             break;
     }
 }
@@ -199,4 +220,28 @@ void Model::handleGroupUsersResponse(Response response) {
     }
 
     emit groupUsersReceived(users);
+}
+
+void Model::handleGroupDeleteResponse(Response response) {
+    const int STATUS_OK = 200;
+    if (response.getStatus() != STATUS_OK) {
+        qDebug() << "Group delete response not ok";
+        return;
+    }
+
+    emit groupDeletedReceived();
+}
+
+void Model::handleGroupAddUserResponse(Response response) {
+    const int STATUS_OK = 200;
+    bool success = response.getStatus() == STATUS_OK;
+
+    emit groupAddUserReceived(success);
+}
+
+void Model::handleGroupRemoveUserResponse(Response response) {
+    const int STATUS_OK = 200;
+    bool success = response.getStatus() == STATUS_OK;
+
+    emit groupAddUserReceived(success);
 }
