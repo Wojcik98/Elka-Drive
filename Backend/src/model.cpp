@@ -75,7 +75,8 @@ void Model::setLogged(bool logged) {
 }
 
 void Model::gotResponse(Response response) {
-    if (response.getStatus() == STATUS_UNAUTHORIZED) {
+    if (response.getStatus() == STATUS_UNAUTHORIZED &&
+        response.getType() != Response::Type::LOGIN) {
         emit unauthorized();
         return;
     }
