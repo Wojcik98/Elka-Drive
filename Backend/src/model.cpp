@@ -70,7 +70,16 @@ bool Model::isLogged() {
     return logged;
 }
 
+void Model::setLogged(bool logged) {
+    this->logged = logged;
+}
+
 void Model::gotResponse(Response response) {
+    if (response.getStatus() == STATUS_UNAUTHORIZED) {
+        emit unauthorized();
+        return;
+    }
+
     switch (response.getType()) {
         case Response::Type::LOGIN:
             handleLoginResponse(response);
@@ -106,20 +115,17 @@ void Model::gotResponse(Response response) {
 }
 
 void Model::handleLoginResponse(Response response) {
-    const int STATUS_OK = 302;
-    bool success = response.getStatus() == STATUS_OK;
+    bool success = response.getStatus() == STATUS_FOUND;
     logged = success;
     emit loginStatus(success);
 }
 
 void Model::handleRegisterResponse(Response response) {
-    const int STATUS_OK = 200;
     bool success = response.getStatus() == STATUS_OK;
     emit registerStatus(success);
 }
 
 void Model::handleGroupsResponse(Response response) {
-    const int STATUS_OK = 200;
     if (response.getStatus() != STATUS_OK) {
         qDebug() << "Groups response not ok";
         return;
@@ -150,7 +156,6 @@ void Model::handleNewGroupResponse(Response response) {
 }
 
 void Model::handlePathResponse(Response response) {
-    const int STATUS_OK = 200;
     if (response.getStatus() != STATUS_OK) {
         qDebug() << "Path response not ok";
         return;
@@ -183,7 +188,6 @@ void Model::handlePathResponse(Response response) {
 }
 
 void Model::handleFileResponse(Response response) {
-    const int STATUS_OK = 200;
     if (response.getStatus() != STATUS_OK) {
         qDebug() << "Download response not ok";
         return;
@@ -209,7 +213,6 @@ void Model::handleFileResponse(Response response) {
 }
 
 void Model::handleGroupUsersResponse(Response response) {
-    const int STATUS_OK = 200;
     if (response.getStatus() != STATUS_OK) {
         qDebug() << "Group users response not ok";
         return;
@@ -229,7 +232,6 @@ void Model::handleGroupUsersResponse(Response response) {
 }
 
 void Model::handleGroupDeleteResponse(Response response) {
-    const int STATUS_OK = 200;
     if (response.getStatus() != STATUS_OK) {
         qDebug() << "Group delete response not ok";
         return;
@@ -239,14 +241,12 @@ void Model::handleGroupDeleteResponse(Response response) {
 }
 
 void Model::handleGroupAddUserResponse(Response response) {
-    const int STATUS_OK = 200;
     bool success = response.getStatus() == STATUS_OK;
 
     emit groupAddUserReceived(success);
 }
 
 void Model::handleGroupRemoveUserResponse(Response response) {
-    const int STATUS_OK = 200;
     bool success = response.getStatus() == STATUS_OK;
 
     emit groupAddUserReceived(success);

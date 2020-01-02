@@ -39,7 +39,7 @@ View::~View() {
 
 void View::showEvent(QShowEvent *ev) {
     QMainWindow::showEvent(ev);
-    controller->checkLogin();
+    controller->tryLogin();
 }
 
 void View::setGroupsButtonsVisible() {

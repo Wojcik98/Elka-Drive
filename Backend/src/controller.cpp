@@ -20,6 +20,12 @@ void Controller::setModel(Model *model) {
 
     connect(
         model,
+        &Model::unauthorized,
+        this,
+        &Controller::unauthorized
+    );
+    connect(
+        model,
         &Model::responseError,
         this,
         &Controller::responseError
@@ -61,6 +67,10 @@ void Controller::setView(View *view) {
     );
 }
 
+void Controller::clearCache() {
+    path.clear();
+}
+
 void Controller::responseError(QNetworkReply::NetworkError error) {
     QMessageBox msgBox;
     msgBox.setText("Error while connecting to the server!");
@@ -68,10 +78,16 @@ void Controller::responseError(QNetworkReply::NetworkError error) {
     msgBox.exec();
 }
 
-void Controller::checkLogin() {
+void Controller::unauthorized() {
+    model->setLogged(false);
+    tryLogin();
+}
+
+void Controller::tryLogin() {
     if (model->isLogged()) {
         return;
     }
+    clearCache();
     loginDialog = new LoginDialog();
 
     connect(
@@ -143,7 +159,7 @@ void Controller::newGroupStatusCode(int statusCode) {
         QString text;
         if (statusCode == STATUS_NAME_EXIST) {
             text = "Group with this name already exists.";
-        } else if (STATUS_SERVER_ERROR_LOW < statusCode && statusCode <= STATUS_SERVER_ERROR_HIGH) {
+        } else if (STATUS_SERVER_ERROR_LOW <     statusCode && statusCode <= STATUS_SERVER_ERROR_HIGH) {
             text = "Server error, try again. If error persists contact developer.";
         } else {
             text = "Unknown error, try again. If error persists contact developer.";

@@ -9,9 +9,16 @@ class Model : public QObject {
     Q_OBJECT
 
 public:
+    enum NewGroupStatus {
+        OK,
+        NAME_EXIST,
+        SERVER_ERROR
+    };
+
     Model(APIBridge *bridge);
 
     bool isLogged();
+    void setLogged(bool logged);
 
     void requestDelete(QString path);
     void requestDownload(QString path);
@@ -24,6 +31,14 @@ public:
     static const int ID_ROLE = Qt::UserRole + 2;
 
 private:
+    static const int STATUS_UNAUTHORIZED = 401;
+    static const int STATUS_FORBIDDEN = 403;
+    static const int STATUS_FOUND = 302;
+    static const int STATUS_OK = 200;
+
+    APIBridge *bridge;
+    bool logged = false;
+
     void handleLoginResponse(Response response);
     void handleRegisterResponse(Response response);
     void handleGroupsResponse(Response response);
@@ -35,10 +50,8 @@ private:
     void handleGroupAddUserResponse(Response response);
     void handleGroupRemoveUserResponse(Response response);
 
-    APIBridge *bridge;
-    bool logged = false;
-
 signals:
+    void unauthorized();
     void loginStatus(bool success);
     void registerStatus(bool success);
     void groupsReceived(QList<QStandardItem*> groups);

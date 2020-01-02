@@ -21,7 +21,7 @@ public:
     void setView(View *view);
     void setModel(Model *model);
 
-    void checkLogin();
+    void tryLogin();
     void showGroups();
 
 private:
@@ -34,10 +34,13 @@ private:
 
     QStringList path;
 
+    void clearCache();
+
 signals:
     void closeApp();
 
 public slots:
+    void unauthorized();
     void responseError(QNetworkReply::NetworkError error);
     void openRegister();
     void requestNewGroup();
