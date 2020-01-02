@@ -44,8 +44,7 @@ HEADERS += \
     include/view.h \
     include/webbridge.h
 
-RESOURCES += \
-    resources/res.qrc
+RESOURCES +=
 
 # Default rules for deployment.
 unix {

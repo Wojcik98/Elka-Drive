@@ -32,14 +32,30 @@
       <item>
        <layout class="QVBoxLayout" name="verticalLayout">
         <item>
-         <widget class="QPushButton" name="backButton">
-          <property name="text">
-           <string>Wstecz</string>
-          </property>
-          <property name="icon">
-           <iconset theme=":/icons/arrow_back.svg"/>
-          </property>
-         </widget>
+         <layout class="QHBoxLayout" name="horizontalLayout_3">
+          <item>
+           <widget class="QPushButton" name="backButton">
+            <property name="text">
+             <string>Back</string>
+            </property>
+            <property name="icon">
+             <iconset theme=":/icons/arrow_back.svg">
+              <normaloff>.</normaloff>.</iconset>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QPushButton" name="refreshButton">
+            <property name="text">
+             <string>Refresh</string>
+            </property>
+            <property name="icon">
+             <iconset theme=":/icons/refresh.svg">
+              <normaloff>.</normaloff>.</iconset>
+            </property>
+           </widget>
+          </item>
+         </layout>
         </item>
         <item>
          <widget class="QListView" name="listView_2"/>

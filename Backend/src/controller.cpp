@@ -305,14 +305,19 @@ void Controller::fileClicked(const QModelIndex&) {
 }
 
 void Controller::goBack() {
-    qDebug() << "Go back!";
     if (path.length() > 1) {
         path.pop_back();
-        qDebug() << "get " << path.join("/");
         model->requestPath(path.join("/"));
     } else if (path.length() == 1) {
         path.pop_back();
-        qDebug() << "get groups";
+        model->requestGroups();
+    }
+}
+
+void Controller::refresh() {
+    if (path.length() > 0) {
+        model->requestPath(path.join("/"));
+    } else {
         model->requestGroups();
     }
 }

@@ -56,9 +56,24 @@ void MainWindow::settingsButtonClicked() {
 
 void MainWindow::setController(Controller *controller) {
     this->controller = controller;
-    connect(ui->fileList, &QAbstractItemView::doubleClicked, controller, &Controller::fileDoubleClicked);
-    connect(ui->fileList, &QAbstractItemView::clicked, controller, &Controller::fileClicked);
-    connect(ui->backButton, &QPushButton::clicked, controller, &Controller::goBack);
+    connect(
+        ui->fileList,
+        &QAbstractItemView::doubleClicked,
+        controller,
+        &Controller::fileDoubleClicked
+    );
+    connect(
+        ui->fileList,
+        &QAbstractItemView::clicked,
+        controller,
+        &Controller::fileClicked
+    );
+    connect(
+        ui->refreshButton,
+        &QPushButton::clicked,
+        controller,
+        &Controller::refresh
+    );
 }
 
 void MainWindow::setFileList(QList<QStandardItem*> files) {
