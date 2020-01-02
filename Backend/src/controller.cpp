@@ -295,8 +295,6 @@ void Controller::fileDoubleClicked(const QModelIndex &index) {
         path.append(filename);
         qDebug() << "get " << path.join("/");
         model->requestPath(path.join("/"));
-    } else {
-        requestDownload(index);
     }
 }
 
