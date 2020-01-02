@@ -307,17 +307,18 @@ void WebBridge::requestRemoveUserFromGroup(QString username, int groupId) {
 void WebBridge::networkReplyFinished() {
     QVariant statusCode = reply->attribute(QNetworkRequest::HttpStatusCodeAttribute);
 
-    if (reply->error()) {
+    auto error = reply->error();
+    if (error != QNetworkReply::NoError) {
         qDebug() << "error!";
-        // TODO try again, if still failing show pop-up
+        emit responseError(error);
+    } else {
+        QString name = reply->rawHeader("Content-Disposition");
+        Response response(statusCode.toInt(), dataRead, requestType, name);
+
+        reply->deleteLater();
+        reply = nullptr;
+        emit gotResponse(response);
     }
-
-    QString name = reply->rawHeader("Content-Disposition");
-    Response response(statusCode.toInt(), dataRead, requestType, name);
-
-    reply->deleteLater();
-    reply = nullptr;
-    emit gotResponse(response);
 }
 
 void WebBridge::networkReplyReady() {

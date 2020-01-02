@@ -1,6 +1,7 @@
 #ifndef APIBRIDGE_H
 #define APIBRIDGE_H
 
+#include <QNetworkReply>
 #include <QJsonObject>
 #include <QObject>
 #include <QString>
@@ -25,6 +26,7 @@ public:
 
 signals:
     void gotResponse(Response response);    // TODO reference?
+    void responseError(QNetworkReply::NetworkError error);
 };
 
 #endif // APIBRIDGE_H

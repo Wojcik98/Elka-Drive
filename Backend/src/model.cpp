@@ -14,6 +14,12 @@ Model::Model(APIBridge *bridge) : bridge(bridge) {
         this,
         &Model::gotResponse
     );
+    connect(
+        bridge,
+        &APIBridge::responseError,
+        this,
+        &Model::responseError
+    );
 }
 
 void Model::requestGroups() {

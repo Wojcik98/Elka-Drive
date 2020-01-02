@@ -20,15 +20,9 @@ void Controller::setModel(Model *model) {
 
     connect(
         model,
-        &Model::loginStatus,
+        &Model::responseError,
         this,
-        &Controller::loginSuccess
-    );
-    connect(
-        model,
-        &Model::registerStatus,
-        this,
-        &Controller::registerSuccess
+        &Controller::responseError
     );
     connect(
         model,
@@ -47,12 +41,6 @@ void Controller::setModel(Model *model) {
         &Model::pathReceived,
         this,
         &Controller::pathReceived
-    );
-    connect(
-        model,
-        &Model::groupUsersReceived,
-        this,
-        &Controller::groupUsersReceived
     );
 }
 
@@ -73,6 +61,13 @@ void Controller::setView(View *view) {
     );
 }
 
+void Controller::responseError(QNetworkReply::NetworkError error) {
+    QMessageBox msgBox;
+    msgBox.setText("Error while connecting to the server!");
+    msgBox.setInformativeText("Try again. If error persists contact developer.");
+    msgBox.exec();
+}
+
 void Controller::checkLogin() {
     if (model->isLogged()) {
         return;
@@ -82,20 +77,14 @@ void Controller::checkLogin() {
     connect(
         loginDialog,
         &LoginDialog::tryLogin,
-        this,
-        &Controller::slotTryUserLogin
+        model,
+        &Model::requestLogin
     );
     connect(
-        this,
-        &Controller::loginSuccess,
+        model,
+        &Model::loginStatus,
         loginDialog,
         &LoginDialog::slotLoginResponse
-    );
-    connect(
-        loginDialog,
-        &LoginDialog::rejected,
-        this,
-        &Controller::loginDialogClosed
     );
     connect(
         loginDialog,
@@ -105,17 +94,6 @@ void Controller::checkLogin() {
     );
 
     loginDialog->exec();
-}
-
-void Controller::slotTryUserLogin(QString& user, QString& password) {
-    model->requestLogin(user, password);
-}
-
-void Controller::slotTryRegister(QString& user, QString& password) {
-    model->requestRegister(user, password);
-}
-
-void Controller::loginDialogClosed() {
     loginDialog->deleteLater();
 
     if (!model->isLogged()) {
@@ -125,10 +103,6 @@ void Controller::loginDialogClosed() {
     model->requestGroups();
 }
 
-void Controller::registerDialogClosed() {
-    registerDialog->deleteLater();
-}
-
 void Controller::openRegister() {
     registerDialog = new RegisterDialog();
     // TODO delete
@@ -136,23 +110,18 @@ void Controller::openRegister() {
     connect(
         registerDialog,
         &RegisterDialog::tryLogin,
-        this,
-        &Controller::slotTryRegister
+        model,
+        &Model::requestRegister
     );
     connect(
-        this,
-        &Controller::registerSuccess,
+        model,
+        &Model::registerStatus,
         registerDialog,
         &RegisterDialog::slotRegisterResponse
     );
-    connect(
-        registerDialog,
-        &RegisterDialog::rejected,
-        this,
-        &Controller::registerDialogClosed
-    );
 
     registerDialog->exec();
+    registerDialog->deleteLater();
 }
 
 void Controller::groupsReceived(QList<QStandardItem*> groups) {
@@ -193,12 +162,12 @@ void Controller::openGroupSettings(QModelIndex index) {
     connect(
         groupSettingsDialog,
         &GroupSettingsDialog::requestGroupUsers,
-        this,
-        &Controller::requestGroupUsers
+        model,
+        &Model::requestGroupUsers
     );
     connect(
-        this,
-        &Controller::groupUsersReceived,
+        model,
+        &Model::groupUsersReceived,
         groupSettingsDialog,
         &GroupSettingsDialog::groupUsersReceived
     );
@@ -239,13 +208,9 @@ void Controller::openGroupSettings(QModelIndex index) {
         &GroupSettingsDialog::groupRemoveUserReceived
     );
 
-    requestGroupUsers(groupId);
+    model->requestGroupUsers(groupId);
     groupSettingsDialog->exec();
     model->requestGroups();
-}
-
-void Controller::requestGroupUsers(int groupId) {
-    model->requestGroupUsers(groupId);
 }
 
 void Controller::pathReceived(QList<QStandardItem*> path) {

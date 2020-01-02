@@ -36,11 +36,9 @@ private:
 
 signals:
     void closeApp();
-    void loginSuccess(bool success);
-    void registerSuccess(bool success);
-    void groupUsersReceived(QList<User> users);
 
 public slots:
+    void responseError(QNetworkReply::NetworkError error);
     void openRegister();
     void requestNewGroup();
     void requestDelete(const QModelIndex &index);
@@ -48,15 +46,10 @@ public slots:
     void fileClicked(const QModelIndex &index);
     void goBack();
     void refresh();
-    void slotTryUserLogin(QString &user, QString &password);
-    void slotTryRegister(QString &user, QString &password);
-    void loginDialogClosed();
-    void registerDialogClosed();
     void groupsReceived(QList<QStandardItem*> groups);
     void newGroupStatusCode(int statusCode);
     void pathReceived(QList<QStandardItem*> dir);
     void openGroupSettings(QModelIndex index);
-    void requestGroupUsers(int groupId);
 };
 
 #endif // CONTROLLER_H

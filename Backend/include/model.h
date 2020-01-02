@@ -13,8 +13,6 @@ public:
 
     bool isLogged();
 
-    void requestLogin(QString user, QString password);
-    void requestRegister(QString user, QString password);
     void requestDelete(QString path);
     void requestDownload(QString path);
     void requestPath(QString path);
@@ -50,10 +48,13 @@ signals:
     void groupDeletedReceived();
     void groupAddUserReceived(bool success);
     void groupRemoveUserReceived(bool success);
+    void responseError(QNetworkReply::NetworkError error);
 
 public slots:
     void gotResponse(Response response);
 
+    void requestRegister(QString user, QString password);
+    void requestLogin(QString user, QString password);
     void requestGroupDelete(int groupId);
     void requestAddUserToGroup(QString username, int groupId);
     void requestRemoveUserFromGroup(QString username, int groupId);
