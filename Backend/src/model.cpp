@@ -127,11 +127,6 @@ void Model::handleRegisterResponse(Response response) {
 }
 
 void Model::handleGroupsResponse(Response response) {
-    if (response.getStatus() != STATUS_OK) {
-        qDebug() << "Groups response not ok";
-        return;
-    }
-
     QList<QStandardItem*> groups;
     auto groupsRaw = QJsonDocument::fromJson(response.getBody());
 
@@ -157,11 +152,6 @@ void Model::handleNewGroupResponse(Response response) {
 }
 
 void Model::handlePathResponse(Response response) {
-    if (response.getStatus() != STATUS_OK) {
-        qDebug() << "Path response not ok";
-        return;
-    }
-
     QList<QStandardItem*> dir;
     auto dirRaw = QJsonDocument::fromJson(response.getBody());
 
