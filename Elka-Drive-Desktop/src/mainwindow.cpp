@@ -69,6 +69,12 @@ void MainWindow::setController(Controller *controller) {
         &Controller::fileClicked
     );
     connect(
+        ui->backButton,
+        &QPushButton::clicked,
+        controller,
+        &Controller::goBack
+    );
+    connect(
         ui->refreshButton,
         &QPushButton::clicked,
         controller,
