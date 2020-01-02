@@ -80,6 +80,11 @@ void Controller::responseError(QNetworkReply::NetworkError error) {
 
 void Controller::unauthorized() {
     model->setLogged(false);
+
+    QMessageBox msgBox;
+    msgBox.setText("You have been logged out!");
+    msgBox.exec();
+
     tryLogin();
 }
 
