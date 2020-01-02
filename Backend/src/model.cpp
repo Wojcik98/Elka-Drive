@@ -147,14 +147,25 @@ void Model::handleGroupsResponse(Response response) {
 
 void Model::handleNewGroupResponse(Response response) {
     int statusCode = response.getStatus();
-
+    // TODO handle here, not in controller
     emit newGroupStatusCode(statusCode);
 }
 
 void Model::handlePathResponse(Response response) {
+    bool forbidden = response.getStatus() == STATUS_FORBIDDEN;
     QList<QStandardItem*> dir;
-    auto dirRaw = QJsonDocument::fromJson(response.getBody());
 
+    if (!forbidden) {
+        dir = parseDirectory(response.getBody());
+    }
+
+    emit pathReceived(dir, forbidden);
+}
+
+QList<QStandardItem*> Model::parseDirectory(QByteArray json) {
+    QList<QStandardItem*> result;
+
+    auto dirRaw = QJsonDocument::fromJson(json);
     auto array = dirRaw.array();
 
     for (auto groupRaw : array) {
@@ -172,13 +183,14 @@ void Model::handlePathResponse(Response response) {
             current->setData(QVariant("file"));
         }
         current->setData(QVariant(id), ID_ROLE);
-        dir.append(current);
+        result.append(current);
     }
 
-    emit pathReceived(dir);
+    return result;
 }
 
 void Model::handleFileResponse(Response response) {
+    // TODO handle forbidden
     if (response.getStatus() != STATUS_OK) {
         qDebug() << "Download response not ok";
         return;
@@ -204,41 +216,39 @@ void Model::handleFileResponse(Response response) {
 }
 
 void Model::handleGroupUsersResponse(Response response) {
-    if (response.getStatus() != STATUS_OK) {
-        qDebug() << "Group users response not ok";
-        return;
-    }
-
     QList<User> users;
-    auto respRaw = QJsonDocument::fromJson(response.getBody()).object();
-    auto array = respRaw["users"].toArray();
+    bool forbidden = response.getStatus() == STATUS_FORBIDDEN;
 
-    for (auto groupRaw : array) {
-        QJsonObject json = groupRaw.toObject();
-        auto user = User::fromJson(json);
-        users.append(user);
+    if (!forbidden) {
+        auto respRaw = QJsonDocument::fromJson(response.getBody()).object();
+        auto array = respRaw["users"].toArray();
+
+        for (auto groupRaw : array) {
+            QJsonObject json = groupRaw.toObject();
+            auto user = User::fromJson(json);
+            users.append(user);
+        }
     }
 
-    emit groupUsersReceived(users);
+    emit groupUsersReceived(users, forbidden);
 }
 
 void Model::handleGroupDeleteResponse(Response response) {
-    if (response.getStatus() != STATUS_OK) {
-        qDebug() << "Group delete response not ok";
-        return;
-    }
+    bool forbidden = response.getStatus() == STATUS_FORBIDDEN;
 
-    emit groupDeletedReceived();
+    emit groupDeletedReceived(forbidden);
 }
 
 void Model::handleGroupAddUserResponse(Response response) {
     bool success = response.getStatus() == STATUS_OK;
+    bool forbidden = response.getStatus() == STATUS_FORBIDDEN;
 
-    emit groupAddUserReceived(success);
+    emit groupAddUserReceived(success, forbidden);
 }
 
 void Model::handleGroupRemoveUserResponse(Response response) {
     bool success = response.getStatus() == STATUS_OK;
+    bool forbidden = response.getStatus() == STATUS_FORBIDDEN;
 
-    emit groupAddUserReceived(success);
+    emit groupRemoveUserReceived(success, forbidden);
 }

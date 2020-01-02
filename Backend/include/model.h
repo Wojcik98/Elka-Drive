@@ -50,17 +50,19 @@ private:
     void handleGroupAddUserResponse(Response response);
     void handleGroupRemoveUserResponse(Response response);
 
+    QList<QStandardItem*> parseDirectory(QByteArray json);
+
 signals:
     void unauthorized();
     void loginStatus(bool success);
     void registerStatus(bool success);
     void groupsReceived(QList<QStandardItem*> groups);
     void newGroupStatusCode(int statusCode);
-    void pathReceived(QList<QStandardItem*> groups);
-    void groupUsersReceived(QList<User> users);
-    void groupDeletedReceived();
-    void groupAddUserReceived(bool success);
-    void groupRemoveUserReceived(bool success);
+    void pathReceived(QList<QStandardItem*> groups, bool forbidden);
+    void groupUsersReceived(QList<User> users, bool forbidden);
+    void groupDeletedReceived(bool forbidden);
+    void groupAddUserReceived(bool success, bool forbidden);
+    void groupRemoveUserReceived(bool success, bool forbidden);
     void responseError(QNetworkReply::NetworkError error);
 
 public slots:

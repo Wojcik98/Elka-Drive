@@ -37,6 +37,7 @@ private:
     void confirmGroupDelete();
     void addUser();
     void removeUser();
+    void permissionDenied();
 
 signals:
     void requestGroupUsers(int groupId);
@@ -47,10 +48,10 @@ signals:
 
 public slots:
     void enableAdvanced(int state);
-    void groupUsersReceived(QList<User> users);
-    void groupDeletedReceived();
-    void groupAddUserReceived(bool success);
-    void groupRemoveUserReceived(bool success);
+    void groupUsersReceived(QList<User> users, bool forbidden);
+    void groupDeletedReceived(bool forbidden);
+    void groupAddUserReceived(bool success, bool forbidden);
+    void groupRemoveUserReceived(bool success, bool forbidden);
 };
 
 #endif // GROUPSETTINGSDIALOG_H

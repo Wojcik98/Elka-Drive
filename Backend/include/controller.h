@@ -51,7 +51,7 @@ public slots:
     void refresh();
     void groupsReceived(QList<QStandardItem*> groups);
     void newGroupStatusCode(int statusCode);
-    void pathReceived(QList<QStandardItem*> dir);
+    void pathReceived(QList<QStandardItem*> dir, bool forbidden);
     void openGroupSettings(QModelIndex index);
 };
 

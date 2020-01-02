@@ -21,6 +21,8 @@ public:
     virtual void requestRemoveUserFromGroup(QString username, int groupId);
 
 private:
+    static const int PROTOCOL_ERROR_HIGH = 100;
+
     QString mainUrl;
     QNetworkAccessManager manager;
     QNetworkReply *reply;

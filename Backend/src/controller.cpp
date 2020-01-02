@@ -116,6 +116,7 @@ void Controller::tryLogin() {
 
     loginDialog->exec();
     loginDialog->deleteLater();
+    loginDialog = nullptr;
 
     if (!model->isLogged()) {
         emit closeApp();
@@ -143,6 +144,7 @@ void Controller::openRegister() {
 
     registerDialog->exec();
     registerDialog->deleteLater();
+    registerDialog = nullptr;
 }
 
 void Controller::groupsReceived(QList<QStandardItem*> groups) {
@@ -230,13 +232,24 @@ void Controller::openGroupSettings(QModelIndex index) {
     );
 
     model->requestGroupUsers(groupId);
+
     groupSettingsDialog->exec();
+    groupSettingsDialog->deleteLater();
+    groupSettingsDialog = nullptr;
+
     model->requestGroups();
 }
 
-void Controller::pathReceived(QList<QStandardItem*> path) {
-    view->setFileList(path);
-    view->setFilesButtonsVisible();
+void Controller::pathReceived(QList<QStandardItem*> path, bool forbidden) {
+    if (forbidden) {
+        QMessageBox msgBox;
+        msgBox.setText("You were removed from this group!");
+        msgBox.exec();
+        model->requestGroups();
+    } else {
+        view->setFileList(path);
+        view->setFilesButtonsVisible();
+    }
 }
 
 void Controller::requestDelete(const QModelIndex &index) {

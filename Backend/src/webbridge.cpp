@@ -308,8 +308,12 @@ void WebBridge::networkReplyFinished() {
     QVariant statusCode = reply->attribute(QNetworkRequest::HttpStatusCodeAttribute);
 
     auto error = reply->error();
-    if (error != QNetworkReply::NoError) {
-        qDebug() << "error!";
+    if (error != QNetworkReply::NoError &&
+        error < PROTOCOL_ERROR_HIGH) {
+        qDebug() << "error: " << error;
+
+        reply->deleteLater();
+        reply = nullptr;
         emit responseError(error);
     } else {
         QString name = reply->rawHeader("Content-Disposition");

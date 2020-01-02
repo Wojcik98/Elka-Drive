@@ -78,19 +78,23 @@ void GroupSettingsDialog::setUpGUI() {
     setLayout(formGridLayout);
 }
 
-void GroupSettingsDialog::groupUsersReceived(QList<User> users) {
-    QList<QStandardItem*> column;
-    for (User user : users) {
-        auto item = new QStandardItem(user.getName());
-        item->setData(QVariant(user.getId()), Model::ID_ROLE);
-        column.append(item);
+void GroupSettingsDialog::groupUsersReceived(QList<User> users, bool forbidden) {
+    if (!forbidden) {
+        QList<QStandardItem*> column;
+        for (User user : users) {
+            auto item = new QStandardItem(user.getName());
+            item->setData(QVariant(user.getId()), Model::ID_ROLE);
+            column.append(item);
+        }
+
+        usersModel.clear();
+        usersModel.appendColumn(column);
+
+        auto firstIndex = usersModel.index(0, 0);
+        usersList->setCurrentIndex(firstIndex);
+    } else {
+        permissionDenied();
     }
-
-    usersModel.clear();
-    usersModel.appendColumn(column);
-
-    auto firstIndex = usersModel.index(0, 0);
-    usersList->setCurrentIndex(firstIndex);
 }
 
 void GroupSettingsDialog::addUser() {
@@ -110,14 +114,18 @@ void GroupSettingsDialog::addUser() {
     }
 }
 
-void GroupSettingsDialog::groupAddUserReceived(bool success) {
-    if (success) {
-        emit requestGroupUsers(groupId);
+void GroupSettingsDialog::groupAddUserReceived(bool success, bool forbidden) {
+    if (forbidden) {
+        permissionDenied();
     } else {
-        QMessageBox msgBox;
-        msgBox.setText("Could not add user to the group");
-        msgBox.setInformativeText("Make sure the username is correct");
-        msgBox.exec();
+        if (success) {
+            emit requestGroupUsers(groupId);
+        } else {
+            QMessageBox msgBox;
+            msgBox.setText("Could not add user to the group");
+            msgBox.setInformativeText("Make sure the username is correct");
+            msgBox.exec();
+        }
     }
 }
 
@@ -140,13 +148,17 @@ void GroupSettingsDialog::removeUser() {
     }
 }
 
-void GroupSettingsDialog::groupRemoveUserReceived(bool success) {
-    if (success) {
-        emit requestGroupUsers(groupId);
+void GroupSettingsDialog::groupRemoveUserReceived(bool success, bool forbidden) {
+    if (forbidden) {
+        permissionDenied();
     } else {
-        QMessageBox msgBox;
-        msgBox.setText("Could not remove user from the group");
-        msgBox.exec();
+        if (success) {
+            emit requestGroupUsers(groupId);
+        } else {
+            QMessageBox msgBox;
+            msgBox.setText("Could not remove user from the group");
+            msgBox.exec();
+        }
     }
 }
 
@@ -175,6 +187,17 @@ void GroupSettingsDialog::confirmGroupDelete() {
     }
 }
 
-void GroupSettingsDialog::groupDeletedReceived() {
+void GroupSettingsDialog::groupDeletedReceived(bool forbidden) {
+    if (forbidden) {
+        permissionDenied();
+    } else {
+        close();
+    }
+}
+
+void GroupSettingsDialog::permissionDenied() {
+    QMessageBox msgBox;
+    msgBox.setText("You were removed from this group!");
+    msgBox.exec();
     close();
 }
