@@ -253,8 +253,7 @@ void Controller::pathReceived(QList<QStandardItem*> path, bool forbidden) {
 }
 
 void Controller::requestDelete(const QModelIndex &index) {
-    auto filename = index.data().toString();
-    model->requestDelete(path.join("/") + filename);
+    model->requestDelete(index, path);
 }
 
 void Controller::requestDownload(const QModelIndex &index) {
@@ -282,15 +281,15 @@ void Controller::requestNewGroup() {
 
 void Controller::fileDoubleClicked(const QModelIndex &index) {
     auto filename = index.data().toString();
-    auto type = index.data(Model::TYPE_ROLE).toString();
+    auto type = index.data(Model::TYPE_ROLE).toInt();
     qDebug() << "clicked: " << filename;
 
-    if (type == "group") {
+    if (type == Model::ItemType::GROUP) {
         auto id = index.data(Model::ID_ROLE).toString();
         path.append(id);
         qDebug() << "get " << path.join("/");
         model->requestPath(path.join("/"));
-    } else if (type == "folder") {
+    } else if (type == Model::ItemType::FOLDER) {
         path.append(filename);
         qDebug() << "get " << path.join("/");
         model->requestPath(path.join("/"));

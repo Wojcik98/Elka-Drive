@@ -23,6 +23,8 @@ public:
     virtual void requestGroupDelete(int groupId) = 0;
     virtual void requestAddUserToGroup(QString username, int groupId) = 0;
     virtual void requestRemoveUserFromGroup(QString username, int groupId) = 0;
+    virtual void requestFileDelete(QString id) = 0;
+    virtual void requestDirectoryDelete(QString path) = 0;
 
 signals:
     void gotResponse(Response response);    // TODO reference?

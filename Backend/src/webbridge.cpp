@@ -68,11 +68,70 @@ void WebBridge::requestRegister(QString user, QString password) {
     );
 }
 
+void WebBridge::requestFileDelete(QString id) {
+    if (reply != nullptr) {
+        qDebug() << "Another request in progress!";
+        return;
+    }
+
+    dataRead.clear();
+    auto url = QUrl(mainUrl + "/files/" + id);
+    auto request = QNetworkRequest(url);
+
+    requestType = Response::Type::DELETE;
+    reply = manager.deleteResource(request);
+
+    connect(
+        reply,
+        &QNetworkReply::finished,
+        this,
+        &WebBridge::networkReplyFinished
+    );
+    connect(
+        reply,
+        &QIODevice::readyRead,
+        this,
+        &WebBridge::networkReplyReady
+    );
+}
+
+void WebBridge::requestDirectoryDelete(QString path) {
+    if (reply != nullptr) {
+        qDebug() << "Another request in progress!";
+        return;
+    }
+
+    dataRead.clear();
+    auto url = QUrl(mainUrl + "/files/del");
+    QUrlQuery query;
+    query.addQueryItem("path", path);
+    url.setQuery(query.query());
+    qDebug() << url;
+
+    auto request = QNetworkRequest(url);
+    requestType = Response::Type::DELETE;
+    reply = manager.deleteResource(request);
+
+    connect(
+        reply,
+        &QNetworkReply::finished,
+        this,
+        &WebBridge::networkReplyFinished
+    );
+    connect(
+        reply,
+        &QIODevice::readyRead,
+        this,
+        &WebBridge::networkReplyReady
+    );
+}
+
 void WebBridge::requestGroups() {
     if (reply != nullptr) {
         qDebug() << "Another request in progress!";
         return;
     }
+
     dataRead.clear();
     auto url = QUrl(mainUrl + "/groups/my");
     auto request = QNetworkRequest(url);
@@ -131,6 +190,7 @@ void WebBridge::requestPath(QString path) {
         qDebug() << "Another request in progress!";
         return;
     }
+
     dataRead.clear();
     auto url = QUrl(mainUrl + "/files/dir");
     QUrlQuery query;

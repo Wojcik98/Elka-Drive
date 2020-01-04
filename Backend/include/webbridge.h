@@ -19,6 +19,8 @@ public:
     virtual void requestGroupDelete(int groupId);
     virtual void requestAddUserToGroup(QString username, int groupId);
     virtual void requestRemoveUserFromGroup(QString username, int groupId);
+    virtual void requestFileDelete(QString id);
+    virtual void requestDirectoryDelete(QString path);
 
 private:
     static const int PROTOCOL_ERROR_HIGH = 100;

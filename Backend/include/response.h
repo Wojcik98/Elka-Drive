@@ -16,7 +16,8 @@ public:
         GROUP_USERS,
         GROUP_DELETE,
         GROUP_ADD_USER,
-        GROUP_REMOVE_USER
+        GROUP_REMOVE_USER,
+        DELETE
     };
 
     Response(int statusCode, QByteArray body, Response::Type type, QString name);

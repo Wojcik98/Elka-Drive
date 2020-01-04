@@ -9,6 +9,11 @@ class Model : public QObject {
     Q_OBJECT
 
 public:
+    enum ItemType {
+        GROUP,
+        FOLDER,
+        FILE
+    };
     enum NewGroupStatus {
         OK,
         NAME_EXIST,
@@ -20,7 +25,7 @@ public:
     bool isLogged();
     void setLogged(bool logged);
 
-    void requestDelete(QString path);
+    void requestDelete(const QModelIndex &index, QStringList path);
     void requestDownload(QString path);
     void requestPath(QString path);
     void requestGroups();
@@ -33,6 +38,7 @@ public:
 private:
     static const int STATUS_UNAUTHORIZED = 401;
     static const int STATUS_FORBIDDEN = 403;
+    static const int STATUS_NOT_FOUND = 404;
     static const int STATUS_FOUND = 302;
     static const int STATUS_OK = 200;
 
@@ -49,6 +55,7 @@ private:
     void handleGroupDeleteResponse(Response response);
     void handleGroupAddUserResponse(Response response);
     void handleGroupRemoveUserResponse(Response response);
+    void handleDeleteResponse(Response response);
 
     QList<QStandardItem*> parseDirectory(QByteArray json);
 

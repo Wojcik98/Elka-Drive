@@ -44,6 +44,14 @@ void MockBridge::requestRemoveUserFromGroup(QString username, int groupId) {
     emit gotResponse(response);
 }
 
+void MockBridge::requestFileDelete(QString uid) {
+    emit gotResponse(response);
+}
+
+void MockBridge::requestDirectoryDelete(QString uid) {
+    emit gotResponse(response);
+}
+
 void MockBridge::setResponse(Response response) {
     this->response = response;
 }

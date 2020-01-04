@@ -34,8 +34,17 @@ void Model::requestPath(QString path) {
     bridge->requestPath(path);
 }
 
-void Model::requestDelete(QString id) {
-    qDebug() << "Delete!";
+void Model::requestDelete(const QModelIndex &index, QStringList path) {
+    // TODO store path in model
+    auto id = index.data(Model::ID_ROLE).toInt();
+    auto filename = index.data().toString();
+    auto type = index.data(Model::TYPE_ROLE).toInt();
+
+    if (type == Model::ItemType::FOLDER) {
+        bridge->requestDirectoryDelete(path.join("/") + "/" + filename);
+    } else if (type == Model::ItemType::FILE) {
+        bridge->requestFileDelete(QString::number(id));
+    }
 }
 
 void Model::requestDownload(QString id) {
@@ -112,6 +121,9 @@ void Model::gotResponse(Response response) {
         case Response::Type::GROUP_REMOVE_USER:
             handleGroupRemoveUserResponse(response);
             break;
+        case Response::Type::DELETE:
+            handleDeleteResponse(response);
+            break;
     }
 }
 
@@ -137,7 +149,7 @@ void Model::handleGroupsResponse(Response response) {
         QString name = obj["name"].toString();
         auto id = QString::number(obj["id"].toInt());
         QStandardItem *group = new QStandardItem(QIcon(":/icons/folder_shared.svg"), name);
-        group->setData(QVariant("group"));
+        group->setData(QVariant(ItemType::GROUP), TYPE_ROLE);
         group->setData(QVariant(id), ID_ROLE);
         groups.append(group);
     }
@@ -177,10 +189,10 @@ QList<QStandardItem*> Model::parseDirectory(QByteArray json) {
         QStandardItem *current;
         if (isDir) {
             current = new QStandardItem(QIcon(":/icons/folder.svg"), name);
-            current->setData(QVariant("folder"));
+            current->setData(QVariant(ItemType::FOLDER), TYPE_ROLE);
         } else {
             current = new QStandardItem(QIcon(":/icons/file.svg"), name);
-            current->setData(QVariant("file"));
+            current->setData(QVariant(ItemType::FILE), TYPE_ROLE);
         }
         current->setData(QVariant(id), ID_ROLE);
         result.append(current);
@@ -251,4 +263,12 @@ void Model::handleGroupRemoveUserResponse(Response response) {
     bool forbidden = response.getStatus() == STATUS_FORBIDDEN;
 
     emit groupRemoveUserReceived(success, forbidden);
+}
+
+void Model::handleDeleteResponse(Response response) {
+    bool success = response.getStatus() == STATUS_OK;
+    bool forbidden = response.getStatus() == STATUS_FORBIDDEN;
+    bool notFound = response.getStatus() == STATUS_NOT_FOUND;
+    qDebug() << "deleted! " << response.getStatus();
+    // TODO emit sth
 }
