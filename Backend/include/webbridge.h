@@ -21,6 +21,7 @@ public:
     virtual void requestRemoveUserFromGroup(QString username, int groupId);
     virtual void requestFileDelete(QString id);
     virtual void requestDirectoryDelete(QString path);
+    virtual void requestNewFolder(QString path);
 
 private:
     static const int PROTOCOL_ERROR_HIGH = 100;

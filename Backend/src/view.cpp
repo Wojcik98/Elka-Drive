@@ -24,12 +24,17 @@ View::View(QWidget *parent) : QMainWindow(parent), groupsWidget(this), filesWidg
         this,
         &View::createNewGroup
     );
-
     connect(
         settingsButton,
         &QPushButton::clicked,
         this,
         &View::settingsButtonClicked
+    );
+    connect(
+        dirButton,
+        &QPushButton::clicked,
+        this,
+        &View::createNewFolder
     );
 }
 

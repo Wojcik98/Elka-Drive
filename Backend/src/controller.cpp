@@ -54,6 +54,12 @@ void Controller::setModel(Model *model) {
         this,
         &Controller::resourceDeleted
     );
+    connect(
+        model,
+        &Model::newFolderCreated,
+        this,
+        &Controller::newFolderCreated
+    );
 }
 
 void Controller::setView(View *view) {
@@ -70,6 +76,12 @@ void Controller::setView(View *view) {
         &View::openGroupSettings,
         this,
         &Controller::openGroupSettings
+    );
+    connect(
+        view,
+        &View::createNewFolder,
+        this,
+        &Controller::createNewFolder
     );
 }
 
@@ -338,6 +350,41 @@ void Controller::resourceDeleted(bool success, bool notFound, bool forbidden) {
     } else if (success) {
         refresh();
     } else {
+        QMessageBox msgBox(view);
+        msgBox.setText("Unknown error!");
+        msgBox.exec();
+        refresh();
+    }
+}
+
+void Controller::createNewFolder() {
+    bool ok;
+
+    QString filename = QInputDialog::getText(
+        view,
+        "New folder",
+        "Name:",
+        QLineEdit::Normal,
+        "",
+        &ok
+    );
+
+    if (ok) {
+        model->requestNewFolder(path.join("/") + "/" + filename);
+    }
+}
+
+void Controller::newFolderCreated(bool success, bool forbidden) {
+    if (forbidden) {
+        // TODO extract and clear path
+        QMessageBox msgBox(view);
+        msgBox.setText("You were removed from this group!");
+        msgBox.exec();
+        model->requestGroups();
+    } else if (success) {
+        refresh();
+    } else {
+        // TODO extract
         QMessageBox msgBox(view);
         msgBox.setText("Unknown error!");
         msgBox.exec();

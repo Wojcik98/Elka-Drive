@@ -38,6 +38,7 @@ protected:
 signals:
     void createNewGroup();
     void openGroupSettings(QModelIndex index);
+    void createNewFolder();
 };
 
 #endif // VIEW_H

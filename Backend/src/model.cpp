@@ -76,6 +76,10 @@ void Model::requestRemoveUserFromGroup(QString username, int groupId) {
     bridge->requestRemoveUserFromGroup(username, groupId);
 }
 
+void Model::requestNewFolder(QString path) {
+    bridge->requestNewFolder(path);
+}
+
 bool Model::isLogged() {
     return logged;
 }
@@ -124,6 +128,9 @@ void Model::gotResponse(Response response) {
             break;
         case Response::Type::DELETE:
             handleDeleteResponse(response);
+            break;
+        case Response::Type::NEW_FOLDER:
+            handleNewFolderResponse(response);
             break;
     }
 }
@@ -272,4 +279,11 @@ void Model::handleDeleteResponse(Response response) {
     bool notFound = response.getStatus() == STATUS_NOT_FOUND;
 
     emit resourceDeleted(success, notFound, forbidden);
+}
+
+void Model::handleNewFolderResponse(Response response) {
+    bool success = response.getStatus() == STATUS_OK;
+    bool forbidden = response.getStatus() == STATUS_FORBIDDEN;
+
+    emit newFolderCreated(success, forbidden);
 }

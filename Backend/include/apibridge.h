@@ -25,6 +25,7 @@ public:
     virtual void requestRemoveUserFromGroup(QString username, int groupId) = 0;
     virtual void requestFileDelete(QString id) = 0;
     virtual void requestDirectoryDelete(QString path) = 0;
+    virtual void requestNewFolder(QString path) = 0;
 
 signals:
     void gotResponse(Response response);    // TODO reference?

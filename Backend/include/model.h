@@ -31,6 +31,7 @@ public:
     void requestGroups();
     void requestNewGroup(QString groupName);
     void requestGroupUsers(int groupId);
+    void requestNewFolder(QString path);
 
     static const int TYPE_ROLE = Qt::UserRole + 1;
     static const int ID_ROLE = Qt::UserRole + 2;
@@ -56,6 +57,7 @@ private:
     void handleGroupAddUserResponse(Response response);
     void handleGroupRemoveUserResponse(Response response);
     void handleDeleteResponse(Response response);
+    void handleNewFolderResponse(Response response);
 
     QList<QStandardItem*> parseDirectory(QByteArray json);
 
@@ -71,6 +73,7 @@ signals:
     void groupAddUserReceived(bool success, bool forbidden);
     void groupRemoveUserReceived(bool success, bool forbidden);
     void resourceDeleted(bool success, bool notFound, bool forbidden);
+    void newFolderCreated(bool success, bool forbidden);
     void responseError(QNetworkReply::NetworkError error);
 
 public slots:

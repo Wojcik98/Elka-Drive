@@ -106,7 +106,6 @@ void WebBridge::requestDirectoryDelete(QString path) {
     QUrlQuery query;
     query.addQueryItem("path", path);
     url.setQuery(query.query());
-    qDebug() << url;
 
     auto request = QNetworkRequest(url);
     requestType = Response::Type::DELETE;
@@ -349,6 +348,37 @@ void WebBridge::requestRemoveUserFromGroup(QString username, int groupId) {
     postData.addQueryItem("username", username);
     reply = manager.post(request, postData.toString(QUrl::FullyEncoded).toUtf8());
     requestType = Response::Type::GROUP_REMOVE_USER;
+
+    connect(
+        reply,
+        &QNetworkReply::finished,
+        this,
+        &WebBridge::networkReplyFinished
+    );
+    connect(
+        reply,
+        &QIODevice::readyRead,
+        this,
+        &WebBridge::networkReplyReady
+    );
+}
+
+void WebBridge::requestNewFolder(QString path) {
+    if (reply != nullptr) {
+        qDebug() << "Another request in progress!";
+        return;
+    }
+
+    dataRead.clear();
+    auto url = QUrl(mainUrl + "/files/dir");
+    auto request = QNetworkRequest(url);
+    request.setHeader(QNetworkRequest::ContentTypeHeader,
+        "application/x-www-form-urlencoded");
+
+    QUrlQuery postData;
+    postData.addQueryItem("path", path);
+    requestType = Response::Type::NEW_FOLDER;
+    reply = manager.post(request, postData.toString(QUrl::FullyEncoded).toUtf8());
 
     connect(
         reply,

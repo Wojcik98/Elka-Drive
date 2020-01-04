@@ -54,6 +54,8 @@ public slots:
     void pathReceived(QList<QStandardItem*> dir, bool forbidden);
     void openGroupSettings(QModelIndex index);
     void resourceDeleted(bool success, bool notFound, bool forbidden);
+    void createNewFolder();
+    void newFolderCreated(bool success, bool forbidden);
 };
 
 #endif // CONTROLLER_H
