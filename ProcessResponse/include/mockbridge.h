@@ -12,7 +12,7 @@ public:
     virtual void requestGroups();
     virtual void requestNewGroup(QString groupName);
     virtual void requestPath(QString path);
-    virtual void requestDownload(QString id);
+    virtual void requestFileDownload(QString id);
     virtual void requestGroupUsers(int groupId);
     virtual void requestGroupDelete(int groupId);
     virtual void requestAddUserToGroup(QString username, int groupId);

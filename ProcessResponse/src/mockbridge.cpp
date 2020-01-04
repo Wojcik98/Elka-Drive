@@ -24,7 +24,7 @@ void MockBridge::requestPath(QString path) {
     emit gotResponse(response);
 }
 
-void MockBridge::requestDownload(QString id) {
+void MockBridge::requestFileDownload(QString id) {
     emit gotResponse(response);
 }
 

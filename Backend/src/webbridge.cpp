@@ -158,7 +158,7 @@ void WebBridge::requestPath(QString path) {
     );
 }
 
-void WebBridge::requestDownload(QString id) {
+void WebBridge::requestFileDownload(QString id) {
     // TODO save file in fly, don't waste RAM
     if (reply != nullptr) {
         qDebug() << "Another request in progress!";

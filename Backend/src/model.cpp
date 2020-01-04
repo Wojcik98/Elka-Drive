@@ -39,7 +39,7 @@ void Model::requestDelete(QString id) {
 }
 
 void Model::requestDownload(QString id) {
-    bridge->requestDownload(id);
+    bridge->requestFileDownload(id);
 }
 
 void Model::requestLogin(QString user, QString password) {
