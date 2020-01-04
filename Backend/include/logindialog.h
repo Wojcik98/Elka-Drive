@@ -14,27 +14,23 @@
 class LoginDialog : public QDialog {
  Q_OBJECT
 
+public:
+    explicit LoginDialog(QWidget *parent=nullptr);
+    ~LoginDialog();
+
 private:
     QLabel *labelUsername;
     QLabel *labelPassword;
     QLabel *labelError;
     QLabel *spinnerLabel;
     QMovie *spinnerMovie;
-    QComboBox *comboUsername;
+    QLineEdit *comboUsername;
     QLineEdit *editPassword;
     QPushButton *loginButton;
     QPushButton *cancelButton;
     QPushButton *registerButton;
 
     void setUpGUI();
-
-public:
-    explicit LoginDialog(QWidget *parent=nullptr);
-    ~LoginDialog();
-
-    void setUsername(QString &username);
-    void setPassword(QString &password);
-    void setUsernamesList(const QStringList &usernames);
 
 signals:
     void tryLogin(QString &username, QString &password);

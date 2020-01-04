@@ -15,8 +15,7 @@ LoginDialog::~LoginDialog() {
 void LoginDialog::setUpGUI() {
     QGridLayout* formGridLayout = new QGridLayout(this);
 
-    comboUsername = new QComboBox(this);
-    comboUsername->setEditable(true);
+    comboUsername = new QLineEdit(this);
     editPassword = new QLineEdit(this);
     editPassword->setEchoMode(QLineEdit::Password);
 
@@ -80,35 +79,9 @@ void LoginDialog::setUpGUI() {
     spinnerLabel->hide();
 }
 
-void LoginDialog::setUsername(QString &username) {
-    // TODO probably delete this method
-    bool found = false;
-    for (int i = 0; i < comboUsername->count() && !found; i++) {
-        if (comboUsername->itemText(i) == username) {
-            comboUsername->setCurrentIndex(i);
-            found = true;
-        }
-    }
-
-    if (!found) {
-        int index = comboUsername->count();
-        comboUsername->addItem(username);
-
-        comboUsername->setCurrentIndex(index);
-    }
-
-    // place the focus on the password field
-    editPassword->setFocus();
-}
-
-void LoginDialog::setPassword(QString &password) {
-    editPassword->setText(password);
-}
-
 void LoginDialog::slotTryLogin() {
     spinnerLabel->show();
-    loginButton->setEnabled(false);
-    QString username = comboUsername->currentText();
+    QString username = comboUsername->text();
     QString password = editPassword->text();
 
     emit tryLogin(
@@ -122,12 +95,7 @@ void LoginDialog::slotLoginResponse(bool success) {
         close();
     } else {
         labelError->setText("Cannot login!");
-        loginButton->setEnabled(true);
         qDebug() << "hide ";
         spinnerLabel->hide();
     }
-}
-
-void LoginDialog::setUsernamesList(const QStringList &usernames) {
-    comboUsername->addItems(usernames);
 }
