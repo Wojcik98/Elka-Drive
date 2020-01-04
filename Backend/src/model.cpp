@@ -40,6 +40,7 @@ void Model::requestDelete(const QModelIndex &index, QStringList path) {
     auto filename = index.data().toString();
     auto type = index.data(Model::TYPE_ROLE).toInt();
 
+    qDebug() << filename << id << type;
     if (type == Model::ItemType::FOLDER) {
         bridge->requestDirectoryDelete(path.join("/") + "/" + filename);
     } else if (type == Model::ItemType::FILE) {
@@ -269,6 +270,6 @@ void Model::handleDeleteResponse(Response response) {
     bool success = response.getStatus() == STATUS_OK;
     bool forbidden = response.getStatus() == STATUS_FORBIDDEN;
     bool notFound = response.getStatus() == STATUS_NOT_FOUND;
-    qDebug() << "deleted! " << response.getStatus();
-    // TODO emit sth
+
+    emit resourceDeleted(success, notFound, forbidden);
 }

@@ -53,6 +53,7 @@ public slots:
     void newGroupStatusCode(int statusCode);
     void pathReceived(QList<QStandardItem*> dir, bool forbidden);
     void openGroupSettings(QModelIndex index);
+    void resourceDeleted(bool success, bool notFound, bool forbidden);
 };
 
 #endif // CONTROLLER_H

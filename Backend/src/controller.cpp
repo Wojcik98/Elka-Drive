@@ -48,6 +48,12 @@ void Controller::setModel(Model *model) {
         this,
         &Controller::pathReceived
     );
+    connect(
+        model,
+        &Model::resourceDeleted,
+        this,
+        &Controller::resourceDeleted
+    );
 }
 
 void Controller::setView(View *view) {
@@ -315,5 +321,26 @@ void Controller::refresh() {
         model->requestPath(path.join("/"));
     } else {
         model->requestGroups();
+    }
+}
+
+void Controller::resourceDeleted(bool success, bool notFound, bool forbidden) {
+    if (notFound) {
+        QMessageBox msgBox(view);
+        msgBox.setText("File does not exist!");
+        msgBox.exec();
+        refresh();
+    } else if (forbidden) {
+        QMessageBox msgBox(view);
+        msgBox.setText("You were removed from this group!");
+        msgBox.exec();
+        model->requestGroups();
+    } else if (success) {
+        refresh();
+    } else {
+        QMessageBox msgBox(view);
+        msgBox.setText("Unknown error!");
+        msgBox.exec();
+        refresh();
     }
 }

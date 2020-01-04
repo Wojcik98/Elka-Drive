@@ -70,6 +70,7 @@ signals:
     void groupDeletedReceived(bool forbidden);
     void groupAddUserReceived(bool success, bool forbidden);
     void groupRemoveUserReceived(bool success, bool forbidden);
+    void resourceDeleted(bool success, bool notFound, bool forbidden);
     void responseError(QNetworkReply::NetworkError error);
 
 public slots:
