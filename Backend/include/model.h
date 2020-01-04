@@ -24,14 +24,17 @@ public:
 
     bool isLogged();
     void setLogged(bool logged);
+    void clearPath();
 
-    void requestDelete(const QModelIndex &index, QStringList path);
-    void requestDownload(QString path);
-    void requestPath(QString path);
+    void requestDelete(const QModelIndex &index);
+    void requestDownload(const QModelIndex &index);
+    void requestSubpath(const QModelIndex &index);
     void requestGroups();
     void requestNewGroup(QString groupName);
     void requestGroupUsers(int groupId);
-    void requestNewFolder(QString path);
+    void requestNewFolder(QString name);
+    void goBack();
+    void refresh();
 
     static const int TYPE_ROLE = Qt::UserRole + 1;
     static const int ID_ROLE = Qt::UserRole + 2;
@@ -44,6 +47,7 @@ private:
     static const int STATUS_OK = 200;
 
     APIBridge *bridge;
+    QStringList path;
     bool logged = false;
 
     void handleLoginResponse(Response response);

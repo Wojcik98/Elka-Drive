@@ -85,10 +85,6 @@ void Controller::setView(View *view) {
     );
 }
 
-void Controller::clearCache() {
-    path.clear();
-}
-
 void Controller::responseError(QNetworkReply::NetworkError error) {
     QMessageBox msgBox;
     msgBox.setText("Error while connecting to the server!");
@@ -110,7 +106,7 @@ void Controller::tryLogin() {
     if (model->isLogged()) {
         return;
     }
-    clearCache();
+    model->clearPath();
     loginDialog = new LoginDialog();
 
     connect(
@@ -271,13 +267,11 @@ void Controller::pathReceived(QList<QStandardItem*> path, bool forbidden) {
 }
 
 void Controller::requestDelete(const QModelIndex &index) {
-    model->requestDelete(index, path);
+    model->requestDelete(index);
 }
 
 void Controller::requestDownload(const QModelIndex &index) {
-    auto id = index.data(Model::ID_ROLE).toInt();
-    qDebug() << "Download " << id;
-    model->requestDownload(QString::number((id)));
+    model->requestDownload(index);
 }
 
 void Controller::requestNewGroup() {
@@ -298,20 +292,7 @@ void Controller::requestNewGroup() {
 }
 
 void Controller::fileDoubleClicked(const QModelIndex &index) {
-    auto filename = index.data().toString();
-    auto type = index.data(Model::TYPE_ROLE).toInt();
-    qDebug() << "clicked: " << filename;
-
-    if (type == Model::ItemType::GROUP) {
-        auto id = index.data(Model::ID_ROLE).toString();
-        path.append(id);
-        qDebug() << "get " << path.join("/");
-        model->requestPath(path.join("/"));
-    } else if (type == Model::ItemType::FOLDER) {
-        path.append(filename);
-        qDebug() << "get " << path.join("/");
-        model->requestPath(path.join("/"));
-    }
+    model->requestSubpath(index);
 }
 
 void Controller::fileClicked(const QModelIndex&) {
@@ -319,21 +300,11 @@ void Controller::fileClicked(const QModelIndex&) {
 }
 
 void Controller::goBack() {
-    if (path.length() > 1) {
-        path.pop_back();
-        model->requestPath(path.join("/"));
-    } else if (path.length() == 1) {
-        path.pop_back();
-        model->requestGroups();
-    }
+    model->goBack();
 }
 
 void Controller::refresh() {
-    if (path.length() > 0) {
-        model->requestPath(path.join("/"));
-    } else {
-        model->requestGroups();
-    }
+    model->refresh();
 }
 
 void Controller::resourceDeleted(bool success, bool notFound, bool forbidden) {
@@ -360,7 +331,7 @@ void Controller::resourceDeleted(bool success, bool notFound, bool forbidden) {
 void Controller::createNewFolder() {
     bool ok;
 
-    QString filename = QInputDialog::getText(
+    QString name = QInputDialog::getText(
         view,
         "New folder",
         "Name:",
@@ -370,7 +341,7 @@ void Controller::createNewFolder() {
     );
 
     if (ok) {
-        model->requestNewFolder(path.join("/") + "/" + filename);
+        model->requestNewFolder(name);
     }
 }
 

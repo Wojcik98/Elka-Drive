@@ -32,10 +32,6 @@ private:
     RegisterDialog *registerDialog;
     GroupSettingsDialog *groupSettingsDialog;
 
-    QStringList path;
-
-    void clearCache();
-
 signals:
     void closeApp();
 

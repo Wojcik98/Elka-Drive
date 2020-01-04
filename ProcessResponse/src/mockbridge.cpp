@@ -24,7 +24,7 @@ void MockBridge::requestPath(QString path) {
     emit gotResponse(response);
 }
 
-void MockBridge::requestFileDownload(QString id) {
+void MockBridge::requestFileDownload(int id) {
     emit gotResponse(response);
 }
 
@@ -44,7 +44,7 @@ void MockBridge::requestRemoveUserFromGroup(QString username, int groupId) {
     emit gotResponse(response);
 }
 
-void MockBridge::requestFileDelete(QString id) {
+void MockBridge::requestFileDelete(int id) {
     emit gotResponse(response);
 }
 

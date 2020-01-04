@@ -22,6 +22,10 @@ Model::Model(APIBridge *bridge) : bridge(bridge) {
     );
 }
 
+void Model::clearPath() {
+    path.clear();
+}
+
 void Model::requestGroups() {
     bridge->requestGroups();
 }
@@ -30,25 +34,51 @@ void Model::requestNewGroup(QString groupName) {
     bridge->requestNewGroup(groupName);
 }
 
-void Model::requestPath(QString path) {
-    bridge->requestPath(path);
+void Model::requestSubpath(const QModelIndex &index) {
+    QString subdir;
+    auto type = index.data(Model::TYPE_ROLE).toInt();
+
+    if (type == ItemType::GROUP) {
+        subdir = index.data(Model::ID_ROLE).toString();
+    } else if (type == ItemType::FOLDER) {
+        subdir = index.data(Qt::DisplayRole).toString();
+    }
+    path.append(subdir); // TODO read path from response?
+    bridge->requestPath(path.join("/"));
 }
 
-void Model::requestDelete(const QModelIndex &index, QStringList path) {
-    // TODO store path in model
+void Model::goBack() {
+    if (path.length() > 1) {
+        path.pop_back();
+        bridge->requestPath(path.join("/"));
+    } else if (path.length() == 1) {
+        path.pop_back();
+        bridge->requestGroups();
+    }
+}
+
+void Model::refresh() {
+    if (path.length() > 0) {
+        bridge->requestPath(path.join("/"));
+    } else {
+        bridge->requestGroups();
+    }
+}
+
+void Model::requestDelete(const QModelIndex &index) {
     auto id = index.data(Model::ID_ROLE).toInt();
     auto filename = index.data().toString();
     auto type = index.data(Model::TYPE_ROLE).toInt();
 
-    qDebug() << filename << id << type;
-    if (type == Model::ItemType::FOLDER) {
+    if (type == ItemType::FOLDER) {
         bridge->requestDirectoryDelete(path.join("/") + "/" + filename);
     } else if (type == Model::ItemType::FILE) {
-        bridge->requestFileDelete(QString::number(id));
+        bridge->requestFileDelete(id);
     }
 }
 
-void Model::requestDownload(QString id) {
+void Model::requestDownload(const QModelIndex &index) {
+    auto id = index.data(Model::ID_ROLE).toInt();
     bridge->requestFileDownload(id);
 }
 
@@ -76,8 +106,8 @@ void Model::requestRemoveUserFromGroup(QString username, int groupId) {
     bridge->requestRemoveUserFromGroup(username, groupId);
 }
 
-void Model::requestNewFolder(QString path) {
-    bridge->requestNewFolder(path);
+void Model::requestNewFolder(QString name) {
+    bridge->requestNewFolder(path.join("/") + "/" + name);
 }
 
 bool Model::isLogged() {

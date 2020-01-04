@@ -1,10 +1,12 @@
 #include <QStandardItem>
 #include <QStringListModel>
 #include <QUrl>
+#include <algorithm>
 
 #include "include/mainwindow.h"
 #include "include/view.h"
 #include "include/controller.h"
+#include "include/model.h"
 #include "ui_mainwindow.h"
 
 MainWindow::MainWindow(QWidget *parent) : View(parent), ui(new Ui::MainWindow) {
@@ -82,8 +84,13 @@ void MainWindow::setController(Controller *controller) {
     );
 }
 
+bool MainWindow::filesSort(QStandardItem *a, QStandardItem *b) {
+    return a->data(Model::TYPE_ROLE).toInt() < b->data(Model::TYPE_ROLE).toInt();
+}
+
 void MainWindow::setFileList(QList<QStandardItem*> files) {
     // TODO delete
+    std::sort(files.begin(), files.end(), filesSort);
     fileListModel.clear();
     fileListModel.appendColumn(files);
 }

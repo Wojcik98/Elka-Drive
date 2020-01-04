@@ -81,6 +81,7 @@ void LoginDialog::setUpGUI() {
 }
 
 void LoginDialog::setUsername(QString &username) {
+    // TODO probably delete this method
     bool found = false;
     for (int i = 0; i < comboUsername->count() && !found; i++) {
         if (comboUsername->itemText(i) == username) {

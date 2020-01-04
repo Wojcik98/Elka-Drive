@@ -68,14 +68,14 @@ void WebBridge::requestRegister(QString user, QString password) {
     );
 }
 
-void WebBridge::requestFileDelete(QString id) {
+void WebBridge::requestFileDelete(int id) {
     if (reply != nullptr) {
         qDebug() << "Another request in progress!";
         return;
     }
 
     dataRead.clear();
-    auto url = QUrl(mainUrl + "/files/" + id);
+    auto url = QUrl(mainUrl + "/files/" + QString::number(id));
     auto request = QNetworkRequest(url);
 
     requestType = Response::Type::DELETE;
@@ -217,14 +217,14 @@ void WebBridge::requestPath(QString path) {
     );
 }
 
-void WebBridge::requestFileDownload(QString id) {
+void WebBridge::requestFileDownload(int id) {
     // TODO save file in fly, don't waste RAM
     if (reply != nullptr) {
         qDebug() << "Another request in progress!";
         return;
     }
     dataRead.clear();
-    auto url = QUrl(mainUrl + "/files/" + id);
+    auto url = QUrl(mainUrl + "/files/" + QString::number(id));
 
     auto request = QNetworkRequest(url);
 

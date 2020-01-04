@@ -18,12 +18,12 @@ public:
     virtual void requestGroups() = 0;
     virtual void requestNewGroup(QString groupName) = 0;
     virtual void requestPath(QString path) = 0;
-    virtual void requestFileDownload(QString id) = 0;
+    virtual void requestFileDownload(int id) = 0;
     virtual void requestGroupUsers(int groupId) = 0;
     virtual void requestGroupDelete(int groupId) = 0;
     virtual void requestAddUserToGroup(QString username, int groupId) = 0;
     virtual void requestRemoveUserFromGroup(QString username, int groupId) = 0;
-    virtual void requestFileDelete(QString id) = 0;
+    virtual void requestFileDelete(int id) = 0;
     virtual void requestDirectoryDelete(QString path) = 0;
     virtual void requestNewFolder(QString path) = 0;
 

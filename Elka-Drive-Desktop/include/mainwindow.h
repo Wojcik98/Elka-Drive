@@ -27,6 +27,7 @@ private:
     Ui::MainWindow *ui;
 
     virtual void settingsButtonClicked();
+    static bool filesSort(QStandardItem *a, QStandardItem *b);
 };
 
 #endif // MAINWINDOW_H
