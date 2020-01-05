@@ -367,6 +367,10 @@ void WebBridge::requestNewFolder(QString path) {
     );
 }
 
+void WebBridge::networkReplyReady() {
+    dataRead.append(reply->readAll());
+}
+
 void WebBridge::networkReplyFinished() {
     QVariant statusCode = reply->attribute(QNetworkRequest::HttpStatusCodeAttribute);
 
@@ -379,17 +383,12 @@ void WebBridge::networkReplyFinished() {
         reply = nullptr;
         emit responseError(error);
     } else {
-        QString name = reply->rawHeader("Content-Disposition");
-        Response response(statusCode.toInt(), dataRead, requestType, name);
+        Response response(statusCode.toInt(), dataRead, requestType);
 
         reply->deleteLater();
         reply = nullptr;
         emit gotResponse(response);
     }
-}
-
-void WebBridge::networkReplyReady() {
-    dataRead.append(reply->readAll());
 }
 
 void WebBridge::requestFileDownload(int id, QString path) {

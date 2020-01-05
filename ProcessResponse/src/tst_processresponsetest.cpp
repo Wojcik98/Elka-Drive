@@ -51,7 +51,7 @@ void ProcessResponseTest::testLogin() {
     QFETCH(int, responseStatus);
     QFETCH(bool, expected);
 
-    auto response = Response(responseStatus, responseBody.toUtf8(), Response::Type::LOGIN, "");
+    auto response = Response(responseStatus, responseBody.toUtf8(), Response::Type::LOGIN);
     bridge.setResponse(response);
     model->requestLogin(user, password);
     QCOMPARE(spy.count(), 1);

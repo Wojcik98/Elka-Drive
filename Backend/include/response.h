@@ -20,17 +20,15 @@ public:
         NEW_FOLDER
     };
 
-    Response(int statusCode, QByteArray body, Response::Type type, QString name);
+    Response(int statusCode, QByteArray body, Response::Type type);
     int getStatus();
     QByteArray getBody();
     Response::Type getType();
-    QString getName();
 
 private:
     int statusCode;
     QByteArray body;
     Response::Type type;
-    QString name;
 };
 
 #endif // RESPONSE_H

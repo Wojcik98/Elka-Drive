@@ -1,6 +1,6 @@
 #include "include/response.h"
 
-Response::Response(int statusCode, QByteArray body, Response::Type type, QString name) : statusCode(statusCode), body(body), type(type), name(name) {
+Response::Response(int statusCode, QByteArray body, Response::Type type) : statusCode(statusCode), body(body), type(type) {
 }
 
 int Response::getStatus() {
@@ -13,8 +13,4 @@ QByteArray Response::getBody() {
 
 Response::Type Response::getType() {
     return type;
-}
-
-QString Response::getName() {
-    return name;
 }

@@ -1,6 +1,6 @@
 #include "include/mockbridge.h"
 
-MockBridge::MockBridge() : response(Response(0, QByteArray(), Response::Type::LOGIN, "")) {
+MockBridge::MockBridge() : response(Response(0, QByteArray(), Response::Type::LOGIN)) {
 
 }
 
