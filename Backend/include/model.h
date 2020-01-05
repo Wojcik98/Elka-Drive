@@ -27,7 +27,7 @@ public:
     void clearPath();
 
     void requestDelete(const QModelIndex &index);
-    void requestDownload(const QModelIndex &index);
+    void requestDownload(const QModelIndex &index, QString path);
     void requestSubpath(const QModelIndex &index);
     void requestGroups();
     void requestNewGroup(QString groupName);
@@ -55,7 +55,6 @@ private:
     void handleGroupsResponse(Response response);
     void handleNewGroupResponse(Response response);
     void handlePathResponse(Response response);
-    void handleFileResponse(Response response);
     void handleGroupUsersResponse(Response response);
     void handleGroupDeleteResponse(Response response);
     void handleGroupAddUserResponse(Response response);

@@ -77,9 +77,15 @@ void Model::requestDelete(const QModelIndex &index) {
     }
 }
 
-void Model::requestDownload(const QModelIndex &index) {
-    auto id = index.data(Model::ID_ROLE).toInt();
-    bridge->requestFileDownload(id);
+void Model::requestDownload(const QModelIndex &index, QString path) {
+    auto id = index.data(ID_ROLE).toInt();
+    int type = index.data(TYPE_ROLE).toInt();
+
+    if (type == ItemType::FILE) {
+        bridge->requestFileDownload(id, path);
+    } else if (type == ItemType::FOLDER) {
+        bridge->requestDirectoryDownload(id, path);
+    }
 }
 
 void Model::requestLogin(QString user, QString password) {
@@ -140,9 +146,6 @@ void Model::gotResponse(Response response) {
             break;
         case Response::Type::PATH:
             handlePathResponse(response);
-            break;
-        case Response::Type::FILE:
-            handleFileResponse(response);
             break;
         case Response::Type::GROUP_USERS:
             handleGroupUsersResponse(response);
@@ -237,32 +240,6 @@ QList<QStandardItem*> Model::parseDirectory(QByteArray json) {
     }
 
     return result;
-}
-
-void Model::handleFileResponse(Response response) {
-    // TODO handle forbidden
-    if (response.getStatus() != STATUS_OK) {
-        qDebug() << "Download response not ok";
-        return;
-    }
-
-    auto content = response.getBody();
-    QString rawName = response.getName();
-    qDebug() << "Downloaded raw:" << rawName;
-    QString name = rawName
-            .right(rawName.size() - rawName.indexOf('=') - 2);
-    name.chop(1);
-    qDebug() << "Downloaded:" << name;
-
-    QFile file(name);
-    if (!file.open(QIODevice::WriteOnly)) {
-        qDebug() << "Error opening file!";
-    }
-
-    QTextStream stream(&file);
-    stream << content;
-
-    file.close();
 }
 
 void Model::handleGroupUsersResponse(Response response) {

@@ -21,6 +21,7 @@ DEFINES += QT_DEPRECATED_WARNINGS
 #DEFINES += QT_DISABLE_DEPRECATED_BEFORE=0x060000    # disables all the APIs deprecated before Qt 6.0.0
 
 SOURCES += \
+    src/downloaditem.cpp \
     src/groupsettingsdialog.cpp \
     src/registerdialog.cpp \
     src/response.cpp \
@@ -35,6 +36,7 @@ SOURCES += \
 HEADERS += \
     include/apibridge.h \
     include/controller.h \
+    include/downloaditem.h \
     include/groupsettingsdialog.h \
     include/logindialog.h \
     include/model.h \

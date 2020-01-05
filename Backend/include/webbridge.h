@@ -4,7 +4,9 @@
 #include <QNetworkAccessManager>
 #include <QNetworkReply>
 #include <QUrl>
+#include <QQueue>
 #include "include/apibridge.h"
+#include "include/downloaditem.h"
 
 class WebBridge : public APIBridge {
 public:
@@ -14,7 +16,8 @@ public:
     virtual void requestGroups();
     virtual void requestNewGroup(QString groupName);
     virtual void requestPath(QString path);
-    virtual void requestFileDownload(int id);
+    virtual void requestFileDownload(int id, QString path);
+    virtual void requestDirectoryDownload(int id, QString path);
     virtual void requestGroupUsers(int groupId);
     virtual void requestGroupDelete(int groupId);
     virtual void requestAddUserToGroup(QString username, int groupId);
@@ -24,6 +27,8 @@ public:
     virtual void requestNewFolder(QString path);
 
 private:
+    void requestDownload(int id, QString path, QUrl url);
+    void triggerDownload();
     static const int PROTOCOL_ERROR_HIGH = 100;
 
     QString mainUrl;
@@ -32,9 +37,15 @@ private:
     Response::Type requestType;
     QByteArray dataRead;
 
-public slots:
+    QQueue<DownloadItem *> downloadQueue;
+    QNetworkReply *downloadReply;
+    DownloadItem *currentDownload;
+
+private slots:
     void networkReplyReady();
     void networkReplyFinished();
+    void downloadReplyReady();
+    void downloadReplyFinished();
 };
 
 #endif // WEBBRIDGE_H

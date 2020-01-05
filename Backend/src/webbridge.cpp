@@ -5,6 +5,7 @@
 
 WebBridge::WebBridge(QString mainUrl) : mainUrl(mainUrl) {
     reply = nullptr;
+    downloadReply = nullptr;
 }
 
 void WebBridge::requestLogin(QString user, QString password) {
@@ -217,34 +218,6 @@ void WebBridge::requestPath(QString path) {
     );
 }
 
-void WebBridge::requestFileDownload(int id) {
-    // TODO save file in fly, don't waste RAM
-    if (reply != nullptr) {
-        qDebug() << "Another request in progress!";
-        return;
-    }
-    dataRead.clear();
-    auto url = QUrl(mainUrl + "/files/" + QString::number(id));
-
-    auto request = QNetworkRequest(url);
-
-    requestType = Response::Type::FILE;
-    reply = manager.get(request);
-
-    connect(
-        reply,
-        &QNetworkReply::finished,
-        this,
-        &WebBridge::networkReplyFinished
-    );
-    connect(
-        reply,
-        &QIODevice::readyRead,
-        this,
-        &WebBridge::networkReplyReady
-    );
-}
-
 void WebBridge::requestGroupUsers(int groupId) {
     if (reply != nullptr) {
         qDebug() << "Another request in progress!";
@@ -417,4 +390,67 @@ void WebBridge::networkReplyFinished() {
 
 void WebBridge::networkReplyReady() {
     dataRead.append(reply->readAll());
+}
+
+void WebBridge::requestFileDownload(int id, QString path) {
+    auto url = QUrl(mainUrl + "/files/" + QString::number(id));
+    requestDownload(id, path, url);
+}
+
+void WebBridge::requestDirectoryDownload(int id, QString path) {
+    auto url = QUrl(mainUrl + "/files/dir/" + QString::number(id));
+    requestDownload(id, path, url);
+}
+
+void WebBridge::requestDownload(int id, QString path, QUrl url) {
+    auto newItem = new DownloadItem(id, path, url);
+    downloadQueue.enqueue(newItem);
+    triggerDownload();
+}
+
+void WebBridge::triggerDownload() {
+    if (downloadReply != nullptr || downloadQueue.empty()) {
+        return;
+    }
+
+    currentDownload = downloadQueue.dequeue();
+    bool fileOpened = currentDownload->openFile();
+
+    if (fileOpened) {
+        auto request = QNetworkRequest(currentDownload->getUrl());
+        downloadReply = manager.get(request);
+
+        connect(
+            downloadReply,
+            &QNetworkReply::finished,
+            this,
+            &WebBridge::downloadReplyFinished
+        );
+        connect(
+            downloadReply,
+            &QIODevice::readyRead,
+            this,
+            &WebBridge::downloadReplyReady
+        );
+        // TODO progress
+    } else {
+        // TODO emit some error
+        currentDownload = nullptr;
+        triggerDownload();
+    }
+}
+
+void WebBridge::downloadReplyReady() {
+    currentDownload->appendData(downloadReply->readAll());
+}
+
+void WebBridge::downloadReplyFinished() {
+    qDebug() << "download reply finished";
+    // TODO emit some signals
+    downloadReply->deleteLater();
+    downloadReply = nullptr;
+    currentDownload->closeFile();
+    delete currentDownload;
+    currentDownload = nullptr;
+    triggerDownload();
 }

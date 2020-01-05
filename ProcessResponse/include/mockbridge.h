@@ -12,7 +12,8 @@ public:
     virtual void requestGroups();
     virtual void requestNewGroup(QString groupName);
     virtual void requestPath(QString path);
-    virtual void requestFileDownload(int id);
+    virtual void requestFileDownload(int id, QString path);
+    virtual void requestDirectoryDownload(int id, QString path);
     virtual void requestGroupUsers(int groupId);
     virtual void requestGroupDelete(int groupId);
     virtual void requestAddUserToGroup(QString username, int groupId);

@@ -1,6 +1,7 @@
 #include <QtDebug>
 #include <QPushButton>
 #include <QInputDialog>
+#include <QFileDialog>
 #include <QMessageBox>
 
 #include "include/controller.h"
@@ -141,7 +142,6 @@ void Controller::tryLogin() {
 
 void Controller::openRegister() {
     registerDialog = new RegisterDialog();
-    // TODO delete
 
     connect(
         registerDialog,
@@ -271,7 +271,15 @@ void Controller::requestDelete(const QModelIndex &index) {
 }
 
 void Controller::requestDownload(const QModelIndex &index) {
-    model->requestDownload(index);
+    auto type = index.data(Model::TYPE_ROLE).toInt();
+    auto filename = index.data(Qt::DisplayRole).toString();
+
+    if (type == Model::ItemType::FOLDER) {
+        filename.append(".zip");
+    }
+
+    auto path = QFileDialog::getSaveFileName(view, "Save file", filename);
+    model->requestDownload(index, path);
 }
 
 void Controller::requestNewGroup() {

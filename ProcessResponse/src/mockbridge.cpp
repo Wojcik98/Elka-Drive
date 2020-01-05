@@ -24,7 +24,11 @@ void MockBridge::requestPath(QString path) {
     emit gotResponse(response);
 }
 
-void MockBridge::requestFileDownload(int id) {
+void MockBridge::requestFileDownload(int id, QString path) {
+    emit gotResponse(response);
+}
+
+void MockBridge::requestDirectoryDownload(int id, QString path) {
     emit gotResponse(response);
 }
 

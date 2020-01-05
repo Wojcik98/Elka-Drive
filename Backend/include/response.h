@@ -12,7 +12,6 @@ public:
         GROUPS,
         NEW_GROUP,
         PATH,
-        FILE,
         GROUP_USERS,
         GROUP_DELETE,
         GROUP_ADD_USER,
