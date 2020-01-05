@@ -60,6 +60,11 @@ void MockBridge::requestNewFolder(QString path) {
     emit gotResponse(response);
 }
 
+
+void MockBridge::requestFileUpload(QString rootLocal, QString rootServer, QString path) {
+    emit gotResponse(response);
+}
+
 void MockBridge::setResponse(Response response) {
     this->response = response;
 }

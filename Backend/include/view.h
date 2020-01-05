@@ -33,12 +33,15 @@ protected:
     QPushButton *newButton;
     QPushButton *settingsButton;
     QPushButton *dirButton;
-    QPushButton *uploadButton;
+    QPushButton *uploadFileButton;
+    QPushButton *uploadFolderButton;
 
 signals:
     void createNewGroup();
     void openGroupSettings(QModelIndex index);
     void createNewFolder();
+    void uploadFile();
+    void uploadFolder();
 };
 
 #endif // VIEW_H

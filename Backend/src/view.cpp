@@ -9,9 +9,11 @@ View::View(QWidget *parent) : QMainWindow(parent), groupsWidget(this), filesWidg
 
     QHBoxLayout *filesButtons = new QHBoxLayout();
     dirButton = new QPushButton(QIcon(":/icons/create_new_folder.svg"), "New folder", this);
-    uploadButton = new QPushButton(QIcon(":/icons/cloud_upload.svg"), "Upload", this);
+    uploadFileButton = new QPushButton(QIcon(":/icons/cloud_upload.svg"), "Upload file", this);
+    uploadFolderButton = new QPushButton(QIcon(":/icons/cloud_upload.svg"), "Upload folder", this);
     filesButtons->addWidget(dirButton);
-    filesButtons->addWidget(uploadButton);
+    filesButtons->addWidget(uploadFolderButton);
+    filesButtons->addWidget(uploadFileButton);
 
     groupsWidget.setLayout(groupsButtons);
     groupsWidget.show();
@@ -35,6 +37,18 @@ View::View(QWidget *parent) : QMainWindow(parent), groupsWidget(this), filesWidg
         &QPushButton::clicked,
         this,
         &View::createNewFolder
+    );
+    connect(
+        uploadFileButton,
+        &QPushButton::clicked,
+        this,
+        &View::uploadFile
+    );
+    connect(
+        uploadFolderButton,
+        &QPushButton::clicked,
+        this,
+        &View::uploadFolder
     );
 }
 

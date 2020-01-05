@@ -27,6 +27,7 @@ public:
     virtual void requestFileDelete(int id) = 0;
     virtual void requestDirectoryDelete(QString path) = 0;
     virtual void requestNewFolder(QString path) = 0;
+    virtual void requestFileUpload(QString rootLocal, QString rootServer, QString path) = 0;
 
 signals:
     void gotResponse(Response response);    // TODO reference?

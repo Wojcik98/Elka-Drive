@@ -30,6 +30,7 @@ SOURCES += \
     src/controller.cpp \
     src/logindialog.cpp \
     src/model.cpp \
+    src/uploaditem.cpp \
     src/user.cpp \
     src/view.cpp \
     src/webbridge.cpp
@@ -44,6 +45,7 @@ HEADERS += \
     include/registerdialog.h \
     include/request.h \
     include/response.h \
+    include/uploaditem.h \
     include/user.h \
     include/view.h \
     include/webbridge.h

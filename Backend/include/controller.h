@@ -52,6 +52,8 @@ public slots:
     void resourceDeleted(bool success, bool notFound, bool forbidden);
     void createNewFolder();
     void newFolderCreated(bool success, bool forbidden);
+    void uploadFile();
+    void uploadFolder();
 };
 
 #endif // CONTROLLER_H

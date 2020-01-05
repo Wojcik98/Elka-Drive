@@ -294,3 +294,7 @@ void Model::handleNewFolderResponse(Response response) {
 
     emit newFolderCreated(success, forbidden);
 }
+
+void Model::requestFileUpload(QString rootLocal, QString path) {
+    bridge->requestFileUpload(rootLocal, this->path.join("/") + "/", path);
+}

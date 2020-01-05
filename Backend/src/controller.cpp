@@ -3,6 +3,7 @@
 #include <QInputDialog>
 #include <QFileDialog>
 #include <QMessageBox>
+#include <QTreeView>
 
 #include "include/controller.h"
 
@@ -83,6 +84,18 @@ void Controller::setView(View *view) {
         &View::createNewFolder,
         this,
         &Controller::createNewFolder
+    );
+    connect(
+        view,
+        &View::uploadFile,
+        this,
+        &Controller::uploadFile
+    );
+    connect(
+        view,
+        &View::uploadFolder,
+        this,
+        &Controller::uploadFolder
     );
 }
 
@@ -279,6 +292,7 @@ void Controller::requestDownload(const QModelIndex &index) {
     }
 
     auto path = QFileDialog::getSaveFileName(view, "Save file", filename);
+    // TODO check if empty
     model->requestDownload(index, path);
 }
 
@@ -369,4 +383,24 @@ void Controller::newFolderCreated(bool success, bool forbidden) {
         msgBox.exec();
         refresh();
     }
+}
+
+void Controller::uploadFile() {
+    QStringList files = QFileDialog::getOpenFileNames(
+        view, "Select one or more files to upload"
+    );
+    auto file = files.first();
+    auto separation = file.lastIndexOf("/") + 1;
+    auto path = file.left(separation);
+    auto filename = file.right(file.size() - separation);
+    model->requestFileUpload(path, filename);
+}
+
+void Controller::uploadFolder() {
+    QString directory = QFileDialog::getExistingDirectory(
+        view, "Open Directory", "",
+        QFileDialog::ShowDirsOnly | QFileDialog::DontResolveSymlinks
+    );
+    qDebug() << directory;
+//    model->requestDownload(index, path);
 }

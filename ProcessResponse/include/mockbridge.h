@@ -21,6 +21,7 @@ public:
     virtual void requestFileDelete(int id);
     virtual void requestDirectoryDelete(QString path);
     virtual void requestNewFolder(QString path);
+    virtual void requestFileUpload(QString rootLocal, QString rootServer, QString path);
 
     void setResponse(Response resopnse);
 

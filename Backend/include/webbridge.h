@@ -7,6 +7,7 @@
 #include <QQueue>
 #include "include/apibridge.h"
 #include "include/downloaditem.h"
+#include "include/uploaditem.h"
 #include "include/request.h"
 
 class WebBridge : public APIBridge {
@@ -26,6 +27,7 @@ public:
     virtual void requestFileDelete(int id);
     virtual void requestDirectoryDelete(QString path);
     virtual void requestNewFolder(QString path);
+    virtual void requestFileUpload(QString rootLocal, QString rootServer, QString path);
 
 private:
     void get(QUrl url, Response::Type type);
@@ -35,6 +37,9 @@ private:
     void triggerRequest();
     void requestDownload(int id, QString path, QUrl url);
     void triggerDownload();
+    void triggerUpload();
+    void triggerUploadCreateDirectory();
+    void triggerUploadSendFile();
     static const int PROTOCOL_ERROR_HIGH = 100;
 
     QString mainUrl;
@@ -49,11 +54,16 @@ private:
     QNetworkReply *downloadReply;
     DownloadItem *currentDownload;
 
+    QQueue<UploadItem *> uploadQueue;
+    QNetworkReply *uploadReply;
+    UploadItem *currentUpload;
+
 private slots:
     void networkReplyReady();
     void networkReplyFinished();
     void downloadReplyReady();
     void downloadReplyFinished();
+    void uploadReplyFinished();
 };
 
 #endif // WEBBRIDGE_H
