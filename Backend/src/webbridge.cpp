@@ -129,14 +129,12 @@ void WebBridge::deleteResource(QUrl url, Response::Type type) {
 }
 
 void WebBridge::triggerRequest() {
-    qDebug() << "queue size: " << requestQueue.size();
     if (requestReply != nullptr || requestQueue.empty()) {
         return;
     }
 
     currentRequest = requestQueue.dequeue();
     dataRead.clear();
-    requestType = currentRequest->getType();
     auto request = currentRequest->getRequest();
 
     switch (currentRequest->getMethod()) {
@@ -181,12 +179,17 @@ void WebBridge::networkReplyFinished() {
         error < PROTOCOL_ERROR_HIGH) {
         qDebug() << "error: " << error;
 
+        delete currentRequest;
+        currentRequest = nullptr;
         requestReply->deleteLater();
         requestReply = nullptr;
         emit responseError(error);
     } else {
-        Response response(statusCode.toInt(), dataRead, requestType);
+        auto type = currentRequest->getType();
+        Response response(statusCode.toInt(), dataRead, type);
 
+        delete currentRequest;
+        currentRequest = nullptr;
         requestReply->deleteLater();
         requestReply = nullptr;
         emit gotResponse(response);
@@ -249,11 +252,11 @@ void WebBridge::downloadReplyReady() {
 
 void WebBridge::downloadReplyFinished() {
     qDebug() << "download reply finished";
-    // TODO emit some signals
     downloadReply->deleteLater();
     downloadReply = nullptr;
     currentDownload->closeFile();
     delete currentDownload;
     currentDownload = nullptr;
+    // TODO emit some signals
     triggerDownload();
 }

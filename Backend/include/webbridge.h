@@ -39,7 +39,6 @@ private:
 
     QString mainUrl;
     QNetworkAccessManager manager;
-    Response::Type requestType;
     QByteArray dataRead;
 
     QQueue<Request *> requestQueue;
