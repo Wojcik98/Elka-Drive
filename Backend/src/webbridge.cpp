@@ -9,350 +9,143 @@ WebBridge::WebBridge(QString mainUrl) : mainUrl(mainUrl) {
 }
 
 void WebBridge::requestLogin(QString user, QString password) {
-    if (reply != nullptr) {
-        // TODO emit response with error code?
-        qDebug() << "Another request in progress!";
-        return;
-    }
     auto url = QUrl(mainUrl + "/login");
-    auto request = QNetworkRequest(url);
-    request.setHeader(QNetworkRequest::ContentTypeHeader,
-        "application/x-www-form-urlencoded");
+    QUrlQuery data;
+    data.addQueryItem("username", user);
+    data.addQueryItem("password", password);
 
-    QUrlQuery postData;
-    postData.addQueryItem("username", user);
-    postData.addQueryItem("password", password);
-    reply = manager.post(request, postData.toString(QUrl::FullyEncoded).toUtf8());
-    requestType = Response::Type::LOGIN;
-
-    connect(
-        reply,
-        &QNetworkReply::finished,
-        this,
-        &WebBridge::networkReplyFinished
-    );
-    connect(
-        reply,
-        &QIODevice::readyRead,
-        this,
-        &WebBridge::networkReplyReady
-    );
+    post(url, data, Response::Type::LOGIN);
 }
 
 void WebBridge::requestRegister(QString user, QString password) {
-    if (reply != nullptr) {
-        qDebug() << "Another request in progress!";
-        return;
-    }
     auto url = QUrl(mainUrl + "/register");
-    auto request = QNetworkRequest(url);
-    request.setHeader(QNetworkRequest::ContentTypeHeader,
-        "application/x-www-form-urlencoded");
+    QUrlQuery data;
+    data.addQueryItem("username", user);
+    data.addQueryItem("password", password);
 
-    QUrlQuery postData;
-    postData.addQueryItem("username", user);
-    postData.addQueryItem("password", password);
-    reply = manager.post(request, postData.toString(QUrl::FullyEncoded).toUtf8());
-    requestType = Response::Type::REGISTER;
-
-    connect(
-        reply,
-        &QNetworkReply::finished,
-        this,
-        &WebBridge::networkReplyFinished
-    );
-    connect(
-        reply,
-        &QIODevice::readyRead,
-        this,
-        &WebBridge::networkReplyReady
-    );
+    post(url, data, Response::Type::REGISTER);
 }
 
 void WebBridge::requestFileDelete(int id) {
-    if (reply != nullptr) {
-        qDebug() << "Another request in progress!";
-        return;
-    }
-
-    dataRead.clear();
     auto url = QUrl(mainUrl + "/files/" + QString::number(id));
-    auto request = QNetworkRequest(url);
 
-    requestType = Response::Type::DELETE;
-    reply = manager.deleteResource(request);
-
-    connect(
-        reply,
-        &QNetworkReply::finished,
-        this,
-        &WebBridge::networkReplyFinished
-    );
-    connect(
-        reply,
-        &QIODevice::readyRead,
-        this,
-        &WebBridge::networkReplyReady
-    );
+    deleteResource(url, Response::Type::DELETE);
 }
 
 void WebBridge::requestDirectoryDelete(QString path) {
-    if (reply != nullptr) {
-        qDebug() << "Another request in progress!";
-        return;
-    }
-
-    dataRead.clear();
     auto url = QUrl(mainUrl + "/files/del");
     QUrlQuery query;
     query.addQueryItem("path", path);
     url.setQuery(query.query());
 
-    auto request = QNetworkRequest(url);
-    requestType = Response::Type::DELETE;
-    reply = manager.deleteResource(request);
-
-    connect(
-        reply,
-        &QNetworkReply::finished,
-        this,
-        &WebBridge::networkReplyFinished
-    );
-    connect(
-        reply,
-        &QIODevice::readyRead,
-        this,
-        &WebBridge::networkReplyReady
-    );
+    deleteResource(url, Response::Type::DELETE);
 }
 
 void WebBridge::requestGroups() {
-    if (reply != nullptr) {
-        qDebug() << "Another request in progress!";
-        return;
-    }
-
-    dataRead.clear();
     auto url = QUrl(mainUrl + "/groups/my");
-    auto request = QNetworkRequest(url);
-    request.setHeader(QNetworkRequest::ContentTypeHeader,
-        "application/x-www-form-urlencoded");
 
-    requestType = Response::Type::GROUPS;
-    reply = manager.get(request);
-
-    connect(
-        reply,
-        &QNetworkReply::finished,
-        this,
-        &WebBridge::networkReplyFinished
-    );
-    connect(
-        reply,
-        &QIODevice::readyRead,
-        this,
-        &WebBridge::networkReplyReady
-    );
+    get(url, Response::Type::GROUPS);
 }
 
 void WebBridge::requestNewGroup(QString groupName) {
-    if (reply != nullptr) {
-        qDebug() << "Another request in progress!";
-        return;
-    }
-    dataRead.clear();
     auto url = QUrl(mainUrl + "/groups");
-    auto request = QNetworkRequest(url);
-    request.setHeader(QNetworkRequest::ContentTypeHeader,
-        "application/x-www-form-urlencoded");
+    QUrlQuery data;
+    data.addQueryItem("name", groupName);
 
-    QUrlQuery postData;
-    postData.addQueryItem("name", groupName);
-    reply = manager.post(request, postData.toString(QUrl::FullyEncoded).toUtf8());
-    requestType = Response::Type::NEW_GROUP;
-
-    connect(
-        reply,
-        &QNetworkReply::finished,
-        this,
-        &WebBridge::networkReplyFinished
-    );
-    connect(
-        reply,
-        &QIODevice::readyRead,
-        this,
-        &WebBridge::networkReplyReady
-    );
+    post(url, data, Response::Type::NEW_GROUP);
 }
 
 void WebBridge::requestPath(QString path) {
-    if (reply != nullptr) {
-        qDebug() << "Another request in progress!";
-        return;
-    }
-
-    dataRead.clear();
     auto url = QUrl(mainUrl + "/files/dir");
     QUrlQuery query;
     query.addQueryItem("path", path);
     url.setQuery(query.query());
 
-    auto request = QNetworkRequest(url);
-    request.setHeader(QNetworkRequest::ContentTypeHeader,
-        "application/x-www-form-urlencoded");
-
-    requestType = Response::Type::PATH;
-    reply = manager.get(request);
-
-    connect(
-        reply,
-        &QNetworkReply::finished,
-        this,
-        &WebBridge::networkReplyFinished
-    );
-    connect(
-        reply,
-        &QIODevice::readyRead,
-        this,
-        &WebBridge::networkReplyReady
-    );
+    get(url, Response::Type::PATH);
 }
 
 void WebBridge::requestGroupUsers(int groupId) {
-    if (reply != nullptr) {
-        qDebug() << "Another request in progress!";
-        return;
-    }
-    dataRead.clear();
     auto url = QUrl(mainUrl + "/groups/" + QString::number(groupId));
 
-    auto request = QNetworkRequest(url);
-    request.setHeader(QNetworkRequest::ContentTypeHeader,
-        "application/x-www-form-urlencoded");
-
-    requestType = Response::Type::GROUP_USERS;
-    reply = manager.get(request);
-
-    connect(
-        reply,
-        &QNetworkReply::finished,
-        this,
-        &WebBridge::networkReplyFinished
-    );
-    connect(
-        reply,
-        &QIODevice::readyRead,
-        this,
-        &WebBridge::networkReplyReady
-    );
+    get(url, Response::Type::GROUP_USERS);
 }
 
 void WebBridge::requestGroupDelete(int groupId) {
-    if (reply != nullptr) {
-        qDebug() << "Another request in progress!";
-        return;
-    }
-    dataRead.clear();
     auto url = QUrl(mainUrl + "/groups/" + QString::number(groupId));
 
-    auto request = QNetworkRequest(url);
-    request.setHeader(QNetworkRequest::ContentTypeHeader,
-        "application/x-www-form-urlencoded");
-
-    requestType = Response::Type::GROUP_DELETE;
-    reply = manager.deleteResource(request);
-
-    connect(
-        reply,
-        &QNetworkReply::finished,
-        this,
-        &WebBridge::networkReplyFinished
-    );
-    connect(
-        reply,
-        &QIODevice::readyRead,
-        this,
-        &WebBridge::networkReplyReady
-    );
+    deleteResource(url, Response::Type::GROUP_DELETE);
 }
 
 void WebBridge::requestAddUserToGroup(QString username, int groupId) {
-    if (reply != nullptr) {
-        qDebug() << "Another request in progress!";
-        return;
-    }
-    dataRead.clear();
     auto url = QUrl(mainUrl + "/groups/add/" + QString::number(groupId));
-    auto request = QNetworkRequest(url);
-    request.setHeader(QNetworkRequest::ContentTypeHeader,
-        "application/x-www-form-urlencoded");
+    QUrlQuery data;
+    data.addQueryItem("username", username);
 
-    QUrlQuery postData;
-    postData.addQueryItem("username", username);
-    reply = manager.post(request, postData.toString(QUrl::FullyEncoded).toUtf8());
-    requestType = Response::Type::GROUP_ADD_USER;
-
-    connect(
-        reply,
-        &QNetworkReply::finished,
-        this,
-        &WebBridge::networkReplyFinished
-    );
-    connect(
-        reply,
-        &QIODevice::readyRead,
-        this,
-        &WebBridge::networkReplyReady
-    );
+    post(url, data, Response::Type::GROUP_ADD_USER);
 }
 
 void WebBridge::requestRemoveUserFromGroup(QString username, int groupId) {
-    if (reply != nullptr) {
-        qDebug() << "Another request in progress!";
-        return;
-    }
-    dataRead.clear();
     auto url = QUrl(mainUrl + "/groups/remove/" + QString::number(groupId));
-    auto request = QNetworkRequest(url);
-    request.setHeader(QNetworkRequest::ContentTypeHeader,
-        "application/x-www-form-urlencoded");
+    QUrlQuery data;
+    data.addQueryItem("username", username);
 
-    QUrlQuery postData;
-    postData.addQueryItem("username", username);
-    reply = manager.post(request, postData.toString(QUrl::FullyEncoded).toUtf8());
-    requestType = Response::Type::GROUP_REMOVE_USER;
-
-    connect(
-        reply,
-        &QNetworkReply::finished,
-        this,
-        &WebBridge::networkReplyFinished
-    );
-    connect(
-        reply,
-        &QIODevice::readyRead,
-        this,
-        &WebBridge::networkReplyReady
-    );
+    post(url, data, Response::Type::GROUP_REMOVE_USER);
 }
 
 void WebBridge::requestNewFolder(QString path) {
+    auto url = QUrl(mainUrl + "/files/dir");
+    QUrlQuery data;
+    data.addQueryItem("path", path);
+
+    post(url, data, Response::Type::NEW_FOLDER);
+}
+
+void WebBridge::get(QUrl url, Response::Type type) {
     if (reply != nullptr) {
+        // TODO emit bad response
         qDebug() << "Another request in progress!";
         return;
     }
-
     dataRead.clear();
-    auto url = QUrl(mainUrl + "/files/dir");
+
+    auto request = QNetworkRequest(url);
+    requestType = type;
+    reply = manager.get(request);
+    connectReply();
+}
+
+void WebBridge::post(QUrl url, QUrlQuery data, Response::Type type) {
+    if (reply != nullptr) {
+        // TODO emit bad response
+        qDebug() << "Another request in progress!";
+        return;
+    }
+    dataRead.clear();
+
     auto request = QNetworkRequest(url);
     request.setHeader(QNetworkRequest::ContentTypeHeader,
         "application/x-www-form-urlencoded");
 
-    QUrlQuery postData;
-    postData.addQueryItem("path", path);
-    requestType = Response::Type::NEW_FOLDER;
-    reply = manager.post(request, postData.toString(QUrl::FullyEncoded).toUtf8());
+    requestType = type;
+    reply = manager.post(request, data.toString(QUrl::FullyEncoded).toUtf8());
+    connectReply();
+}
 
+void WebBridge::deleteResource(QUrl url, Response::Type type) {
+    if (reply != nullptr) {
+        // TODO emit bad response
+        qDebug() << "Another request in progress!";
+        return;
+    }
+    dataRead.clear();
+
+    auto request = QNetworkRequest(url);
+    requestType = type;
+    reply = manager.deleteResource(request);
+    connectReply();
+}
+
+void WebBridge::connectReply() {
     connect(
         reply,
         &QNetworkReply::finished,

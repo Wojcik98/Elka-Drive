@@ -27,6 +27,10 @@ public:
     virtual void requestNewFolder(QString path);
 
 private:
+    void get(QUrl url, Response::Type type);
+    void post(QUrl url, QUrlQuery data, Response::Type type);
+    void deleteResource(QUrl url, Response::Type type);
+    void connectReply();
     void requestDownload(int id, QString path, QUrl url);
     void triggerDownload();
     static const int PROTOCOL_ERROR_HIGH = 100;
