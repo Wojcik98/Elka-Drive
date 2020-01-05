@@ -18,6 +18,10 @@ MainWindow::MainWindow(QWidget *parent) : View(parent), ui(new Ui::MainWindow) {
     ui->fileList->setContextMenuPolicy(Qt::CustomContextMenu);
     connect(ui->fileList, &QListView::customContextMenuRequested, [this](QPoint pos) {
         QModelIndex *index = new QModelIndex(ui->fileList->indexAt(pos));
+        auto type = index->data(Model::TYPE_ROLE);
+        if (type == Model::ItemType::GROUP) {
+            return;
+        }
 
         QMenu *menu = new QMenu(this);
 
