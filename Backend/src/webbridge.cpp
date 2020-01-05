@@ -4,7 +4,7 @@
 #include <QNetworkReply>
 
 WebBridge::WebBridge(QString mainUrl) : mainUrl(mainUrl) {
-    reply = nullptr;
+    requestReply = nullptr;
     downloadReply = nullptr;
 }
 
@@ -101,59 +101,68 @@ void WebBridge::requestNewFolder(QString path) {
 }
 
 void WebBridge::get(QUrl url, Response::Type type) {
-    if (reply != nullptr) {
-        // TODO emit bad response
-        qDebug() << "Another request in progress!";
-        return;
-    }
-    dataRead.clear();
-
     auto request = QNetworkRequest(url);
-    requestType = type;
-    reply = manager.get(request);
-    connectReply();
+    auto newRequest = new Request(Request::Method::GET, request, type);
+    requestQueue.enqueue(newRequest);
+
+    triggerRequest();
 }
 
 void WebBridge::post(QUrl url, QUrlQuery data, Response::Type type) {
-    if (reply != nullptr) {
-        // TODO emit bad response
-        qDebug() << "Another request in progress!";
-        return;
-    }
-    dataRead.clear();
-
     auto request = QNetworkRequest(url);
     request.setHeader(QNetworkRequest::ContentTypeHeader,
         "application/x-www-form-urlencoded");
 
-    requestType = type;
-    reply = manager.post(request, data.toString(QUrl::FullyEncoded).toUtf8());
-    connectReply();
+    auto newRequest = new Request(Request::Method::POST, request, type);
+    newRequest->setData(data.toString(QUrl::FullyEncoded).toUtf8());
+    requestQueue.enqueue(newRequest);
+
+    triggerRequest();
 }
 
 void WebBridge::deleteResource(QUrl url, Response::Type type) {
-    if (reply != nullptr) {
-        // TODO emit bad response
-        qDebug() << "Another request in progress!";
+    auto request = QNetworkRequest(url);
+    auto newRequest = new Request(Request::Method::DELETE, request, type);
+    requestQueue.enqueue(newRequest);
+
+    triggerRequest();
+}
+
+void WebBridge::triggerRequest() {
+    qDebug() << "queue size: " << requestQueue.size();
+    if (requestReply != nullptr || requestQueue.empty()) {
         return;
     }
-    dataRead.clear();
 
-    auto request = QNetworkRequest(url);
-    requestType = type;
-    reply = manager.deleteResource(request);
+    currentRequest = requestQueue.dequeue();
+    dataRead.clear();
+    requestType = currentRequest->getType();
+    auto request = currentRequest->getRequest();
+
+    switch (currentRequest->getMethod()) {
+        case Request::Method::GET:
+            requestReply = manager.get(request);
+            break;
+        case Request::Method::POST:
+            requestReply = manager.post(request, currentRequest->getData());
+            break;
+        case Request::Method::DELETE:
+            requestReply = manager.deleteResource(request);
+            break;
+    }
+
     connectReply();
 }
 
 void WebBridge::connectReply() {
     connect(
-        reply,
+        requestReply,
         &QNetworkReply::finished,
         this,
         &WebBridge::networkReplyFinished
     );
     connect(
-        reply,
+        requestReply,
         &QIODevice::readyRead,
         this,
         &WebBridge::networkReplyReady
@@ -161,27 +170,29 @@ void WebBridge::connectReply() {
 }
 
 void WebBridge::networkReplyReady() {
-    dataRead.append(reply->readAll());
+    dataRead.append(requestReply->readAll());
 }
 
 void WebBridge::networkReplyFinished() {
-    QVariant statusCode = reply->attribute(QNetworkRequest::HttpStatusCodeAttribute);
+    QVariant statusCode = requestReply->attribute(QNetworkRequest::HttpStatusCodeAttribute);
 
-    auto error = reply->error();
+    auto error = requestReply->error();
     if (error != QNetworkReply::NoError &&
         error < PROTOCOL_ERROR_HIGH) {
         qDebug() << "error: " << error;
 
-        reply->deleteLater();
-        reply = nullptr;
+        requestReply->deleteLater();
+        requestReply = nullptr;
         emit responseError(error);
     } else {
         Response response(statusCode.toInt(), dataRead, requestType);
 
-        reply->deleteLater();
-        reply = nullptr;
+        requestReply->deleteLater();
+        requestReply = nullptr;
         emit gotResponse(response);
     }
+
+    triggerRequest();
 }
 
 void WebBridge::requestFileDownload(int id, QString path) {

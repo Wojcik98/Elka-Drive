@@ -24,6 +24,7 @@ SOURCES += \
     src/downloaditem.cpp \
     src/groupsettingsdialog.cpp \
     src/registerdialog.cpp \
+    src/request.cpp \
     src/response.cpp \
     src/apibridge.cpp \
     src/controller.cpp \
@@ -41,6 +42,7 @@ HEADERS += \
     include/logindialog.h \
     include/model.h \
     include/registerdialog.h \
+    include/request.h \
     include/response.h \
     include/user.h \
     include/view.h \

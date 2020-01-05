@@ -7,6 +7,7 @@
 #include <QQueue>
 #include "include/apibridge.h"
 #include "include/downloaditem.h"
+#include "include/request.h"
 
 class WebBridge : public APIBridge {
 public:
@@ -31,15 +32,19 @@ private:
     void post(QUrl url, QUrlQuery data, Response::Type type);
     void deleteResource(QUrl url, Response::Type type);
     void connectReply();
+    void triggerRequest();
     void requestDownload(int id, QString path, QUrl url);
     void triggerDownload();
     static const int PROTOCOL_ERROR_HIGH = 100;
 
     QString mainUrl;
     QNetworkAccessManager manager;
-    QNetworkReply *reply;
     Response::Type requestType;
     QByteArray dataRead;
+
+    QQueue<Request *> requestQueue;
+    QNetworkReply *requestReply;
+    Request *currentRequest;
 
     QQueue<DownloadItem *> downloadQueue;
     QNetworkReply *downloadReply;
