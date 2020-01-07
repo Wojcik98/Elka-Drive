@@ -133,6 +133,10 @@ void Model::requestNewFolder(QString name) {
     bridge->requestNewFolder(path.join("/") + "/" + name);
 }
 
+void Model::requestFileUpload(QString rootLocal, QString relativePath) {
+    bridge->requestFileUpload(rootLocal, this->path.join("/"), relativePath);
+}
+
 bool Model::isLogged() {
     return logged;
 }
@@ -176,15 +180,24 @@ void Model::gotResponse(Response response) {
         case RequestType::NEW_FOLDER:
             handleNewFolderResponse(response);
             break;
+        case RequestType::DOWNLOAD:
+            // will not occur
+            break;
+        case RequestType::UPLOAD_NEW_FOLDER:
+            // will not occur
+            break;
+        case RequestType::UPLOAD_SEND_FILE:
+            handleUploadResponse(response);
+            break;
     }
 }
 
-void Model::handleLoginResponse(Response response) {
+void Model::handleLoginResponse(Response) {
     logged = true;
     emit userLogged();
 }
 
-void Model::handleRegisterResponse(Response response) {
+void Model::handleRegisterResponse(Response) {
     emit userRegistered();
 }
 
@@ -207,7 +220,7 @@ void Model::handleGroupsResponse(Response response) {
     emit groupsReceived(groups);
 }
 
-void Model::handleNewGroupResponse(Response response) {
+void Model::handleNewGroupResponse(Response) {
     emit newGroupStatusCode();
 }
 
@@ -259,26 +272,26 @@ void Model::handleGroupUsersResponse(Response response) {
     emit groupUsersReceived(users);
 }
 
-void Model::handleGroupDeleteResponse(Response response) {
+void Model::handleGroupDeleteResponse(Response) {
     emit groupDeletedReceived();
 }
 
-void Model::handleGroupAddUserResponse(Response response) {
+void Model::handleGroupAddUserResponse(Response) {
     emit groupAddUserReceived();
 }
 
-void Model::handleGroupRemoveUserResponse(Response response) {
+void Model::handleGroupRemoveUserResponse(Response) {
     emit groupRemoveUserReceived();
 }
 
-void Model::handleDeleteResponse(Response response) {
+void Model::handleDeleteResponse(Response) {
     emit resourceDeleted();
 }
 
-void Model::handleNewFolderResponse(Response response) {
+void Model::handleNewFolderResponse(Response) {
     emit newFolderCreated();
 }
 
-void Model::requestFileUpload(QString rootLocal, QString relativePath) {
-    bridge->requestFileUpload(rootLocal, this->path.join("/"), relativePath);
+void Model::handleUploadResponse(Response) {
+    emit uploadComplete();
 }

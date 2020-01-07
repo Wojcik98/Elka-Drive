@@ -66,6 +66,7 @@ private:
     void handleGroupRemoveUserResponse(Response response);
     void handleDeleteResponse(Response response);
     void handleNewFolderResponse(Response response);
+    void handleUploadResponse(Response response);
 
     QList<QStandardItem*> parseDirectory(QByteArray json);
 
@@ -84,6 +85,7 @@ signals:
     void newFolderCreated();
     void downloadProgress(qint64 current, qint64 total);
     void uploadProgress(qint64 current, qint64 total);
+    void uploadComplete();
 
 public slots:
     void gotResponse(Response response);

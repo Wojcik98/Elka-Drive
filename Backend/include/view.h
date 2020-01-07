@@ -44,8 +44,13 @@ protected:
     QPushButton *dirButton;
     QPushButton *uploadFileButton;
     QPushButton *uploadFolderButton;
+
+    QWidget *uploadWidget;
     QProgressBar *uploadProgress;
+    QLabel *uploadFinishedLabel;
+    QWidget *downloadWidget;
     QProgressBar *downloadProgress;
+    QLabel *downloadFinishedLabel;
 
 signals:
     void createNewGroup();

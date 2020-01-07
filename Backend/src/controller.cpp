@@ -44,13 +44,19 @@ void Controller::setModel(Model *model) {
         model,
         &Model::resourceDeleted,
         this,
-        &Controller::resourceDeleted
+        &Controller::refresh
     );
     connect(
         model,
         &Model::newFolderCreated,
         this,
-        &Controller::newFolderCreated
+        &Controller::refresh
+    );
+    connect(
+        model,
+        &Model::uploadComplete,
+        this,
+        &Controller::refresh
     );
 
     connectViewAndModel();
@@ -338,10 +344,6 @@ void Controller::refresh() {
     model->refresh();
 }
 
-void Controller::resourceDeleted() {
-    refresh();
-}
-
 void Controller::createNewFolder() {
     bool ok;
     QString name = view->getNewFolderName(&ok);
@@ -349,10 +351,6 @@ void Controller::createNewFolder() {
     if (ok) {
         model->requestNewFolder(name);
     }
-}
-
-void Controller::newFolderCreated() {
-    refresh();
 }
 
 void Controller::uploadFile() {

@@ -35,9 +35,7 @@ signals:
     void responseError(QNetworkReply::NetworkError error, Response requestType);
     void gotResponse(Response response);    // TODO reference?
     void downloadProgress(qint64 bytesReceived, qint64 bytesTotal);
-    void downloadEnded();
     void uploadProgress(qint64 bytesSent, qint64 bytesTotal);
-    void uploadEnded();
     void fileOpenError(const QString &filename);
 };
 

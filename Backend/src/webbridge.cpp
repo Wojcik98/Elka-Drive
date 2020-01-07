@@ -258,7 +258,10 @@ void WebBridge::downloadReplyReady() {
 }
 
 void WebBridge::downloadReplyFinished() {
+    // if download finished reply will emit downloadProgress(max, max)
     auto error = downloadReply->error();
+    auto content = downloadReply->readAll();
+    auto response = Response(content, RequestType::DOWNLOAD);
 
     downloadReply->deleteLater();
     downloadReply = nullptr;
@@ -269,7 +272,6 @@ void WebBridge::downloadReplyFinished() {
     if (error != QNetworkReply::NoError) {
         qDebug() << "error: " << error;
 
-        auto response = Response("", RequestType::DOWNLOAD);
         emit responseError(error, response);
     }
 
@@ -384,6 +386,7 @@ void WebBridge::triggerUploadSendFile() {
 }
 
 void WebBridge::uploadSendFileFinished() {
+    // if upload finished reply will emit uploadProgress(max, max)
     auto content = uploadReply->readAll();
     auto response = Response(content, RequestType::UPLOAD_SEND_FILE);
 
@@ -398,6 +401,8 @@ void WebBridge::uploadSendFileFinished() {
         qDebug() << "error: " << error;
 
         emit responseError(error, response);
+    } else {
+        emit gotResponse(response);
     }
 
     triggerUpload();

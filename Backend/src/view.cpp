@@ -23,8 +23,23 @@ View::View(QWidget *parent) : QMainWindow(parent), groupsWidget(this), filesWidg
     filesWidget.setLayout(filesButtons);
     filesWidget.hide();
 
-    uploadProgress = new QProgressBar(this);
-    downloadProgress = new QProgressBar(this);
+    uploadWidget = new QWidget(this);
+    auto uploadLayout = new QGridLayout(uploadWidget);
+    uploadProgress = new QProgressBar(uploadWidget);
+    uploadFinishedLabel = new QLabel("Finished!", uploadWidget);
+    uploadLayout->addWidget(uploadProgress, 0, 0);
+    uploadLayout->addWidget(uploadFinishedLabel, 0, 0);
+    uploadProgress->setVisible(true);
+    uploadFinishedLabel->setVisible(false);
+
+    downloadWidget = new QWidget(this);
+    auto downloadLayout = new QGridLayout(downloadWidget);
+    downloadProgress = new QProgressBar(downloadWidget);
+    downloadFinishedLabel = new QLabel("Finished!", downloadWidget);
+    downloadLayout->addWidget(downloadProgress, 0, 0);
+    downloadLayout->addWidget(downloadFinishedLabel, 0, 0);
+    downloadProgress->setVisible(true);
+    downloadFinishedLabel->setVisible(false);
 
     connect(
         newButton,
@@ -82,15 +97,33 @@ void View::setSettingsButtonEnabled(bool enabled) {
 }
 
 void View::setUploadProgress(qint64 current, qint64 total) {
-    uploadProgress->setMinimum(0);
-    uploadProgress->setMaximum(total);
-    uploadProgress->setValue(current);
+    if (current == total && current != -1) {
+        uploadProgress->reset();
+        uploadProgress->setVisible(false);
+        uploadFinishedLabel->setVisible(true);
+    } else {
+        uploadProgress->setVisible(true);
+        uploadFinishedLabel->setVisible(false);
+
+        uploadProgress->setMinimum(0);
+        uploadProgress->setMaximum(total);
+        uploadProgress->setValue(current);
+    }
 }
 
 void View::setDownloadProgress(qint64 current, qint64 total) {
-    downloadProgress->setMinimum(0);
-    downloadProgress->setMaximum(total);
-    downloadProgress->setValue(current);
+    if (current == total && current != -1) {
+        downloadProgress->reset();
+        downloadProgress->setVisible(false);
+        downloadFinishedLabel->setVisible(true);
+    } else {
+        downloadProgress->setVisible(true);
+        downloadFinishedLabel->setVisible(false);
+
+        downloadProgress->setMinimum(0);
+        downloadProgress->setMaximum(total);
+        downloadProgress->setValue(current);
+    }
 }
 
 void View::showLogoutMsg() {

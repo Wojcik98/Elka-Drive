@@ -54,9 +54,7 @@ public slots:
     void newGroupStatusCode();
     void pathReceived(QList<QStandardItem*> dir);
     void openGroupSettings(QModelIndex index);
-    void resourceDeleted();
     void createNewFolder();
-    void newFolderCreated();
     void uploadFile();
     void uploadFolder();
 };
