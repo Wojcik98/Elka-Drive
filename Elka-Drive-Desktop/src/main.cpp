@@ -12,10 +12,8 @@ int main(int argc, char *argv[]) {
 
     MainWindow view;
     Model model(&bridge);
-    Controller controller(&app);
+    Controller controller(&app, &view, &model);
 
-    controller.setModel(&model);
-    controller.setView(&view);
     view.setController(&controller);
 
     view.show();

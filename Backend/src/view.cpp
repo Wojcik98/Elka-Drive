@@ -106,8 +106,8 @@ void View::setUploadProgress(qint64 current, qint64 total) {
         uploadFinishedLabel->setVisible(false);
 
         uploadProgress->setMinimum(0);
-        uploadProgress->setMaximum(total);
-        uploadProgress->setValue(current);
+        uploadProgress->setMaximum(static_cast<int>(total));
+        uploadProgress->setValue(static_cast<int>(current));
     }
 }
 
@@ -121,8 +121,8 @@ void View::setDownloadProgress(qint64 current, qint64 total) {
         downloadFinishedLabel->setVisible(false);
 
         downloadProgress->setMinimum(0);
-        downloadProgress->setMaximum(total);
-        downloadProgress->setValue(current);
+        downloadProgress->setMaximum(static_cast<int>(total));
+        downloadProgress->setValue(static_cast<int>(current));
     }
 }
 

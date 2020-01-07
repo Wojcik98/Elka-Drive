@@ -15,23 +15,23 @@ class View;
 class Controller : public QObject {
     Q_OBJECT
 public:
-    explicit Controller(QApplication *app);
+    explicit Controller(QApplication *app, View *view, Model *model);
     void requestDownload(const QModelIndex &index);
-
-    void setView(View *view);
-    void setModel(Model *model);
 
     void tryLogin();
     void showGroups();
 
 private:
     QApplication *app;
-    View *view = nullptr;
-    Model *model = nullptr;
+    View *view;
+    Model *model;
     LoginDialog *loginDialog = nullptr;
     RegisterDialog *registerDialog = nullptr;
     GroupSettingsDialog *groupSettingsDialog = nullptr;
 
+    void connectApp();
+    void connectView();
+    void connectModel();
     void connectViewAndModel();
     QStringList getAllFiles(QDir path);
     void unauthorized();

@@ -3,7 +3,14 @@
 
 #include "include/controller.h"
 
-Controller::Controller(QApplication *app) : app(app) {
+Controller::Controller(QApplication *app, View *view, Model *model) : app(app), view(view), model(model) {
+    connectApp();
+    connectView();
+    connectModel();
+    connectViewAndModel();
+}
+
+void Controller::connectApp() {
     connect(
         this,
         &Controller::closeApp,
@@ -13,9 +20,40 @@ Controller::Controller(QApplication *app) : app(app) {
     );
 }
 
-void Controller::setModel(Model *model) {
-    this->model = model;
+void Controller::connectView() {
+    connect(
+        view,
+        &View::createNewGroup,
+        this,
+        &Controller::requestNewGroup
+    );
+    connect(
+        view,
+        &View::openGroupSettings,
+        this,
+        &Controller::openGroupSettings
+    );
+    connect(
+        view,
+        &View::createNewFolder,
+        this,
+        &Controller::createNewFolder
+    );
+    connect(
+        view,
+        &View::uploadFile,
+        this,
+        &Controller::uploadFile
+    );
+    connect(
+        view,
+        &View::uploadFolder,
+        this,
+        &Controller::uploadFolder
+    );
+}
 
+void Controller::connectModel() {
     connect(
         model,
         &Model::responseError,
@@ -64,52 +102,9 @@ void Controller::setModel(Model *model) {
         this,
         &Controller::fileOpenError
     );
-
-    connectViewAndModel();
-}
-
-void Controller::setView(View *view) {
-    this->view = view;
-
-    connect(
-        view,
-        &View::createNewGroup,
-        this,
-        &Controller::requestNewGroup
-    );
-    connect(
-        view,
-        &View::openGroupSettings,
-        this,
-        &Controller::openGroupSettings
-    );
-    connect(
-        view,
-        &View::createNewFolder,
-        this,
-        &Controller::createNewFolder
-    );
-    connect(
-        view,
-        &View::uploadFile,
-        this,
-        &Controller::uploadFile
-    );
-    connect(
-        view,
-        &View::uploadFolder,
-        this,
-        &Controller::uploadFolder
-    );
-
-    connectViewAndModel();
 }
 
 void Controller::connectViewAndModel() {
-    if (view == nullptr || model == nullptr) {
-        return;
-    }
-
     connect(
         model,
         &Model::downloadProgress,
