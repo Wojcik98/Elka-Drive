@@ -51,6 +51,11 @@ MainWindow::MainWindow(QWidget *parent) : View(parent), ui(new Ui::MainWindow) {
     ui->statusBar->addPermanentWidget(uploadWidget, 3);
     ui->statusBar->addPermanentWidget(downloadLabel, 1);
     ui->statusBar->addPermanentWidget(downloadWidget, 3);
+
+    ui->backButton->setIcon(QIcon(":/icons/arrow_back.svg"));
+    ui->refreshButton->setIcon(QIcon(":/icons/refresh.svg"));
+    ui->sendButton->setIcon(QIcon(":/icons/send.svg"));
+    sendButton = ui->sendButton;
 }
 
 MainWindow::~MainWindow() {
@@ -93,6 +98,12 @@ void MainWindow::setController(Controller *controller) {
         controller,
         &Controller::refresh
     );
+    connect(
+        ui->sendButton,
+        &QPushButton::clicked,
+        this,
+        &MainWindow::sendButtonClicked
+    );
 }
 
 bool MainWindow::filesSort(QStandardItem *a, QStandardItem *b) {
@@ -104,4 +115,13 @@ void MainWindow::setFileList(QList<QStandardItem*> files) {
     std::sort(files.begin(), files.end(), filesSort);
     fileListModel.clear();
     fileListModel.appendColumn(files);
+}
+
+void MainWindow::sendButtonClicked() {
+    auto msg = ui->messageEdit->text();
+    emit sendMsg(msg);
+}
+
+void MainWindow::clearMsg() {
+    ui->messageEdit->clear();
 }

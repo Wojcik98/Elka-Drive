@@ -5,11 +5,11 @@ MockBridge::MockBridge() : response(Response(QByteArray(), RequestType::LOGIN)) 
 
 }
 
-void MockBridge::requestLogin(QString user, QString password) {
+void MockBridge::requestLogin(QString, QString) {
     emit gotResponse(response);
 }
 
-void MockBridge::requestRegister(QString user, QString password) {
+void MockBridge::requestRegister(QString, QString) {
     emit gotResponse(response);
 }
 
@@ -17,52 +17,56 @@ void MockBridge::requestGroups() {
     emit gotResponse(response);
 }
 
-void MockBridge::requestNewGroup(QString groupName) {
+void MockBridge::requestNewGroup(QString) {
     emit gotResponse(response);
 }
 
-void MockBridge::requestPath(QString path) {
+void MockBridge::requestPath(QString) {
     emit gotResponse(response);
 }
 
-void MockBridge::requestFileDownload(int id, QString path) {
+void MockBridge::requestFileDownload(int, QString) {
     emit gotResponse(response);
 }
 
-void MockBridge::requestDirectoryDownload(int id, QString path) {
+void MockBridge::requestDirectoryDownload(int, QString) {
     emit gotResponse(response);
 }
 
-void MockBridge::requestGroupUsers(int groupId) {
+void MockBridge::requestGroupUsers(int) {
     emit gotResponse(response);
 }
 
-void MockBridge::requestGroupDelete(int groupId) {
+void MockBridge::requestGroupDelete(int) {
     emit gotResponse(response);
 }
 
-void MockBridge::requestAddUserToGroup(QString username, int groupId) {
+void MockBridge::requestAddUserToGroup(QString, int) {
     emit gotResponse(response);
 }
 
-void MockBridge::requestRemoveUserFromGroup(QString username, int groupId) {
+void MockBridge::requestRemoveUserFromGroup(QString, int) {
     emit gotResponse(response);
 }
 
-void MockBridge::requestFileDelete(int id) {
+void MockBridge::requestFileDelete(int) {
     emit gotResponse(response);
 }
 
-void MockBridge::requestDirectoryDelete(QString id) {
+void MockBridge::requestDirectoryDelete(QString) {
     emit gotResponse(response);
 }
 
-void MockBridge::requestNewFolder(QString path) {
+void MockBridge::requestNewFolder(QString) {
     emit gotResponse(response);
 }
 
 
-void MockBridge::requestFileUpload(QString rootLocal, QString rootServer, QString path) {
+void MockBridge::requestFileUpload(QString, QString, QString) {
+    emit gotResponse(response);
+}
+
+void MockBridge::sendMsg(int, const QString&) {
     emit gotResponse(response);
 }
 

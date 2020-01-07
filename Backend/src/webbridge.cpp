@@ -105,6 +105,15 @@ void WebBridge::requestNewFolder(QString path) {
     post(url, data, RequestType::NEW_FOLDER);
 }
 
+void WebBridge::sendMsg(int groupId, const QString &msg) {
+    auto url = QUrl(mainUrl + "/message");
+    QUrlQuery data;
+    data.addQueryItem("message", msg);
+    data.addQueryItem("groupId", QString::number(groupId));
+
+    post(url, data, RequestType::SEND_MSG);
+}
+
 void WebBridge::get(QUrl url, RequestType type) {
     auto request = QNetworkRequest(url);
     auto newRequest = new Request(Request::Method::GET, request, type);

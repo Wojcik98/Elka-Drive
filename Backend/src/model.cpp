@@ -143,6 +143,13 @@ void Model::requestFileUpload(QString rootLocal, QString relativePath) {
     bridge->requestFileUpload(rootLocal, this->path.join("/"), relativePath);
 }
 
+void Model::sendMsg(const QString &msg) {
+    if (path.length() > 0) {
+        auto groupId = path.first().toInt();
+        bridge->sendMsg(groupId, msg);
+    }
+}
+
 bool Model::isLogged() {
     return logged;
 }
@@ -195,7 +202,10 @@ void Model::gotResponse(Response response) {
         case RequestType::UPLOAD_SEND_FILE:
             handleUploadResponse(response);
             break;
-    }
+        case RequestType::SEND_MSG:
+            // do nothing
+            break;
+        }
 }
 
 void Model::handleLoginResponse(Response) {

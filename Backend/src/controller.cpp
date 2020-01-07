@@ -51,6 +51,12 @@ void Controller::connectView() {
         this,
         &Controller::uploadFolder
     );
+    connect(
+        view,
+        &View::sendMsg,
+        this,
+        &Controller::sendMsg
+    );
 }
 
 void Controller::connectModel() {
@@ -225,7 +231,7 @@ void Controller::openRegister() {
 
 void Controller::groupsReceived(QList<QStandardItem*> groups) {
     view->setFileList(groups);
-    view->setGroupsButtonsVisible();
+    view->setGroupsView();
     view->setSettingsButtonEnabled(false);
 }
 
@@ -299,7 +305,7 @@ void Controller::openGroupSettings(QModelIndex index) {
 
 void Controller::pathReceived(QList<QStandardItem*> path) {
     view->setFileList(path);
-    view->setFilesButtonsVisible();
+    view->setFilesView();
 }
 
 void Controller::requestDelete(const QModelIndex &index) {
@@ -399,4 +405,9 @@ QStringList Controller::getAllFiles(QDir path) {
 
 void Controller::fileOpenError(const QString &filename) {
     view->showFileOpenError(filename);
+}
+
+void Controller::sendMsg(const QString &msg) {
+    model->sendMsg(msg);
+    view->clearMsg();
 }

@@ -22,12 +22,14 @@ public:
 
     void setController(Controller *controller);
     void setFileList(QList<QStandardItem*> files);
+    void clearMsg();
 
 private:
     Ui::MainWindow *ui;
 
     virtual void settingsButtonClicked();
     static bool filesSort(QStandardItem *a, QStandardItem *b);
+    void sendButtonClicked();
 };
 
 #endif // MAINWINDOW_H

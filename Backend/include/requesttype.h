@@ -15,7 +15,8 @@ enum RequestType {
     NEW_FOLDER,
     DOWNLOAD,
     UPLOAD_NEW_FOLDER,
-    UPLOAD_SEND_FILE
+    UPLOAD_SEND_FILE,
+    SEND_MSG
 };
 
 #endif // REQUESTTYPE_H

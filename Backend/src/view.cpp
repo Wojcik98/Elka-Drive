@@ -82,14 +82,16 @@ void View::showEvent(QShowEvent *ev) {
     controller->tryLogin();
 }
 
-void View::setGroupsButtonsVisible() {
+void View::setGroupsView() {
     groupsWidget.show();
     filesWidget.hide();
+    sendButton->setEnabled(false);
 }
 
-void View::setFilesButtonsVisible() {
+void View::setFilesView() {
     groupsWidget.hide();
     filesWidget.show();
+    sendButton->setEnabled(true);
 }
 
 void View::setSettingsButtonEnabled(bool enabled) {

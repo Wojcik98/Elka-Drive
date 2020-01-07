@@ -40,6 +40,7 @@ public:
     void requestFileUpload(QString rootLocal, QString relativePath);
     void goBack();
     void refresh();
+    void sendMsg(const QString &msg);
 
     static const int TYPE_ROLE = Qt::UserRole + 1;
     static const int ID_ROLE = Qt::UserRole + 2;

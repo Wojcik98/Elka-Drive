@@ -30,6 +30,7 @@ public:
     virtual void requestDirectoryDelete(QString path) = 0;
     virtual void requestNewFolder(QString path) = 0;
     virtual void requestFileUpload(QString rootLocal, QString rootServer, QString path) = 0;
+    virtual void sendMsg(int groupId, const QString &msg) = 0;
 
 signals:
     void responseError(QNetworkReply::NetworkError error, Response requestType);

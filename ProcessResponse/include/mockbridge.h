@@ -22,6 +22,7 @@ public:
     virtual void requestDirectoryDelete(QString path);
     virtual void requestNewFolder(QString path);
     virtual void requestFileUpload(QString rootLocal, QString rootServer, QString path);
+    virtual void sendMsg(int groupId, const QString &msg);
 
     void setResponse(Response resopnse);
 

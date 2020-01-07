@@ -19,8 +19,9 @@ public:
 
     virtual void setController(Controller *controller) = 0;
     virtual void setFileList(QList<QStandardItem*> files) = 0;
-    void setGroupsButtonsVisible();
-    void setFilesButtonsVisible();
+    virtual void clearMsg() = 0;
+    void setGroupsView();
+    void setFilesView();
     void setSettingsButtonEnabled(bool enabled);
     void showLogoutMsg();
     void showForbiddenMsg();
@@ -45,6 +46,7 @@ protected:
     QPushButton *dirButton;
     QPushButton *uploadFileButton;
     QPushButton *uploadFolderButton;
+    QPushButton *sendButton;
 
     QWidget *uploadWidget;
     QProgressBar *uploadProgress;
@@ -59,6 +61,7 @@ signals:
     void createNewFolder();
     void uploadFile();
     void uploadFolder();
+    void sendMsg(const QString &msg);
 
 public slots:
     void setUploadProgress(qint64 current, qint64 total);
