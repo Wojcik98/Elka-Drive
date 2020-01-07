@@ -57,6 +57,7 @@ public slots:
     void createNewFolder();
     void uploadFile();
     void uploadFolder();
+    void fileOpenError(const QString &filename);
 };
 
 #endif // CONTROLLER_H

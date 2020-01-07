@@ -145,6 +145,13 @@ void View::showUnknownErrorMsg() {
     msgBox.exec();
 }
 
+void View::showFileOpenError(const QString &filename) {
+    QMessageBox msgBox;
+    msgBox.setText("Could not open file!");
+    msgBox.setInformativeText(filename);
+    msgBox.exec();
+}
+
 QString View::getNewGroupName(bool *ok) {
     return QInputDialog::getText(
         this, "Create new group", "Group name:",

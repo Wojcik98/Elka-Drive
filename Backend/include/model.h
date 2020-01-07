@@ -86,6 +86,7 @@ signals:
     void downloadProgress(qint64 current, qint64 total);
     void uploadProgress(qint64 current, qint64 total);
     void uploadComplete();
+    void fileOpenError(const QString &filename);
 
 public slots:
     void gotResponse(Response response);

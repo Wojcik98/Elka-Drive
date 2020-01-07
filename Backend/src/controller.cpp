@@ -58,6 +58,12 @@ void Controller::setModel(Model *model) {
         this,
         &Controller::refresh
     );
+    connect(
+        model,
+        &Model::fileOpenError,
+        this,
+        &Controller::fileOpenError
+    );
 
     connectViewAndModel();
 }
@@ -394,4 +400,8 @@ QStringList Controller::getAllFiles(QDir path) {
     }
 
     return files;
+}
+
+void Controller::fileOpenError(const QString &filename) {
+    view->showFileOpenError(filename);
 }

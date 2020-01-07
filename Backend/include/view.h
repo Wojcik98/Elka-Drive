@@ -25,6 +25,7 @@ public:
     void showLogoutMsg();
     void showForbiddenMsg();
     void showUnknownErrorMsg();
+    void showFileOpenError(const QString &filename);
     QString getNewGroupName(bool *ok);
     QString getNewFolderName(bool *ok);
     QStringList getUploadFileNames();

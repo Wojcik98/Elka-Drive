@@ -32,6 +32,12 @@ Model::Model(APIBridge *bridge) : bridge(bridge) {
         this,
         &Model::uploadProgress
     );
+    connect(
+        bridge,
+        &APIBridge::fileOpenError,
+        this,
+        &Model::fileOpenError
+    );
 }
 
 void Model::clearPath() {
