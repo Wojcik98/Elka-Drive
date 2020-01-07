@@ -13,6 +13,7 @@ public:
     void closeFile();
     void appendData(QByteArray data);
     QUrl getUrl();
+    QString getFilePath();
 
 private:
     int id;

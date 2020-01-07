@@ -20,6 +20,18 @@ Model::Model(APIBridge *bridge) : bridge(bridge) {
         this,
         &Model::responseError
     );
+    connect(
+        bridge,
+        &APIBridge::downloadProgress,
+        this,
+        &Model::downloadProgress
+    );
+    connect(
+        bridge,
+        &APIBridge::uploadProgress,
+        this,
+        &Model::uploadProgress
+    );
 }
 
 void Model::clearPath() {

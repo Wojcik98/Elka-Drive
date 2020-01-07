@@ -21,3 +21,7 @@ void DownloadItem::appendData(QByteArray data) {
 QUrl DownloadItem::getUrl() {
     return url;
 }
+
+QString DownloadItem::getFilePath() {
+    return path;
+}

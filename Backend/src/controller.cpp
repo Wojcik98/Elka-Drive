@@ -62,6 +62,8 @@ void Controller::setModel(Model *model) {
         this,
         &Controller::newFolderCreated
     );
+
+    connectViewAndModel();
 }
 
 void Controller::setView(View *view) {
@@ -96,6 +98,27 @@ void Controller::setView(View *view) {
         &View::uploadFolder,
         this,
         &Controller::uploadFolder
+    );
+
+    connectViewAndModel();
+}
+
+void Controller::connectViewAndModel() {
+    if (view == nullptr || model == nullptr) {
+        return;
+    }
+
+    connect(
+        model,
+        &Model::downloadProgress,
+        view,
+        &View::setDownloadProgress
+    );
+    connect(
+        model,
+        &Model::uploadProgress,
+        view,
+        &View::setUploadProgress
     );
 }
 

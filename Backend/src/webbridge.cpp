@@ -180,23 +180,20 @@ void WebBridge::networkReplyFinished() {
     QVariant statusCode = requestReply->attribute(QNetworkRequest::HttpStatusCodeAttribute);
 
     auto error = requestReply->error();
+    auto type = currentRequest->getType();
+    Response response(statusCode.toInt(), dataRead, type);
+
+    delete currentRequest;
+    currentRequest = nullptr;
+    requestReply->deleteLater();
+    requestReply = nullptr;
+
     if (error != QNetworkReply::NoError &&
         error < PROTOCOL_ERROR_HIGH) {
         qDebug() << "error: " << error;
 
-        delete currentRequest;
-        currentRequest = nullptr;
-        requestReply->deleteLater();
-        requestReply = nullptr;
         emit responseError(error);
     } else {
-        auto type = currentRequest->getType();
-        Response response(statusCode.toInt(), dataRead, type);
-
-        delete currentRequest;
-        currentRequest = nullptr;
-        requestReply->deleteLater();
-        requestReply = nullptr;
         emit gotResponse(response);
     }
 
@@ -243,9 +240,15 @@ void WebBridge::triggerDownload() {
             this,
             &WebBridge::downloadReplyReady
         );
-        // TODO progress
+        connect(
+            downloadReply,
+            &QNetworkReply::downloadProgress,
+            this,
+            &WebBridge::downloadProgress
+        );
     } else {
-        // TODO emit some error
+        emit fileOpenError(currentDownload->getFilePath());
+        delete currentDownload;
         currentDownload = nullptr;
         triggerDownload();
     }
@@ -256,13 +259,21 @@ void WebBridge::downloadReplyReady() {
 }
 
 void WebBridge::downloadReplyFinished() {
-    qDebug() << "download reply finished";
+    auto error = downloadReply->error();
+
     downloadReply->deleteLater();
     downloadReply = nullptr;
     currentDownload->closeFile();
     delete currentDownload;
     currentDownload = nullptr;
-    // TODO emit some signals
+
+    if (error != QNetworkReply::NoError &&
+        error < PROTOCOL_ERROR_HIGH) {
+        qDebug() << "error: " << error;
+
+        emit responseError(error);
+    }
+
     triggerDownload();
 }
 
@@ -302,12 +313,25 @@ void WebBridge::triggerUploadCreateDirectory() {
 void WebBridge::uploadCreateDirectoryFinished() {
     auto statusCode = uploadReply->attribute(QNetworkRequest::HttpStatusCodeAttribute).toInt();
     auto response = uploadReply->readAll();
-    qDebug() << "create dir finished" << statusCode << response;
 
-    uploadReply->deleteLater();
-    uploadReply = nullptr;
+    auto error = uploadReply->error();
+    if (error != QNetworkReply::NoError &&
+        error < PROTOCOL_ERROR_HIGH) {
+        qDebug() << "error: " << error;
 
-    triggerUploadSendFile();
+        delete currentUpload;
+        currentUpload = nullptr;
+        uploadReply->deleteLater();
+        uploadReply = nullptr;
+        emit responseError(error);
+
+        triggerUpload();
+    } else {
+        uploadReply->deleteLater();
+        uploadReply = nullptr;
+
+        triggerUploadSendFile();
+    }
 }
 
 void WebBridge::triggerUploadSendFile() {
@@ -326,35 +350,58 @@ void WebBridge::triggerUploadSendFile() {
     );
     auto pathLocal = currentUpload->getRootLocal() + "/" + currentUpload->getRelativePath();
     QFile *file = new QFile(pathLocal);
-    file->open(QIODevice::ReadOnly);
-    filePart.setBodyDevice(file);
-    file->setParent(multiPart);
+    bool fileOpened = file->open(QIODevice::ReadOnly);
 
-    multiPart->append(pathPart);
-    multiPart->append(filePart);
+    if (fileOpened) {
+        filePart.setBodyDevice(file);
+        file->setParent(multiPart);
 
-    QUrl url(mainUrl + "/files");
-    QNetworkRequest request(url);
+        multiPart->append(pathPart);
+        multiPart->append(filePart);
 
-    uploadReply = manager.post(request, multiPart);
-    multiPart->setParent(uploadReply);
+        QUrl url(mainUrl + "/files");
+        QNetworkRequest request(url);
 
-    connect(
-        uploadReply,
-        &QNetworkReply::finished,
-        this,
-        &WebBridge::uploadSendFileFinished
-    );
+        uploadReply = manager.post(request, multiPart);
+        multiPart->setParent(uploadReply);
+
+        connect(
+            uploadReply,
+            &QNetworkReply::finished,
+            this,
+            &WebBridge::uploadSendFileFinished
+        );
+        connect(
+            uploadReply,
+            &QNetworkReply::uploadProgress,
+            this,
+            &WebBridge::uploadProgress
+        );
+    } else {
+        emit fileOpenError(pathLocal);
+        delete currentUpload;
+        currentUpload = nullptr;
+        triggerUpload();
+    }
 }
 
 void WebBridge::uploadSendFileFinished() {
     auto statusCode = uploadReply->attribute(QNetworkRequest::HttpStatusCodeAttribute).toInt();
     auto response = uploadReply->readAll();
-    qDebug() << "send file finished" << statusCode << response;
+
+    auto error = uploadReply->error();
 
     delete currentUpload;
     currentUpload = nullptr;
     uploadReply->deleteLater();
     uploadReply = nullptr;
+
+    if (error != QNetworkReply::NoError &&
+        error < PROTOCOL_ERROR_HIGH) {
+        qDebug() << "error: " << error;
+
+        emit responseError(error);
+    }
+
     triggerUpload();
 }

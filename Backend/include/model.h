@@ -79,6 +79,8 @@ signals:
     void resourceDeleted(bool success, bool notFound, bool forbidden);
     void newFolderCreated(bool success, bool forbidden);
     void responseError(QNetworkReply::NetworkError error);
+    void downloadProgress(qint64 current, qint64 total);
+    void uploadProgress(qint64 current, qint64 total);
 
 public slots:
     void gotResponse(Response response);

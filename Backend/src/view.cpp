@@ -20,6 +20,9 @@ View::View(QWidget *parent) : QMainWindow(parent), groupsWidget(this), filesWidg
     filesWidget.setLayout(filesButtons);
     filesWidget.hide();
 
+    uploadProgress = new QProgressBar(this);
+    downloadProgress = new QProgressBar(this);
+
     connect(
         newButton,
         &QPushButton::clicked,
@@ -73,4 +76,16 @@ void View::setFilesButtonsVisible() {
 
 void View::setSettingsButtonEnabled(bool enabled) {
     settingsButton->setEnabled(enabled);
+}
+
+void View::setUploadProgress(qint64 current, qint64 total) {
+    uploadProgress->setMinimum(0);
+    uploadProgress->setMaximum(total);
+    uploadProgress->setValue(current);
+}
+
+void View::setDownloadProgress(qint64 current, qint64 total) {
+    downloadProgress->setMinimum(0);
+    downloadProgress->setMaximum(total);
+    downloadProgress->setValue(current);
 }

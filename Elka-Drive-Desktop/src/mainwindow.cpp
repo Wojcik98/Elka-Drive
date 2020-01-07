@@ -44,6 +44,13 @@ MainWindow::MainWindow(QWidget *parent) : View(parent), ui(new Ui::MainWindow) {
 
     ui->buttonsLayout->addWidget(&groupsWidget, 0, 0);
     ui->buttonsLayout->addWidget(&filesWidget, 0, 0);
+
+    auto uploadLabel = new QLabel("Upload:", this);
+    auto downloadLabel = new QLabel("Download:", this);
+    ui->statusBar->addPermanentWidget(uploadLabel, 1);
+    ui->statusBar->addPermanentWidget(uploadProgress, 3);
+    ui->statusBar->addPermanentWidget(downloadLabel, 1);
+    ui->statusBar->addPermanentWidget(downloadProgress, 3);
 }
 
 MainWindow::~MainWindow() {

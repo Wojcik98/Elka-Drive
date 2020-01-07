@@ -26,12 +26,13 @@ public:
 
 private:
     QApplication *app;
-    View *view;
-    Model *model;
-    LoginDialog *loginDialog;
-    RegisterDialog *registerDialog;
-    GroupSettingsDialog *groupSettingsDialog;
+    View *view = nullptr;
+    Model *model = nullptr;
+    LoginDialog *loginDialog = nullptr;
+    RegisterDialog *registerDialog = nullptr;
+    GroupSettingsDialog *groupSettingsDialog = nullptr;
 
+    void connectViewAndModel();
     QStringList getAllFiles(QDir path);
 
 signals:

@@ -4,6 +4,7 @@
 #include <QMainWindow>
 #include <QStandardItem>
 #include <QLayout>
+#include <QProgressBar>
 
 #include "include/controller.h"
 
@@ -35,6 +36,8 @@ protected:
     QPushButton *dirButton;
     QPushButton *uploadFileButton;
     QPushButton *uploadFolderButton;
+    QProgressBar *uploadProgress;
+    QProgressBar *downloadProgress;
 
 signals:
     void createNewGroup();
@@ -42,6 +45,10 @@ signals:
     void createNewFolder();
     void uploadFile();
     void uploadFolder();
+
+public slots:
+    void setUploadProgress(qint64 current, qint64 total);
+    void setDownloadProgress(qint64 current, qint64 total);
 };
 
 #endif // VIEW_H
