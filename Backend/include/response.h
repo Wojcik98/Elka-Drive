@@ -3,32 +3,19 @@
 
 #include <QByteArray>
 #include <QString>
+#include "include/requesttype.h"
+
+class Model;
 
 class Response {
 public:
-    enum Type {
-        LOGIN,
-        REGISTER,
-        GROUPS,
-        NEW_GROUP,
-        PATH,
-        GROUP_USERS,
-        GROUP_DELETE,
-        GROUP_ADD_USER,
-        GROUP_REMOVE_USER,
-        DELETE,
-        NEW_FOLDER
-    };
-
-    Response(int statusCode, QByteArray body, Response::Type type);
-    int getStatus();
+    Response(QByteArray body, RequestType type);
     QByteArray getBody();
-    Response::Type getType();
+    RequestType getType();
 
 private:
-    int statusCode;
     QByteArray body;
-    Response::Type type;
+    RequestType type;
 };
 
 #endif // RESPONSE_H

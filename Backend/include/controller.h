@@ -34,13 +34,15 @@ private:
 
     void connectViewAndModel();
     QStringList getAllFiles(QDir path);
+    void unauthorized();
+    void forbidden();
+    void unknownError();
 
 signals:
     void closeApp();
 
 public slots:
-    void unauthorized();
-    void responseError(QNetworkReply::NetworkError error);
+    void responseError(QNetworkReply::NetworkError error, Response response);
     void openRegister();
     void requestNewGroup();
     void requestDelete(const QModelIndex &index);
@@ -49,12 +51,12 @@ public slots:
     void goBack();
     void refresh();
     void groupsReceived(QList<QStandardItem*> groups);
-    void newGroupStatusCode(int statusCode);
-    void pathReceived(QList<QStandardItem*> dir, bool forbidden);
+    void newGroupStatusCode();
+    void pathReceived(QList<QStandardItem*> dir);
     void openGroupSettings(QModelIndex index);
-    void resourceDeleted(bool success, bool notFound, bool forbidden);
+    void resourceDeleted();
     void createNewFolder();
-    void newFolderCreated(bool success, bool forbidden);
+    void newFolderCreated();
     void uploadFile();
     void uploadFolder();
 };

@@ -1,16 +1,12 @@
 #include "include/response.h"
 
-Response::Response(int statusCode, QByteArray body, Response::Type type) : statusCode(statusCode), body(body), type(type) {
-}
-
-int Response::getStatus() {
-    return statusCode;
+Response::Response(QByteArray body, RequestType type) : body(body), type(type) {
 }
 
 QByteArray Response::getBody() {
     return body;
 }
 
-Response::Type Response::getType() {
+RequestType Response::getType() {
     return type;
 }

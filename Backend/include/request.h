@@ -2,7 +2,7 @@
 #define REQUEST_H
 
 #include <QNetworkRequest>
-#include "include/response.h"
+#include "include/requesttype.h"
 
 class Request {
 public:
@@ -10,17 +10,17 @@ public:
         GET, POST, DELETE
     };
 
-    Request(Method method, QNetworkRequest request, Response::Type type);
+    Request(Method method, QNetworkRequest request, RequestType type);
     void setData(QByteArray data);
     Method getMethod();
     QNetworkRequest getRequest();
-    Response::Type getType();
+    RequestType getType();
     QByteArray getData();
 
 private:
     Method method;
     QNetworkRequest request;
-    Response::Type type;
+    RequestType type;
     QByteArray data;
 };
 

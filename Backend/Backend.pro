@@ -44,6 +44,7 @@ HEADERS += \
     include/model.h \
     include/registerdialog.h \
     include/request.h \
+    include/requesttype.h \
     include/response.h \
     include/uploaditem.h \
     include/user.h \

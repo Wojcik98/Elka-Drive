@@ -45,13 +45,13 @@ void ProcessResponseTest::testLogin_data() {
 }
 
 void ProcessResponseTest::testLogin() {
-    QSignalSpy spy(model, &Model::loginStatus);
+    QSignalSpy spy(model, &Model::userLogged);
 
     QFETCH(QString, responseBody);
     QFETCH(int, responseStatus);
     QFETCH(bool, expected);
 
-    auto response = Response(responseStatus, responseBody.toUtf8(), Response::Type::LOGIN);
+    auto response = Response(responseBody.toUtf8(), RequestType::LOGIN);
     bridge.setResponse(response);
     model->requestLogin(user, password);
     QCOMPARE(spy.count(), 1);

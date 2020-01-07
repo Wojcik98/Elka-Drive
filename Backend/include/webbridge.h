@@ -9,6 +9,7 @@
 #include "include/downloaditem.h"
 #include "include/uploaditem.h"
 #include "include/request.h"
+#include "include/requesttype.h"
 
 class WebBridge : public APIBridge {
 public:
@@ -30,9 +31,9 @@ public:
     virtual void requestFileUpload(QString rootLocal, QString rootServer, QString relativePath);
 
 private:
-    void get(QUrl url, Response::Type type);
-    void post(QUrl url, QUrlQuery data, Response::Type type);
-    void deleteResource(QUrl url, Response::Type type);
+    void get(QUrl url, RequestType type);
+    void post(QUrl url, QUrlQuery data, RequestType type);
+    void deleteResource(QUrl url, RequestType type);
     void connectReply();
     void triggerRequest();
     void requestDownload(int id, QString path, QUrl url);

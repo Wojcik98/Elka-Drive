@@ -90,12 +90,11 @@ void LoginDialog::slotTryLogin() {
     );
 }
 
-void LoginDialog::slotLoginResponse(bool success) {
-    if (success) {
-        close();
-    } else {
-        labelError->setText("Cannot login!");
-        qDebug() << "hide ";
-        spinnerLabel->hide();
-    }
+void LoginDialog::slotLoginResponse() {
+    close();
+}
+
+void LoginDialog::loginFailed() {
+    labelError->setText("Cannot login!");
+    spinnerLabel->hide();
 }

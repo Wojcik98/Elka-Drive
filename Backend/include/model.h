@@ -4,6 +4,10 @@
 #include <QStandardItemModel>
 #include "include/apibridge.h"
 #include "include/user.h"
+#include "include/response.h"
+
+class APIBridge;
+class Response;
 
 class Model : public QObject {
     Q_OBJECT
@@ -66,19 +70,18 @@ private:
     QList<QStandardItem*> parseDirectory(QByteArray json);
 
 signals:
-    void unauthorized();
-    void loginStatus(bool success);
-    void registerStatus(bool success);
+    void responseError(QNetworkReply::NetworkError error, Response requestType);
+    void userLogged();
+    void userRegistered();
     void groupsReceived(QList<QStandardItem*> groups);
-    void newGroupStatusCode(int statusCode);
-    void pathReceived(QList<QStandardItem*> groups, bool forbidden);
-    void groupUsersReceived(QList<User> users, bool forbidden);
-    void groupDeletedReceived(bool forbidden);
-    void groupAddUserReceived(bool success, bool forbidden);
-    void groupRemoveUserReceived(bool success, bool forbidden);
-    void resourceDeleted(bool success, bool notFound, bool forbidden);
-    void newFolderCreated(bool success, bool forbidden);
-    void responseError(QNetworkReply::NetworkError error);
+    void newGroupStatusCode();
+    void pathReceived(QList<QStandardItem*> groups);
+    void groupUsersReceived(QList<User> users);
+    void groupDeletedReceived();
+    void groupAddUserReceived();
+    void groupRemoveUserReceived();
+    void resourceDeleted();
+    void newFolderCreated();
     void downloadProgress(qint64 current, qint64 total);
     void uploadProgress(qint64 current, qint64 total);
 

@@ -48,10 +48,10 @@ signals:
 
 public slots:
     void enableAdvanced(int state);
-    void groupUsersReceived(QList<User> users, bool forbidden);
-    void groupDeletedReceived(bool forbidden);
-    void groupAddUserReceived(bool success, bool forbidden);
-    void groupRemoveUserReceived(bool success, bool forbidden);
+    void groupUsersReceived(QList<User> users);
+    void groupDeletedReceived();
+    void groupAddUserReceived();
+    void groupRemoveUserReceived();
 };
 
 #endif // GROUPSETTINGSDIALOG_H

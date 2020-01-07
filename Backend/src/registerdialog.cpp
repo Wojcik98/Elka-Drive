@@ -100,24 +100,26 @@ void RegisterDialog::slotTryRegister() {
     QString username = comboUsername->currentText();
     QString password = editPassword->text();
 
-    emit tryLogin(
-        username,
-        password
-    );
+    emit tryLogin(username, password);
 }
 
-void RegisterDialog::slotRegisterResponse(bool success) {
-    if (success) {
-        labelError->setStyleSheet("color: green;");
-        labelError->setText("Register successful!");
-    } else {
-        labelError->setStyleSheet("color: red;");
-        labelError->setText("User exists!");
-    }
+void RegisterDialog::slotRegisterResponse() {
+    labelError->setStyleSheet("color: green;");
+    labelError->setText("Register successful!");
+
     registerButton->setEnabled(true);
     spinnerLabel->hide();
 }
 
 void RegisterDialog::setUsernamesList(const QStringList &usernames) {
     comboUsername->addItems(usernames);
+}
+
+void RegisterDialog::userExists() {
+    labelError->setStyleSheet("color: red;");
+    labelError->setText("User exists!");
+
+    registerButton->setEnabled(true);
+    spinnerLabel->hide();
+
 }

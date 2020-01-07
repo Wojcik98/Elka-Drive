@@ -39,6 +39,8 @@ void Model::clearPath() {
 }
 
 void Model::requestGroups() {
+    // TODO block requesting several paths at once
+    clearPath();
     bridge->requestGroups();
 }
 
@@ -140,59 +142,52 @@ void Model::setLogged(bool logged) {
 }
 
 void Model::gotResponse(Response response) {
+    qDebug() << "model got response" << response.getType() << RequestType::GROUPS;
     // TODO move to bridge?
-    if (response.getStatus() == STATUS_UNAUTHORIZED &&
-        response.getType() != Response::Type::LOGIN) {
-        emit unauthorized();
-        return;
-    }
-
     switch (response.getType()) {
-        case Response::Type::LOGIN:
+        case RequestType::LOGIN:
             handleLoginResponse(response);
             break;
-        case Response::Type::REGISTER:
+        case RequestType::REGISTER:
             handleRegisterResponse(response);
             break;
-        case Response::Type::GROUPS:
+        case RequestType::GROUPS:
             handleGroupsResponse(response);
             break;
-        case Response::Type::NEW_GROUP:
+        case RequestType::NEW_GROUP:
             handleNewGroupResponse(response);
             break;
-        case Response::Type::PATH:
+        case RequestType::PATH:
             handlePathResponse(response);
             break;
-        case Response::Type::GROUP_USERS:
+        case RequestType::GROUP_USERS:
             handleGroupUsersResponse(response);
             break;
-        case Response::Type::GROUP_DELETE:
+        case RequestType::GROUP_DELETE:
             handleGroupDeleteResponse(response);
             break;
-        case Response::Type::GROUP_ADD_USER:
+        case RequestType::GROUP_ADD_USER:
             handleGroupAddUserResponse(response);
             break;
-        case Response::Type::GROUP_REMOVE_USER:
+        case RequestType::GROUP_REMOVE_USER:
             handleGroupRemoveUserResponse(response);
             break;
-        case Response::Type::DELETE:
+        case RequestType::DELETE:
             handleDeleteResponse(response);
             break;
-        case Response::Type::NEW_FOLDER:
+        case RequestType::NEW_FOLDER:
             handleNewFolderResponse(response);
             break;
     }
 }
 
 void Model::handleLoginResponse(Response response) {
-    bool success = response.getStatus() == STATUS_FOUND;
-    logged = success;
-    emit loginStatus(success);
+    logged = true;
+    emit userLogged();
 }
 
 void Model::handleRegisterResponse(Response response) {
-    bool success = response.getStatus() == STATUS_OK;
-    emit registerStatus(success);
+    emit userRegistered();
 }
 
 void Model::handleGroupsResponse(Response response) {
@@ -200,6 +195,7 @@ void Model::handleGroupsResponse(Response response) {
     auto groupsRaw = QJsonDocument::fromJson(response.getBody());
 
     auto array = groupsRaw.array();
+    qDebug() << "array " << array;
 
     for (auto groupRaw : array) {
         QJsonObject obj = groupRaw.toObject();
@@ -211,24 +207,19 @@ void Model::handleGroupsResponse(Response response) {
         groups.append(group);
     }
 
+    qDebug() << "groups" << groups;
+
     emit groupsReceived(groups);
 }
 
 void Model::handleNewGroupResponse(Response response) {
-    int statusCode = response.getStatus();
-    // TODO handle here, not in controller
-    emit newGroupStatusCode(statusCode);
+    emit newGroupStatusCode();
 }
 
 void Model::handlePathResponse(Response response) {
-    bool forbidden = response.getStatus() == STATUS_FORBIDDEN;
-    QList<QStandardItem*> dir;
+    QList<QStandardItem*> dir = parseDirectory(response.getBody());
 
-    if (!forbidden) {
-        dir = parseDirectory(response.getBody());
-    }
-
-    emit pathReceived(dir, forbidden);
+    emit pathReceived(dir);
 }
 
 QList<QStandardItem*> Model::parseDirectory(QByteArray json) {
@@ -260,55 +251,37 @@ QList<QStandardItem*> Model::parseDirectory(QByteArray json) {
 
 void Model::handleGroupUsersResponse(Response response) {
     QList<User> users;
-    bool forbidden = response.getStatus() == STATUS_FORBIDDEN;
 
-    if (!forbidden) {
-        auto respRaw = QJsonDocument::fromJson(response.getBody()).object();
-        auto array = respRaw["users"].toArray();
+    auto respRaw = QJsonDocument::fromJson(response.getBody()).object();
+    auto array = respRaw["users"].toArray();
 
-        for (auto groupRaw : array) {
-            QJsonObject json = groupRaw.toObject();
-            auto user = User::fromJson(json);
-            users.append(user);
-        }
+    for (auto groupRaw : array) {
+        QJsonObject json = groupRaw.toObject();
+        auto user = User::fromJson(json);
+        users.append(user);
     }
 
-    emit groupUsersReceived(users, forbidden);
+    emit groupUsersReceived(users);
 }
 
 void Model::handleGroupDeleteResponse(Response response) {
-    bool forbidden = response.getStatus() == STATUS_FORBIDDEN;
-
-    emit groupDeletedReceived(forbidden);
+    emit groupDeletedReceived();
 }
 
 void Model::handleGroupAddUserResponse(Response response) {
-    bool success = response.getStatus() == STATUS_OK;
-    bool forbidden = response.getStatus() == STATUS_FORBIDDEN;
-
-    emit groupAddUserReceived(success, forbidden);
+    emit groupAddUserReceived();
 }
 
 void Model::handleGroupRemoveUserResponse(Response response) {
-    bool success = response.getStatus() == STATUS_OK;
-    bool forbidden = response.getStatus() == STATUS_FORBIDDEN;
-
-    emit groupRemoveUserReceived(success, forbidden);
+    emit groupRemoveUserReceived();
 }
 
 void Model::handleDeleteResponse(Response response) {
-    bool success = response.getStatus() == STATUS_OK;
-    bool forbidden = response.getStatus() == STATUS_FORBIDDEN;
-    bool notFound = response.getStatus() == STATUS_NOT_FOUND;
-
-    emit resourceDeleted(success, notFound, forbidden);
+    emit resourceDeleted();
 }
 
 void Model::handleNewFolderResponse(Response response) {
-    bool success = response.getStatus() == STATUS_OK;
-    bool forbidden = response.getStatus() == STATUS_FORBIDDEN;
-
-    emit newFolderCreated(success, forbidden);
+    emit newFolderCreated();
 }
 
 void Model::requestFileUpload(QString rootLocal, QString relativePath) {

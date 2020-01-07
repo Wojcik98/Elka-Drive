@@ -17,6 +17,7 @@ class LoginDialog : public QDialog {
 public:
     explicit LoginDialog(QWidget *parent=nullptr);
     ~LoginDialog();
+    void loginFailed();
 
 private:
     QLabel *labelUsername;
@@ -38,7 +39,7 @@ signals:
 
 public slots:
     void slotTryLogin();
-    void slotLoginResponse(bool succes);
+    void slotLoginResponse();
 };
 
 #endif // LOGINDIALOG_H

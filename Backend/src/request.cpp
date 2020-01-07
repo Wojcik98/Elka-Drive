@@ -1,6 +1,6 @@
 #include "include/request.h"
 
-Request::Request(Method method, QNetworkRequest request, Response::Type type) : method(method), request(request), type(type) {
+Request::Request(Method method, QNetworkRequest request, RequestType type) : method(method), request(request), type(type) {
 
 }
 
@@ -16,7 +16,7 @@ QNetworkRequest Request::getRequest() {
     return request;
 }
 
-Response::Type Request::getType() {
+RequestType Request::getType() {
     return type;
 }
 

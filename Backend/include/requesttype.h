@@ -1,0 +1,21 @@
+#ifndef REQUESTTYPE_H
+#define REQUESTTYPE_H
+
+enum RequestType {
+    LOGIN,
+    REGISTER,
+    GROUPS,
+    NEW_GROUP,
+    PATH,
+    GROUP_USERS,
+    GROUP_DELETE,
+    GROUP_ADD_USER,
+    GROUP_REMOVE_USER,
+    DELETE,
+    NEW_FOLDER,
+    DOWNLOAD,
+    UPLOAD_NEW_FOLDER,
+    UPLOAD_SEND_FILE
+};
+
+#endif // REQUESTTYPE_H

@@ -32,16 +32,17 @@ public:
    explicit RegisterDialog(QWidget *parent=nullptr);
    ~RegisterDialog();
 
-   void setUsername(QString &username);
+   void setUsername(QString &username); // TODO delete
    void setPassword(QString &password);
    void setUsernamesList(const QStringList &usernames);
+   void userExists();
 
 signals:
    void tryLogin(QString &username, QString &password);
 
 public slots:
    void slotTryRegister();
-   void slotRegisterResponse(bool succes);
+   void slotRegisterResponse();
 };
 
 #endif // REGISTERDIALOG_H

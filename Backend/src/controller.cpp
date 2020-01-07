@@ -22,12 +22,6 @@ void Controller::setModel(Model *model) {
 
     connect(
         model,
-        &Model::unauthorized,
-        this,
-        &Controller::unauthorized
-    );
-    connect(
-        model,
         &Model::responseError,
         this,
         &Controller::responseError
@@ -122,21 +116,60 @@ void Controller::connectViewAndModel() {
     );
 }
 
-void Controller::responseError(QNetworkReply::NetworkError error) {
-    QMessageBox msgBox;
-    msgBox.setText("Error while connecting to the server!");
-    msgBox.setInformativeText("Try again. If error persists contact developer.");
-    msgBox.exec();
+void Controller::responseError(QNetworkReply::NetworkError error, Response response) {
+    auto type = response.getType();
+    switch (error) {
+        case QNetworkReply::AuthenticationRequiredError:
+            if (type == RequestType::LOGIN) {
+                if (loginDialog) loginDialog->loginFailed();
+            } else {
+                unauthorized();
+            }
+            break;
+        case QNetworkReply::ContentAccessDenied:
+            if (type == RequestType::DELETE) {
+                refresh();
+            } else {
+                forbidden();
+            }
+            break;
+        case QNetworkReply::ContentConflictError:
+            if (type == RequestType::REGISTER) {
+                if (registerDialog) registerDialog->userExists();
+            } else {
+                unknownError();
+            }
+            break;
+        default:
+            unknownError();
+            break;
+    }
 }
 
 void Controller::unauthorized() {
     model->setLogged(false);
 
+    // TODO do this in view
     QMessageBox msgBox;
     msgBox.setText("You have been logged out!");
     msgBox.exec();
 
     tryLogin();
+}
+
+void Controller::forbidden() {
+    QMessageBox msgBox;
+    msgBox.setText("You don't have access to this group!");
+    msgBox.exec();
+    model->requestGroups();
+    // TODO get groups, etc
+}
+
+void Controller::unknownError() {
+    QMessageBox msgBox;
+    msgBox.setText("Error while connecting to the server!");
+    msgBox.setInformativeText("Try again. If error persists contact developer.");
+    msgBox.exec();
 }
 
 void Controller::tryLogin() {
@@ -154,7 +187,7 @@ void Controller::tryLogin() {
     );
     connect(
         model,
-        &Model::loginStatus,
+        &Model::userLogged,
         loginDialog,
         &LoginDialog::slotLoginResponse
     );
@@ -187,7 +220,7 @@ void Controller::openRegister() {
     );
     connect(
         model,
-        &Model::registerStatus,
+        &Model::userRegistered,
         registerDialog,
         &RegisterDialog::slotRegisterResponse
     );
@@ -203,27 +236,8 @@ void Controller::groupsReceived(QList<QStandardItem*> groups) {
     view->setSettingsButtonEnabled(false);
 }
 
-void Controller::newGroupStatusCode(int statusCode) {
-    const int STATUS_OK = 200;
-    const int STATUS_NAME_EXIST = 409;
-    const int STATUS_SERVER_ERROR_LOW = 500;
-    const int STATUS_SERVER_ERROR_HIGH = 599;
-
-    if (statusCode == STATUS_OK) {
-        model->requestGroups();
-    } else {
-        QMessageBox msgBox;
-        QString text;
-        if (statusCode == STATUS_NAME_EXIST) {
-            text = "Group with this name already exists.";
-        } else if (STATUS_SERVER_ERROR_LOW <     statusCode && statusCode <= STATUS_SERVER_ERROR_HIGH) {
-            text = "Server error, try again. If error persists contact developer.";
-        } else {
-            text = "Unknown error, try again. If error persists contact developer.";
-        }
-        msgBox.setText(text);
-        msgBox.exec();
-    }
+void Controller::newGroupStatusCode() {
+    model->requestGroups();
 }
 
 void Controller::openGroupSettings(QModelIndex index) {
@@ -290,16 +304,9 @@ void Controller::openGroupSettings(QModelIndex index) {
     model->requestGroups();
 }
 
-void Controller::pathReceived(QList<QStandardItem*> path, bool forbidden) {
-    if (forbidden) {
-        QMessageBox msgBox;
-        msgBox.setText("You were removed from this group!");
-        msgBox.exec();
-        model->requestGroups();
-    } else {
-        view->setFileList(path);
-        view->setFilesButtonsVisible();
-    }
+void Controller::pathReceived(QList<QStandardItem*> path) {
+    view->setFileList(path);
+    view->setFilesButtonsVisible();
 }
 
 void Controller::requestDelete(const QModelIndex &index) {
@@ -352,25 +359,8 @@ void Controller::refresh() {
     model->refresh();
 }
 
-void Controller::resourceDeleted(bool success, bool notFound, bool forbidden) {
-    if (notFound) {
-        QMessageBox msgBox(view);
-        msgBox.setText("File does not exist!");
-        msgBox.exec();
-        refresh();
-    } else if (forbidden) {
-        QMessageBox msgBox(view);
-        msgBox.setText("You were removed from this group!");
-        msgBox.exec();
-        model->requestGroups();
-    } else if (success) {
-        refresh();
-    } else {
-        QMessageBox msgBox(view);
-        msgBox.setText("Unknown error!");
-        msgBox.exec();
-        refresh();
-    }
+void Controller::resourceDeleted() {
+    refresh();
 }
 
 void Controller::createNewFolder() {
@@ -390,22 +380,8 @@ void Controller::createNewFolder() {
     }
 }
 
-void Controller::newFolderCreated(bool success, bool forbidden) {
-    if (forbidden) {
-        // TODO extract and clear path
-        QMessageBox msgBox(view);
-        msgBox.setText("You were removed from this group!");
-        msgBox.exec();
-        model->requestGroups();
-    } else if (success) {
-        refresh();
-    } else {
-        // TODO extract
-        QMessageBox msgBox(view);
-        msgBox.setText("Unknown error!");
-        msgBox.exec();
-        refresh();
-    }
+void Controller::newFolderCreated() {
+    refresh();
 }
 
 void Controller::uploadFile() {

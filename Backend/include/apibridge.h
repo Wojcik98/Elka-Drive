@@ -5,7 +5,9 @@
 #include <QJsonObject>
 #include <QObject>
 #include <QString>
-#include "response.h"
+#include "include/response.h"
+
+class Response;
 
 class APIBridge : public QObject {
 Q_OBJECT
@@ -30,8 +32,8 @@ public:
     virtual void requestFileUpload(QString rootLocal, QString rootServer, QString path) = 0;
 
 signals:
+    void responseError(QNetworkReply::NetworkError error, Response requestType);
     void gotResponse(Response response);    // TODO reference?
-    void responseError(QNetworkReply::NetworkError error);
     void downloadProgress(qint64 bytesReceived, qint64 bytesTotal);
     void downloadEnded();
     void uploadProgress(qint64 bytesSent, qint64 bytesTotal);

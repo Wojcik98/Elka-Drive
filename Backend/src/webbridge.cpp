@@ -19,7 +19,7 @@ void WebBridge::requestLogin(QString user, QString password) {
     data.addQueryItem("username", user);
     data.addQueryItem("password", password);
 
-    post(url, data, Response::Type::LOGIN);
+    post(url, data, RequestType::LOGIN);
 }
 
 void WebBridge::requestRegister(QString user, QString password) {
@@ -28,13 +28,13 @@ void WebBridge::requestRegister(QString user, QString password) {
     data.addQueryItem("username", user);
     data.addQueryItem("password", password);
 
-    post(url, data, Response::Type::REGISTER);
+    post(url, data, RequestType::REGISTER);
 }
 
 void WebBridge::requestFileDelete(int id) {
     auto url = QUrl(mainUrl + "/files/" + QString::number(id));
 
-    deleteResource(url, Response::Type::DELETE);
+    deleteResource(url, RequestType::DELETE);
 }
 
 void WebBridge::requestDirectoryDelete(QString path) {
@@ -43,13 +43,13 @@ void WebBridge::requestDirectoryDelete(QString path) {
     query.addQueryItem("path", path);
     url.setQuery(query.query());
 
-    deleteResource(url, Response::Type::DELETE);
+    deleteResource(url, RequestType::DELETE);
 }
 
 void WebBridge::requestGroups() {
     auto url = QUrl(mainUrl + "/groups/my");
 
-    get(url, Response::Type::GROUPS);
+    get(url, RequestType::GROUPS);
 }
 
 void WebBridge::requestNewGroup(QString groupName) {
@@ -57,7 +57,7 @@ void WebBridge::requestNewGroup(QString groupName) {
     QUrlQuery data;
     data.addQueryItem("name", groupName);
 
-    post(url, data, Response::Type::NEW_GROUP);
+    post(url, data, RequestType::NEW_GROUP);
 }
 
 void WebBridge::requestPath(QString path) {
@@ -66,19 +66,19 @@ void WebBridge::requestPath(QString path) {
     query.addQueryItem("path", path);
     url.setQuery(query.query());
 
-    get(url, Response::Type::PATH);
+    get(url, RequestType::PATH);
 }
 
 void WebBridge::requestGroupUsers(int groupId) {
     auto url = QUrl(mainUrl + "/groups/" + QString::number(groupId));
 
-    get(url, Response::Type::GROUP_USERS);
+    get(url, RequestType::GROUP_USERS);
 }
 
 void WebBridge::requestGroupDelete(int groupId) {
     auto url = QUrl(mainUrl + "/groups/" + QString::number(groupId));
 
-    deleteResource(url, Response::Type::GROUP_DELETE);
+    deleteResource(url, RequestType::GROUP_DELETE);
 }
 
 void WebBridge::requestAddUserToGroup(QString username, int groupId) {
@@ -86,7 +86,7 @@ void WebBridge::requestAddUserToGroup(QString username, int groupId) {
     QUrlQuery data;
     data.addQueryItem("username", username);
 
-    post(url, data, Response::Type::GROUP_ADD_USER);
+    post(url, data, RequestType::GROUP_ADD_USER);
 }
 
 void WebBridge::requestRemoveUserFromGroup(QString username, int groupId) {
@@ -94,7 +94,7 @@ void WebBridge::requestRemoveUserFromGroup(QString username, int groupId) {
     QUrlQuery data;
     data.addQueryItem("username", username);
 
-    post(url, data, Response::Type::GROUP_REMOVE_USER);
+    post(url, data, RequestType::GROUP_REMOVE_USER);
 }
 
 void WebBridge::requestNewFolder(QString path) {
@@ -102,10 +102,10 @@ void WebBridge::requestNewFolder(QString path) {
     QUrlQuery data;
     data.addQueryItem("path", path);
 
-    post(url, data, Response::Type::NEW_FOLDER);
+    post(url, data, RequestType::NEW_FOLDER);
 }
 
-void WebBridge::get(QUrl url, Response::Type type) {
+void WebBridge::get(QUrl url, RequestType type) {
     auto request = QNetworkRequest(url);
     auto newRequest = new Request(Request::Method::GET, request, type);
     requestQueue.enqueue(newRequest);
@@ -113,7 +113,7 @@ void WebBridge::get(QUrl url, Response::Type type) {
     triggerRequest();
 }
 
-void WebBridge::post(QUrl url, QUrlQuery data, Response::Type type) {
+void WebBridge::post(QUrl url, QUrlQuery data, RequestType type) {
     auto request = QNetworkRequest(url);
     request.setHeader(QNetworkRequest::ContentTypeHeader,
         "application/x-www-form-urlencoded");
@@ -125,7 +125,7 @@ void WebBridge::post(QUrl url, QUrlQuery data, Response::Type type) {
     triggerRequest();
 }
 
-void WebBridge::deleteResource(QUrl url, Response::Type type) {
+void WebBridge::deleteResource(QUrl url, RequestType type) {
     auto request = QNetworkRequest(url);
     auto newRequest = new Request(Request::Method::DELETE, request, type);
     requestQueue.enqueue(newRequest);
@@ -181,18 +181,18 @@ void WebBridge::networkReplyFinished() {
 
     auto error = requestReply->error();
     auto type = currentRequest->getType();
-    Response response(statusCode.toInt(), dataRead, type);
+    Response response(dataRead, type);
 
     delete currentRequest;
     currentRequest = nullptr;
     requestReply->deleteLater();
     requestReply = nullptr;
 
-    if (error != QNetworkReply::NoError &&
-        error < PROTOCOL_ERROR_HIGH) {
+    qDebug() << response.getType() << statusCode << response.getBody();
+    if (error != QNetworkReply::NoError) {
         qDebug() << "error: " << error;
 
-        emit responseError(error);
+        emit responseError(error, response);
     } else {
         emit gotResponse(response);
     }
@@ -267,11 +267,11 @@ void WebBridge::downloadReplyFinished() {
     delete currentDownload;
     currentDownload = nullptr;
 
-    if (error != QNetworkReply::NoError &&
-        error < PROTOCOL_ERROR_HIGH) {
+    if (error != QNetworkReply::NoError) {
         qDebug() << "error: " << error;
 
-        emit responseError(error);
+        auto response = Response("", RequestType::DOWNLOAD);
+        emit responseError(error, response);
     }
 
     triggerDownload();
@@ -311,19 +311,18 @@ void WebBridge::triggerUploadCreateDirectory() {
 }
 
 void WebBridge::uploadCreateDirectoryFinished() {
-    auto statusCode = uploadReply->attribute(QNetworkRequest::HttpStatusCodeAttribute).toInt();
-    auto response = uploadReply->readAll();
+    auto content = uploadReply->readAll();
+    auto response = Response(content, RequestType::UPLOAD_NEW_FOLDER);
 
     auto error = uploadReply->error();
-    if (error != QNetworkReply::NoError &&
-        error < PROTOCOL_ERROR_HIGH) {
+    if (error != QNetworkReply::NoError) {
         qDebug() << "error: " << error;
 
         delete currentUpload;
         currentUpload = nullptr;
         uploadReply->deleteLater();
         uploadReply = nullptr;
-        emit responseError(error);
+        emit responseError(error, response);
 
         triggerUpload();
     } else {
@@ -378,16 +377,16 @@ void WebBridge::triggerUploadSendFile() {
             &WebBridge::uploadProgress
         );
     } else {
-        emit fileOpenError(pathLocal);
         delete currentUpload;
         currentUpload = nullptr;
+        emit fileOpenError(pathLocal);
         triggerUpload();
     }
 }
 
 void WebBridge::uploadSendFileFinished() {
-    auto statusCode = uploadReply->attribute(QNetworkRequest::HttpStatusCodeAttribute).toInt();
-    auto response = uploadReply->readAll();
+    auto content = uploadReply->readAll();
+    auto response = Response(content, RequestType::UPLOAD_SEND_FILE);
 
     auto error = uploadReply->error();
 
@@ -396,11 +395,10 @@ void WebBridge::uploadSendFileFinished() {
     uploadReply->deleteLater();
     uploadReply = nullptr;
 
-    if (error != QNetworkReply::NoError &&
-        error < PROTOCOL_ERROR_HIGH) {
+    if (error != QNetworkReply::NoError) {
         qDebug() << "error: " << error;
 
-        emit responseError(error);
+        emit responseError(error, response);
     }
 
     triggerUpload();
