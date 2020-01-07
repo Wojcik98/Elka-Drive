@@ -266,10 +266,8 @@ void WebBridge::downloadReplyFinished() {
     triggerDownload();
 }
 
-void WebBridge::requestFileUpload(QString rootLocal, QString rootServer, QString path) {
-    qDebug() << rootLocal << rootServer << path;
-    auto newUpload = new UploadItem(rootLocal, rootServer, path);
-    qDebug() << newUpload->getFilename() << newUpload->getRootLocal() << newUpload->getRootServer();
+void WebBridge::requestFileUpload(QString rootLocal, QString rootServer, QString relativePath) {
+    auto newUpload = new UploadItem(rootLocal, rootServer, relativePath);
     uploadQueue.enqueue(newUpload);
     triggerUpload();
 }
@@ -284,7 +282,31 @@ void WebBridge::triggerUpload() {
 }
 
 void WebBridge::triggerUploadCreateDirectory() {
-    // TODO implement
+    auto path = currentUpload->getRootServer() + "/" + currentUpload->getRelativeDir();
+    auto url = QUrl(mainUrl + "/files/dir");
+    QUrlQuery data;
+    data.addQueryItem("path", path);
+    auto request = QNetworkRequest(url);
+    request.setHeader(QNetworkRequest::ContentTypeHeader,
+        "application/x-www-form-urlencoded");
+
+    uploadReply = manager.post(request, data.toString(QUrl::FullyEncoded).toUtf8());
+    connect(
+        uploadReply,
+        &QNetworkReply::finished,
+        this,
+        &WebBridge::uploadCreateDirectoryFinished
+    );
+}
+
+void WebBridge::uploadCreateDirectoryFinished() {
+    auto statusCode = uploadReply->attribute(QNetworkRequest::HttpStatusCodeAttribute).toInt();
+    auto response = uploadReply->readAll();
+    qDebug() << "create dir finished" << statusCode << response;
+
+    uploadReply->deleteLater();
+    uploadReply = nullptr;
+
     triggerUploadSendFile();
 }
 
@@ -293,7 +315,8 @@ void WebBridge::triggerUploadSendFile() {
 
     QHttpPart pathPart;
     pathPart.setHeader(QNetworkRequest::ContentDispositionHeader, QVariant("form-data; name=\"path\""));
-    pathPart.setBody(currentUpload->getRootServer().toUtf8());
+    auto path = currentUpload->getRootServer() + "/" + currentUpload->getRelativeDir();
+    pathPart.setBody(path.toUtf8());
 
     QHttpPart filePart;
     auto header = "form-data; name=\"file\"; filename=\"" + currentUpload->getFilename() + "\"";
@@ -301,7 +324,7 @@ void WebBridge::triggerUploadSendFile() {
         QNetworkRequest::ContentDispositionHeader,
         QVariant(header)
     );
-    auto pathLocal = currentUpload->getRootLocal() + currentUpload->getRelativePath();
+    auto pathLocal = currentUpload->getRootLocal() + "/" + currentUpload->getRelativePath();
     QFile *file = new QFile(pathLocal);
     file->open(QIODevice::ReadOnly);
     filePart.setBodyDevice(file);
@@ -320,17 +343,18 @@ void WebBridge::triggerUploadSendFile() {
         uploadReply,
         &QNetworkReply::finished,
         this,
-        &WebBridge::uploadReplyFinished
+        &WebBridge::uploadSendFileFinished
     );
 }
 
-void WebBridge::uploadReplyFinished() {
+void WebBridge::uploadSendFileFinished() {
     auto statusCode = uploadReply->attribute(QNetworkRequest::HttpStatusCodeAttribute).toInt();
     auto response = uploadReply->readAll();
-    qDebug() << "upload finished" << statusCode << response;
+    qDebug() << "send file finished" << statusCode << response;
 
     delete currentUpload;
     currentUpload = nullptr;
     uploadReply->deleteLater();
     uploadReply = nullptr;
+    triggerUpload();
 }

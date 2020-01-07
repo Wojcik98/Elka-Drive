@@ -42,7 +42,10 @@ void Model::requestSubpath(const QModelIndex &index) {
         subdir = index.data(Model::ID_ROLE).toString();
     } else if (type == ItemType::FOLDER) {
         subdir = index.data(Qt::DisplayRole).toString();
+    } else {
+        return;
     }
+
     path.append(subdir); // TODO read path from response?
     bridge->requestPath(path.join("/"));
 }
@@ -125,6 +128,7 @@ void Model::setLogged(bool logged) {
 }
 
 void Model::gotResponse(Response response) {
+    // TODO move to bridge?
     if (response.getStatus() == STATUS_UNAUTHORIZED &&
         response.getType() != Response::Type::LOGIN) {
         emit unauthorized();
@@ -295,6 +299,6 @@ void Model::handleNewFolderResponse(Response response) {
     emit newFolderCreated(success, forbidden);
 }
 
-void Model::requestFileUpload(QString rootLocal, QString path) {
-    bridge->requestFileUpload(rootLocal, this->path.join("/") + "/", path);
+void Model::requestFileUpload(QString rootLocal, QString relativePath) {
+    bridge->requestFileUpload(rootLocal, this->path.join("/"), relativePath);
 }

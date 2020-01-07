@@ -10,13 +10,16 @@ public:
 
     QString getRootLocal();
     QString getRootServer();
-    QString getRelativePath();
+    QString getRelativeDir();
     QString getFilename();
+    QString getRelativePath();
 
 private:
     QString rootLocal;
     QString rootServer;
     QString relativePath;
+    QString relativeDir;
+    QString filename;
 };
 
 #endif // UPLOADITEM_H

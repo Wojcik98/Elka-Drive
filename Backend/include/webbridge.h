@@ -27,7 +27,7 @@ public:
     virtual void requestFileDelete(int id);
     virtual void requestDirectoryDelete(QString path);
     virtual void requestNewFolder(QString path);
-    virtual void requestFileUpload(QString rootLocal, QString rootServer, QString path);
+    virtual void requestFileUpload(QString rootLocal, QString rootServer, QString relativePath);
 
 private:
     void get(QUrl url, Response::Type type);
@@ -63,7 +63,8 @@ private slots:
     void networkReplyFinished();
     void downloadReplyReady();
     void downloadReplyFinished();
-    void uploadReplyFinished();
+    void uploadCreateDirectoryFinished();
+    void uploadSendFileFinished();
 };
 
 #endif // WEBBRIDGE_H

@@ -387,20 +387,48 @@ void Controller::newFolderCreated(bool success, bool forbidden) {
 
 void Controller::uploadFile() {
     QStringList files = QFileDialog::getOpenFileNames(
-        view, "Select one or more files to upload"
+        view, "Select one or more files to upload", QDir::homePath()
     );
-    auto file = files.first();
-    auto separation = file.lastIndexOf("/") + 1;
-    auto path = file.left(separation);
-    auto filename = file.right(file.size() - separation);
-    model->requestFileUpload(path, filename);
+
+    for (const auto &file : files) {
+        QFileInfo info(file);
+        model->requestFileUpload(info.absolutePath(), info.fileName());
+    }
 }
 
 void Controller::uploadFolder() {
-    QString directory = QFileDialog::getExistingDirectory(
-        view, "Open Directory", "",
+    QString chosenDir = QFileDialog::getExistingDirectory(
+        view, "Open Directory", QDir::homePath(),
         QFileDialog::ShowDirsOnly | QFileDialog::DontResolveSymlinks
     );
-    qDebug() << directory;
-//    model->requestDownload(index, path);
+    if (chosenDir.isEmpty()) {
+        return;
+    }
+
+    QDir workingDir(chosenDir);
+    auto files = getAllFiles(workingDir);
+
+    workingDir.cdUp();
+    auto absolute = workingDir.absolutePath();
+
+    for (const auto &file : files) {
+        auto relative = workingDir.relativeFilePath(file);
+        model->requestFileUpload(absolute, relative);
+    }
+}
+
+QStringList Controller::getAllFiles(QDir path) {
+    QStringList files;
+    auto info = path.entryInfoList(QDir::AllEntries | QDir::NoDotAndDotDot);
+
+    for (const auto &item : info) {
+        if (item.isDir() && !item.isSymLink()) {
+            auto subfiles = getAllFiles(item.filePath());
+            files.append(subfiles);
+        } else if (!item.isDir()) {
+            files.append(item.filePath());
+        }
+    }
+
+    return files;
 }

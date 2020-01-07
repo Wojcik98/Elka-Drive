@@ -33,7 +33,7 @@ public:
     void requestNewGroup(QString groupName);
     void requestGroupUsers(int groupId);
     void requestNewFolder(QString name);
-    void requestFileUpload(QString rootLocal, QString path);
+    void requestFileUpload(QString rootLocal, QString relativePath);
     void goBack();
     void refresh();
 

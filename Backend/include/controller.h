@@ -32,6 +32,8 @@ private:
     RegisterDialog *registerDialog;
     GroupSettingsDialog *groupSettingsDialog;
 
+    QStringList getAllFiles(QDir path);
+
 signals:
     void closeApp();
 

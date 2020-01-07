@@ -1,7 +1,9 @@
 #include "include/uploaditem.h"
 
-UploadItem::UploadItem(QString rootLocal, QString rootServer, QString path) : rootLocal(rootLocal), rootServer(rootServer), relativePath(path) {
-
+UploadItem::UploadItem(QString rootLocal, QString rootServer, QString relativePath) : rootLocal(rootLocal), rootServer(rootServer), relativePath(relativePath) {
+    auto separation = relativePath.lastIndexOf("/") + 1;
+    relativeDir = relativePath.left(separation);
+    filename = relativePath.right(relativePath.size() - separation);
 }
 
 QString UploadItem::getRootLocal() {
@@ -12,11 +14,14 @@ QString UploadItem::getRootServer() {
     return rootServer;
 }
 
-QString UploadItem::getRelativePath() {
-    return relativePath;
+QString UploadItem::getRelativeDir() {
+    return relativeDir;
 }
 
 QString UploadItem::getFilename() {
-    auto separation = relativePath.lastIndexOf("/") + 1;
-    return relativePath.right(relativePath.size() - separation);
+    return filename;
+}
+
+QString UploadItem::getRelativePath() {
+    return relativePath;
 }

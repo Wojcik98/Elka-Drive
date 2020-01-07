@@ -32,6 +32,10 @@ public:
 signals:
     void gotResponse(Response response);    // TODO reference?
     void responseError(QNetworkReply::NetworkError error);
+    void downloadProgress(qint64 bytesSent, qint64 bytesTotal);
+    void downloadEnded();
+    void uploadProgress(qint64 bytesSent, qint64 bytesTotal);
+    void uploadEnded();
 };
 
 #endif // APIBRIDGE_H
