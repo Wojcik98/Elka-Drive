@@ -22,6 +22,14 @@ public:
     void setGroupsButtonsVisible();
     void setFilesButtonsVisible();
     void setSettingsButtonEnabled(bool enabled);
+    void showLogoutMsg();
+    void showForbiddenMsg();
+    void showUnknownErrorMsg();
+    QString getNewGroupName(bool *ok);
+    QString getNewFolderName(bool *ok);
+    QStringList getUploadFileNames();
+    QString getUploadFolderName();
+    QString getSaveFilename(QString suggested);
 
 protected:
     virtual void settingsButtonClicked() = 0;

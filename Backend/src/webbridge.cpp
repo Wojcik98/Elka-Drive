@@ -188,7 +188,6 @@ void WebBridge::networkReplyFinished() {
     requestReply->deleteLater();
     requestReply = nullptr;
 
-    qDebug() << response.getType() << statusCode << response.getBody();
     if (error != QNetworkReply::NoError) {
         qDebug() << "error: " << error;
 

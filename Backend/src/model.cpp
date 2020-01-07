@@ -142,8 +142,6 @@ void Model::setLogged(bool logged) {
 }
 
 void Model::gotResponse(Response response) {
-    qDebug() << "model got response" << response.getType() << RequestType::GROUPS;
-    // TODO move to bridge?
     switch (response.getType()) {
         case RequestType::LOGIN:
             handleLoginResponse(response);
@@ -195,7 +193,6 @@ void Model::handleGroupsResponse(Response response) {
     auto groupsRaw = QJsonDocument::fromJson(response.getBody());
 
     auto array = groupsRaw.array();
-    qDebug() << "array " << array;
 
     for (auto groupRaw : array) {
         QJsonObject obj = groupRaw.toObject();
@@ -206,8 +203,6 @@ void Model::handleGroupsResponse(Response response) {
         group->setData(QVariant(id), ID_ROLE);
         groups.append(group);
     }
-
-    qDebug() << "groups" << groups;
 
     emit groupsReceived(groups);
 }

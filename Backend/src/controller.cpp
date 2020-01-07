@@ -1,9 +1,5 @@
 #include <QtDebug>
-#include <QPushButton>
-#include <QInputDialog>
-#include <QFileDialog>
-#include <QMessageBox>
-#include <QTreeView>
+#include <QDir>
 
 #include "include/controller.h"
 
@@ -127,7 +123,7 @@ void Controller::responseError(QNetworkReply::NetworkError error, Response respo
             }
             break;
         case QNetworkReply::ContentAccessDenied:
-            if (type == RequestType::DELETE) {
+            if (type == RequestType::DELETE || type == RequestType::DOWNLOAD) {
                 refresh();
             } else {
                 forbidden();
@@ -148,28 +144,18 @@ void Controller::responseError(QNetworkReply::NetworkError error, Response respo
 
 void Controller::unauthorized() {
     model->setLogged(false);
-
-    // TODO do this in view
-    QMessageBox msgBox;
-    msgBox.setText("You have been logged out!");
-    msgBox.exec();
+    view->showLogoutMsg();
 
     tryLogin();
 }
 
 void Controller::forbidden() {
-    QMessageBox msgBox;
-    msgBox.setText("You don't have access to this group!");
-    msgBox.exec();
+    view->showForbiddenMsg();
     model->requestGroups();
-    // TODO get groups, etc
 }
 
 void Controller::unknownError() {
-    QMessageBox msgBox;
-    msgBox.setText("Error while connecting to the server!");
-    msgBox.setInformativeText("Try again. If error persists contact developer.");
-    msgBox.exec();
+    view->showUnknownErrorMsg();
 }
 
 void Controller::tryLogin() {
@@ -315,28 +301,21 @@ void Controller::requestDelete(const QModelIndex &index) {
 
 void Controller::requestDownload(const QModelIndex &index) {
     auto type = index.data(Model::TYPE_ROLE).toInt();
-    auto filename = index.data(Qt::DisplayRole).toString();
+    auto suggested = index.data(Qt::DisplayRole).toString();
 
     if (type == Model::ItemType::FOLDER) {
-        filename.append(".zip");
+        suggested.append(".zip");
     }
 
-    auto path = QFileDialog::getSaveFileName(view, "Save file", filename);
-    // TODO check if empty
-    model->requestDownload(index, path);
+    auto path = view->getSaveFilename(suggested);
+    if (!path.isEmpty()) {
+        model->requestDownload(index, path);
+    }
 }
 
 void Controller::requestNewGroup() {
     bool ok;
-
-    QString groupName = QInputDialog::getText(
-        view,
-        "Create new group",
-        "Group name:",
-        QLineEdit::Normal,
-        "",
-        &ok
-    );
+    QString groupName = view->getNewGroupName(&ok);
 
     if (ok) {
         model->requestNewGroup(groupName);
@@ -365,15 +344,7 @@ void Controller::resourceDeleted() {
 
 void Controller::createNewFolder() {
     bool ok;
-
-    QString name = QInputDialog::getText(
-        view,
-        "New folder",
-        "Name:",
-        QLineEdit::Normal,
-        "",
-        &ok
-    );
+    QString name = view->getNewFolderName(&ok);
 
     if (ok) {
         model->requestNewFolder(name);
@@ -385,9 +356,7 @@ void Controller::newFolderCreated() {
 }
 
 void Controller::uploadFile() {
-    QStringList files = QFileDialog::getOpenFileNames(
-        view, "Select one or more files to upload", QDir::homePath()
-    );
+    QStringList files = view->getUploadFileNames();
 
     for (const auto &file : files) {
         QFileInfo info(file);
@@ -396,10 +365,7 @@ void Controller::uploadFile() {
 }
 
 void Controller::uploadFolder() {
-    QString chosenDir = QFileDialog::getExistingDirectory(
-        view, "Open Directory", QDir::homePath(),
-        QFileDialog::ShowDirsOnly | QFileDialog::DontResolveSymlinks
-    );
+    QString chosenDir = view->getUploadFolderName();
     if (chosenDir.isEmpty()) {
         return;
     }
