@@ -42,8 +42,8 @@ jobs:
     - name: Build app
       run: |
         qmake.exe
-        mingw32-make.exe install
         mingw32-make.exe
+        mingw32-make.exe install
     - name: Run tests
       run: |
         ls ProcessResponse
