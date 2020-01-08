@@ -46,7 +46,9 @@ jobs:
         mingw32-make.exe install
     - name: Run tests
       run: |
-        ls .
         ls ProcessResponse
+        echo "ls release"
         ls ProcessResponse/release
+        echo "run test"
         ./ProcessResponse/release/test.exe
+
