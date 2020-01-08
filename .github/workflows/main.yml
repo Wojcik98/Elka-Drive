@@ -8,11 +8,11 @@ jobs:
 
     steps:
     - uses: actions/checkout@v1
-    - name: Install Qt
-      uses: jurplel/install-qt-action@v2
-
     - name: Init submodule
       uses: textbook/git-checkout-submodule-action@2.0.0
+
+    - name: Install Qt
+      uses: jurplel/install-qt-action@v2
 
     - name: Build app
       run: |
@@ -27,13 +27,13 @@ jobs:
 
     steps:
     - uses: actions/checkout@v1
+    - name: Init submodule
+      uses: textbook/git-checkout-submodule-action@2.0.0
+
     - name: Install Qt
       uses: jurplel/install-qt-action@v2
       with:
         arch: win64_mingw73
-
-    - name: Init submodule
-      uses: textbook/git-checkout-submodule-action@2.0.0
 
     - name: Build app
       run: |
