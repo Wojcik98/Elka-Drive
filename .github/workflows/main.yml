@@ -47,7 +47,7 @@ jobs:
     - name: Run tests
       run: |
         echo "copy dll"
-        cp qamqp/src/qamap0.dll ProcessResponse/release
+        cp qamqp/src/qamqp0.dll ProcessResponse/release
         echo "run test"
         ./ProcessResponse/release/test.exe
 
