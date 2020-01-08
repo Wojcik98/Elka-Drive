@@ -11,6 +11,10 @@ jobs:
     - name: Install Qt
       uses: jurplel/install-qt-action@v2
 
+    - name: Init submodule
+      run: |
+        git submodule update --init
+
     - name: Build app
       run: |
         qmake
@@ -28,6 +32,10 @@ jobs:
       uses: jurplel/install-qt-action@v2
       with:
         arch: win64_mingw73
+
+    - name: Init submodule
+      run: |
+        git submodule update --init
 
     - name: Build app
       run: |
