@@ -46,9 +46,8 @@ jobs:
         mingw32-make.exe install
     - name: Run tests
       run: |
-        ls ProcessResponse
-        echo "ls release"
-        ls ProcessResponse/release
+        echo "copy dll"
+        cp qamqp/src/qamap0.dll ProcessResponse/release
         echo "run test"
         ./ProcessResponse/release/test.exe
 
