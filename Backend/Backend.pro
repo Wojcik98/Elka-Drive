@@ -24,7 +24,7 @@ INCLUDEPATH += \
     ../qamqp/src
 
 win32 {
-    LIBS += -L../qamqp/src/release \
+    LIBS += -L../qamqp/src \
         -lqamqp
 }
 unix {
