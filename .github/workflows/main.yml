@@ -42,6 +42,7 @@ jobs:
     - name: Build app
       run: |
         qmake.exe
+        mingw32-make.exe install
         mingw32-make.exe
     - name: Run tests
       run: |
