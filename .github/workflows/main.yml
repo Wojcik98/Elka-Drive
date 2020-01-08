@@ -16,9 +16,12 @@ jobs:
 
     - name: Build app
       run: |
+        echo "QMake"
         qmake
+        echo "make"
         make
-        make install
+        echo "make install"
+        sudo make install
     - name: Run tests
       run: |
         ./ProcessResponse/test
@@ -43,4 +46,7 @@ jobs:
         mingw32-make.exe install
     - name: Run tests
       run: |
+        ls .
+        ls ProcessResponse
+        ls ProcessResponse/release
         ./ProcessResponse/release/test.exe
