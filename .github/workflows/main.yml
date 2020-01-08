@@ -9,7 +9,7 @@ jobs:
     steps:
     - uses: actions/checkout@v1
     - name: Init submodule
-      uses: textbook/git-checkout-submodule-action@2.0.0
+      run: git submodule update --init
 
     - name: Install Qt
       uses: jurplel/install-qt-action@v2
@@ -28,7 +28,7 @@ jobs:
     steps:
     - uses: actions/checkout@v1
     - name: Init submodule
-      uses: textbook/git-checkout-submodule-action@2.0.0
+      run: git submodule update --init
 
     - name: Install Qt
       uses: jurplel/install-qt-action@v2
