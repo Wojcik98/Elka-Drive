@@ -20,8 +20,8 @@ private:
 private Q_SLOTS:
     void initTestCase();
     void cleanupTestCase();
-    void testLogin_data();
-    void testLogin();
+    void testLoginCorrect();
+    void testLoginFailed();
 };
 
 ProcessResponseTest::ProcessResponseTest() {
@@ -35,29 +35,22 @@ void ProcessResponseTest::cleanupTestCase() {
     delete model;
 }
 
-void ProcessResponseTest::testLogin_data() {
-    QTest::addColumn<QString>("responseBody");
-    QTest::addColumn<int>("responseStatus");
-    QTest::addColumn<bool>("expected");
-
-    QTest::newRow("Correct login") << "" << 302 << true;
-    QTest::newRow("Failed login") << "" << 401 << false;
-}
-
-void ProcessResponseTest::testLogin() {
+void ProcessResponseTest::testLoginCorrect() {
     QSignalSpy spy(model, &Model::userLogged);
 
-    QFETCH(QString, responseBody);
-    QFETCH(int, responseStatus);
-    QFETCH(bool, expected);
-
-    auto response = Response(responseBody.toUtf8(), RequestType::LOGIN);
-    bridge.setResponse(response);
+    auto response = Response("", RequestType::LOGIN);
+    bridge.emitGotResponse(response);
     model->requestLogin(user, password);
     QCOMPARE(spy.count(), 1);
+}
 
-    QList<QVariant> arguments = spy.takeFirst();
-    QCOMPARE(arguments.at(0).toBool(), expected);
+void ProcessResponseTest::testLoginFailed() {
+    QSignalSpy spy(model, &Model::responseError);
+
+    auto response = Response("", RequestType::LOGIN);
+    bridge.emitResponseError(QNetworkReply::AuthenticationRequiredError, response);
+    model->requestLogin(user, password);
+    QCOMPARE(spy.count(), 1);
 }
 
 QTEST_APPLESS_MAIN(ProcessResponseTest)

@@ -6,70 +6,114 @@ MockBridge::MockBridge() : response(Response(QByteArray(), RequestType::LOGIN)) 
 }
 
 void MockBridge::requestLogin(QString, QString) {
-    emit gotResponse(response);
+    takeAction();
 }
 
 void MockBridge::requestRegister(QString, QString) {
-    emit gotResponse(response);
+    takeAction();
 }
 
 void MockBridge::requestGroups() {
-    emit gotResponse(response);
+    takeAction();
 }
 
 void MockBridge::requestNewGroup(QString) {
-    emit gotResponse(response);
+    takeAction();
 }
 
 void MockBridge::requestPath(QString) {
-    emit gotResponse(response);
+    takeAction();
 }
 
 void MockBridge::requestFileDownload(int, QString) {
-    emit gotResponse(response);
+    takeAction();
 }
 
 void MockBridge::requestDirectoryDownload(int, QString) {
-    emit gotResponse(response);
+    takeAction();
 }
 
 void MockBridge::requestGroupUsers(int) {
-    emit gotResponse(response);
+    takeAction();
 }
 
 void MockBridge::requestGroupDelete(int) {
-    emit gotResponse(response);
+    takeAction();
 }
 
 void MockBridge::requestAddUserToGroup(QString, int) {
-    emit gotResponse(response);
+    takeAction();
 }
 
 void MockBridge::requestRemoveUserFromGroup(QString, int) {
-    emit gotResponse(response);
+    takeAction();
 }
 
 void MockBridge::requestFileDelete(int) {
-    emit gotResponse(response);
+    takeAction();
 }
 
 void MockBridge::requestDirectoryDelete(QString) {
-    emit gotResponse(response);
+    takeAction();
 }
 
 void MockBridge::requestNewFolder(QString) {
-    emit gotResponse(response);
+    takeAction();
 }
 
 
 void MockBridge::requestFileUpload(QString, QString, QString) {
-    emit gotResponse(response);
+    takeAction();
 }
 
 void MockBridge::sendMsg(int, const QString&) {
-    emit gotResponse(response);
+    takeAction();
 }
 
-void MockBridge::setResponse(Response response) {
+void MockBridge::takeAction() {
+    switch (action) {
+    case GOT_RESPONSE:
+        emit gotResponse(response);
+        break;
+    case RESPONSE_ERROR:
+        emit responseError(error, response);
+        break;
+    case DOWNLOAD_PROGRESS:
+        emit downloadProgress(current, total);
+        break;
+    case UPLOAD_PROGRESS:
+        emit uploadProgress(current, total);
+        break;
+    case FILE_OPEN_ERROR:
+        emit fileOpenError(filename);
+        break;
+    }
+}
+
+void MockBridge::emitGotResponse(Response response) {
+    action = GOT_RESPONSE;
     this->response = response;
+}
+
+void MockBridge::emitResponseError(QNetworkReply::NetworkError error, Response response) {
+    action = RESPONSE_ERROR;
+    this->error = error;
+    this->response = response;
+}
+
+void MockBridge::emitDownloadProgress(qint64 bytesReceived, qint64 bytesTotal) {
+    action = DOWNLOAD_PROGRESS;
+    this->current = bytesReceived;
+    this->total = bytesTotal;
+}
+
+void MockBridge::emitUploadProgress(qint64 bytesSent, qint64 bytesTotal) {
+    action = UPLOAD_PROGRESS;
+    this->current = bytesSent;
+    this->total = bytesTotal;
+}
+
+void MockBridge::emitFileOpenError(const QString &filename) {
+    action = FILE_OPEN_ERROR;
+    this->filename = filename;
 }

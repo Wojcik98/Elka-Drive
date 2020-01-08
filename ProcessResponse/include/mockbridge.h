@@ -24,10 +24,28 @@ public:
     virtual void requestFileUpload(QString rootLocal, QString rootServer, QString path);
     virtual void sendMsg(int groupId, const QString &msg);
 
-    void setResponse(Response resopnse);
+    void emitGotResponse(Response response);
+    void emitResponseError(QNetworkReply::NetworkError error, Response response);
+    void emitDownloadProgress(qint64 bytesReceived, qint64 bytesTotal);
+    void emitUploadProgress(qint64 bytesSent, qint64 bytesTotal);
+    void emitFileOpenError(const QString &filename);
 
 private:
+    enum Action {
+        GOT_RESPONSE,
+        RESPONSE_ERROR,
+        DOWNLOAD_PROGRESS,
+        UPLOAD_PROGRESS,
+        FILE_OPEN_ERROR
+    };
+
+    Action action;
     Response response;
+    QNetworkReply::NetworkError error;
+    qint64 current, total;
+    QString filename;
+
+    void takeAction();
 };
 
 #endif // MOCKBRIDGE_H
