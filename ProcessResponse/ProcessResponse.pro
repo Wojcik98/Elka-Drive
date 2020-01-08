@@ -26,15 +26,20 @@ DEFINES += QT_DEPRECATED_WARNINGS
 #DEFINES += QT_DISABLE_DEPRECATED_BEFORE=0x060000    # disables all the APIs deprecated before Qt 6.0.0
 
 INCLUDEPATH += \
-    ../Backend
+    ../Backend \
+    ../qamqp/src
 
 win32 {
     LIBS += -L../Backend/release \
-        -lBackend
+        -lBackend \
+        -L../qamqp/src/release \
+        -lqamqp
 }
 unix {
     LIBS += -L../Backend \
-        -lBackend
+        -lBackend \
+        -L../qamqp/src \
+        -lqamqp
 }
 
 INCLUDEPATH += $$INCDIR

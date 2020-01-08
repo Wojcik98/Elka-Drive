@@ -1,2 +1,47 @@
+# QT local files
 *.pro.user*
+.qmake*
+Makefile
+moc_*.cpp
+moc_*.h
+qrc_res.cpp
+*.moc
+ui_*.h
+
+# Executables
+Elka-Drive-Desktop/Elka-Drive-Desktop
+ProcessResponse/test
+
+# Prerequisites
+*.d
+
+# Compiled Object files
+*.slo
+*.lo
+*.o
+*.obj
+
+# Precompiled Headers
+*.gch
+*.pch
+
+# Compiled Dynamic libraries
+*.so
+*.dylib
+*.dll
+
+# Fortran module files
+*.mod
+*.smod
+
+# Compiled Static libraries
+*.lai
+*.la
+*.a
+*.lib
+
+# Executables
+*.exe
+*.out
+*.app
 

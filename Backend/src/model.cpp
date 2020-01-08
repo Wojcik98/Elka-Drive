@@ -6,8 +6,11 @@
 #include <QJsonDocument>
 
 #include "include/model.h"
+#include "qamqpclient.h"
 
 Model::Model(APIBridge *bridge) : bridge(bridge) {
+    QAmqpClient m_client;
+    qDebug() << "client port" << m_client.port();
     connect(
         bridge,
         &APIBridge::gotResponse,
