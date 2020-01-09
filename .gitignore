@@ -12,6 +12,9 @@ ui_*.h
 Elka-Drive-Desktop/Elka-Drive-Desktop
 ProcessResponse/test
 
+# Secrets
+rabbitmqsecrets.h
+
 # Prerequisites
 *.d
 
