@@ -44,7 +44,8 @@ SOURCES += \
     src/mainwindow.cpp
 
 HEADERS += \
-    include/mainwindow.h
+    include/mainwindow.h \
+    include/rabbitmqsecrets.h
 
 FORMS += \
     forms/mainwindow.ui

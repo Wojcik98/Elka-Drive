@@ -3,6 +3,8 @@ Projekt ma na celu stworzenie aplikacji umożliwiającej grupową współpracę.
 Repozytorium zawiera aplikację frontendową służącą do komunikacji z serwerem, którego kod znajduje się na [Github/Elka-Drive-Backend](https://github.com/breader124/Elka-Drive-Backend).
 
 ## Budowanie
+Przed zbudowaniem należy stworzyć plik `Elka-Drive-Desktop/rabbitmqsecrets.h` na podstawie pliku `Elka-Drive-Desktop/rabbitmqsecrets.h.template` i umieścić w nim dane do RabbitMQ.
+
 Aplikacja korzysta z Qt w wersji 5.12, do zbudowania wymagana jest wcześniejsza instalacja tego toolkitu.
 
 ### Linux

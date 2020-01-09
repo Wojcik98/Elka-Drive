@@ -6,11 +6,9 @@
 #include <QJsonDocument>
 
 #include "include/model.h"
-#include "qamqpclient.h"
 
-Model::Model(APIBridge *bridge) : bridge(bridge) {
-    QAmqpClient m_client;
-    qDebug() << "client port" << m_client.port();
+Model::Model(APIBridge *bridge, MessageReceiver *receiver) : bridge(bridge), receiver(receiver) {
+    receiver->start();
     connect(
         bridge,
         &APIBridge::gotResponse,
@@ -40,6 +38,12 @@ Model::Model(APIBridge *bridge) : bridge(bridge) {
         &APIBridge::fileOpenError,
         this,
         &Model::fileOpenError
+    );
+    connect(
+        receiver,
+        &MessageReceiver::messageReceived,
+        this,
+        &Model::gotMessage
     );
 }
 
@@ -215,6 +219,7 @@ void Model::gotResponse(Response response) {
 void Model::handleLoginResponse(Response) {
     logged = true;
     username = usernameTrying;
+    receiver->setUser(username);
     emit userLogged();
 }
 
@@ -223,6 +228,7 @@ void Model::handleRegisterResponse(Response) {
 }
 
 void Model::handleGroupsResponse(Response response) {
+    QList<int> groupIds;
     QList<QStandardItem*> groups;
     auto groupsRaw = QJsonDocument::fromJson(response.getBody());
 
@@ -231,13 +237,17 @@ void Model::handleGroupsResponse(Response response) {
     for (auto groupRaw : array) {
         QJsonObject obj = groupRaw.toObject();
         QString name = obj["name"].toString();
-        auto id = QString::number(obj["id"].toInt());
+        auto id = obj["id"].toInt();
         QStandardItem *group = new QStandardItem(QIcon(":/icons/folder_shared.svg"), name);
         group->setData(QVariant(ItemType::GROUP), TYPE_ROLE);
-        group->setData(QVariant(id), ID_ROLE);
+        group->setData(QVariant(QString::number(id)), ID_ROLE);
         groups.append(group);
+        groupIds.append(id);
     }
 
+    for (auto id : groupIds) {
+        receiver->connectGroup(id);
+    }
     emit groupsReceived(groups);
 }
 
@@ -315,4 +325,27 @@ void Model::handleNewFolderResponse(Response) {
 
 void Model::handleUploadResponse(Response) {
     emit uploadComplete();
+}
+
+void Model::gotMessage(int groupId, Message msg) {
+    QString text = msg.getMsg();
+    auto item = new QStandardItem(text);
+
+    if (!messages.contains(groupId)) {
+        messages[groupId] = new QStandardItemModel(this);
+    }
+    messages[groupId]->appendRow(item);
+}
+
+QStandardItemModel *Model::getCurrentGroupMessages() {
+    if (path.size() > 0) {
+        auto groupId = path.first().toInt();
+        if (!messages.contains(groupId)) {
+            messages[groupId] = new QStandardItemModel(this);
+        }
+
+        return messages[groupId];
+    } else {
+        return nullptr;
+    }
 }

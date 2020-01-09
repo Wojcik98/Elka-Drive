@@ -126,3 +126,7 @@ void MainWindow::sendButtonClicked() {
 void MainWindow::clearMsg() {
     ui->messageEdit->clear();
 }
+
+void MainWindow::setChatModel(QStandardItemModel *model) {
+    ui->messagesList->setModel(model);
+}

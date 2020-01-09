@@ -179,6 +179,7 @@ void Controller::tryLogin() {
         return;
     }
     model->clearPath();
+    // TODO clear msgs
     loginDialog = new LoginDialog();
 
     connect(
@@ -236,6 +237,7 @@ void Controller::groupsReceived(QList<QStandardItem*> groups) {
     view->setFileList(groups);
     view->setGroupsView();
     view->setSettingsButtonEnabled(false);
+    view->setChatModel(nullptr);
 }
 
 void Controller::newGroupStatusCode() {
@@ -309,6 +311,7 @@ void Controller::openGroupSettings(QModelIndex index) {
 void Controller::pathReceived(QList<QStandardItem*> path) {
     view->setFileList(path);
     view->setFilesView();
+    view->setChatModel(model->getCurrentGroupMessages());
 }
 
 void Controller::requestDelete(const QModelIndex &index) {

@@ -3,16 +3,20 @@
 #include <QSignalSpy>
 #include "include/model.h"
 #include "include/mockbridge.h"
+#include "include/rabbitconfig.h"
+#include "include/rabbitreceiver.h"
 
 class ProcessResponseTest : public QObject {
     Q_OBJECT
 
 public:
     ProcessResponseTest();
+    ~ProcessResponseTest();
 
 private:
     Model *model;
     MockBridge bridge;
+    RabbitReceiver *rabbitReceiver; // TODO make mock
 
     QString user = "user";
     QString password = "pwd";
@@ -25,10 +29,16 @@ private Q_SLOTS:
 };
 
 ProcessResponseTest::ProcessResponseTest() {
+    RabbitConfig rabbitConfig("", "", "", "", 0);
+    rabbitReceiver = new RabbitReceiver(rabbitConfig);
+}
+
+ProcessResponseTest::~ProcessResponseTest() {
+    delete rabbitReceiver;
 }
 
 void ProcessResponseTest::initTestCase() {
-    model = new Model(&bridge);
+    model = new Model(&bridge, rabbitReceiver);
 }
 
 void ProcessResponseTest::cleanupTestCase() {

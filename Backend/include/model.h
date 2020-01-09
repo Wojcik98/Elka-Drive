@@ -2,9 +2,12 @@
 #define MODEL_H
 
 #include <QStandardItemModel>
+#include <QStandardItem>
 #include "include/apibridge.h"
+#include "include/messagereceiver.h"
 #include "include/user.h"
 #include "include/response.h"
+#include "include/message.h"
 
 class APIBridge;
 class Response;
@@ -24,7 +27,7 @@ public:
         SERVER_ERROR
     };
 
-    Model(APIBridge *bridge);
+    Model(APIBridge *bridge, MessageReceiver *receiver);
 
     bool isLogged();
     void setLogged(bool logged);
@@ -41,6 +44,7 @@ public:
     void goBack();
     void refresh();
     void sendMsg(const QString &msg);
+    QStandardItemModel *getCurrentGroupMessages();
 
     static const int TYPE_ROLE = Qt::UserRole + 1;
     static const int ID_ROLE = Qt::UserRole + 2;
@@ -53,10 +57,12 @@ private:
     static const int STATUS_OK = 200;
 
     APIBridge *bridge;
+    MessageReceiver *receiver;
     QStringList path;
     bool logged = false;
     QString usernameTrying;
     QString username;
+    QMap<int, QStandardItemModel*> messages;
 
     void handleLoginResponse(Response response);
     void handleRegisterResponse(Response response);
@@ -93,6 +99,7 @@ signals:
 
 public slots:
     void gotResponse(Response response);
+    void gotMessage(int groupId, Message msg);
 
     void requestRegister(QString user, QString password);
     void requestLogin(QString user, QString password);

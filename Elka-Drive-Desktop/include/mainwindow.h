@@ -23,6 +23,7 @@ public:
     void setController(Controller *controller) override;
     void setFileList(QList<QStandardItem*> files) override;
     void clearMsg() override;
+    void setChatModel(QStandardItemModel *model) override;
 
 private:
     Ui::MainWindow *ui;

@@ -20,6 +20,7 @@ public:
     virtual void setController(Controller *controller) = 0;
     virtual void setFileList(QList<QStandardItem*> files) = 0;
     virtual void clearMsg() = 0;
+    virtual void setChatModel(QStandardItemModel *model) = 0;
     void setGroupsView();
     void setFilesView();
     void setSettingsButtonEnabled(bool enabled);
