@@ -115,6 +115,7 @@ void Model::requestDownload(const QModelIndex &index, QString path) {
 }
 
 void Model::requestLogin(QString user, QString password) {
+    usernameTrying = user;
     bridge->requestLogin(user, password);
 }
 
@@ -213,6 +214,7 @@ void Model::gotResponse(Response response) {
 
 void Model::handleLoginResponse(Response) {
     logged = true;
+    username = usernameTrying;
     emit userLogged();
 }
 

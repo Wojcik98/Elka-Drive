@@ -55,6 +55,8 @@ private:
     APIBridge *bridge;
     QStringList path;
     bool logged = false;
+    QString usernameTrying;
+    QString username;
 
     void handleLoginResponse(Response response);
     void handleRegisterResponse(Response response);
