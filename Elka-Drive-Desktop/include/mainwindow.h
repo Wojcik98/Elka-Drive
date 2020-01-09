@@ -18,16 +18,16 @@ class MainWindow : public View {
 
 public:
     explicit MainWindow(QWidget *parent = nullptr);
-    ~MainWindow();
+    ~MainWindow() override;
 
-    void setController(Controller *controller);
-    void setFileList(QList<QStandardItem*> files);
-    void clearMsg();
+    void setController(Controller *controller) override;
+    void setFileList(QList<QStandardItem*> files) override;
+    void clearMsg() override;
 
 private:
     Ui::MainWindow *ui;
 
-    virtual void settingsButtonClicked();
+    void settingsButtonClicked() override;
     static bool filesSort(QStandardItem *a, QStandardItem *b);
     void sendButtonClicked();
 };

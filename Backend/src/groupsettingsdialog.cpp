@@ -74,8 +74,6 @@ void GroupSettingsDialog::setUpGUI() {
     formGridLayout->addWidget(usersList, 1, 0, 1, 2);
     formGridLayout->addWidget(advancedSettingsCheckbox, 2, 0, 1, 2);
     formGridLayout->addWidget(advancedSettingsWidget, 3, 0, 1, 2);
-
-    setLayout(formGridLayout);
 }
 
 void GroupSettingsDialog::groupUsersReceived(QList<User> users) {
@@ -117,7 +115,7 @@ void GroupSettingsDialog::groupAddUserReceived() {
 void GroupSettingsDialog::removeUser() {
     int totalUsers = usersModel.rowCount();
     if (totalUsers == 1) {
-        QMessageBox msgBox;
+        QMessageBox msgBox(this);
         msgBox.setText("Cannot remove last user!");
         msgBox.setInformativeText("Perhaps you wanted to delete the group? Check \"Advanced settings\"");
         msgBox.exec();
@@ -146,7 +144,7 @@ void GroupSettingsDialog::enableAdvanced(int state) {
 }
 
 void GroupSettingsDialog::confirmGroupDelete() {
-    QMessageBox msgBox;
+    QMessageBox msgBox(this);
     msgBox.setText("Do you want to delete the group?");
     msgBox.setInformativeText("This operation will also permamently delete all files in this group!");
     msgBox.setStandardButtons(QMessageBox::No | QMessageBox::Yes);
@@ -167,7 +165,7 @@ void GroupSettingsDialog::groupDeletedReceived() {
 }
 
 void GroupSettingsDialog::permissionDenied() {
-    QMessageBox msgBox;
+    QMessageBox msgBox(this);
     msgBox.setText("You were removed from this group!");
     msgBox.exec();
     close();
