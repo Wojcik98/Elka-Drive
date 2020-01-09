@@ -43,11 +43,11 @@ jobs:
       run: |
         qmake.exe
         mingw32-make.exe
+        mingw32-make.exe install
     - name: Run tests
       run: |
-        ls ProcessResponse
-        echo "ls release"
-        ls ProcessResponse/release
+        echo "copy dll"
+        cp qamqp/src/qamqp0.dll ProcessResponse/release
         echo "run test"
         ./ProcessResponse/release/test.exe
 

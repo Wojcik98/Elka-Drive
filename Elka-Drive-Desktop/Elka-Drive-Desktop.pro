@@ -29,7 +29,7 @@ INCLUDEPATH += \
 win32 {
     LIBS += -L../Backend/release \
         -lBackend \
-        -L../qamqp/src/release \
+        -L../qamqp/src \
         -lqamqp
 }
 unix {
