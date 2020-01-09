@@ -153,6 +153,9 @@ void Controller::responseError(QNetworkReply::NetworkError error, Response respo
             unknownError();
             break;
     }
+
+    if (loginDialog) loginDialog->enableButton(true);
+    if (registerDialog) registerDialog->enableButton(true);
 }
 
 void Controller::unauthorized() {
@@ -188,7 +191,7 @@ void Controller::tryLogin() {
         model,
         &Model::userLogged,
         loginDialog,
-        &LoginDialog::slotLoginResponse
+        &LoginDialog::loginCorrect
     );
     connect(
         loginDialog,

@@ -15,27 +15,25 @@
 class RegisterDialog : public QDialog {
 Q_OBJECT
 
+public:
+   explicit RegisterDialog(QWidget *parent=nullptr);
+   ~RegisterDialog();
+
+   void userExists();
+   void enableButton(bool enabled);
+
 private:
    QLabel *labelUsername;
    QLabel *labelPassword;
    QLabel *labelError;
    QLabel *spinnerLabel;
    QMovie *spinnerMovie;
-   QComboBox *comboUsername;
+   QLineEdit *editUsername;
    QLineEdit *editPassword;
    QPushButton *cancelButton;
    QPushButton *registerButton;
 
    void setUpGUI();
-
-public:
-   explicit RegisterDialog(QWidget *parent=nullptr);
-   ~RegisterDialog();
-
-   void setUsername(QString &username); // TODO delete
-   void setPassword(QString &password);
-   void setUsernamesList(const QStringList &usernames);
-   void userExists();
 
 signals:
    void tryLogin(QString &username, QString &password);

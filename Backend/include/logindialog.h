@@ -18,6 +18,7 @@ public:
     explicit LoginDialog(QWidget *parent=nullptr);
     ~LoginDialog();
     void loginFailed();
+    void enableButton(bool enabled);
 
 private:
     QLabel *labelUsername;
@@ -39,7 +40,7 @@ signals:
 
 public slots:
     void slotTryLogin();
-    void slotLoginResponse();
+    void loginCorrect();
 };
 
 #endif // LOGINDIALOG_H

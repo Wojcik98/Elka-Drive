@@ -80,21 +80,25 @@ void LoginDialog::setUpGUI() {
 }
 
 void LoginDialog::slotTryLogin() {
+    enableButton(false);
     spinnerLabel->show();
     QString username = comboUsername->text();
     QString password = editPassword->text();
 
-    emit tryLogin(
-        username,
-        password
-    );
+    emit tryLogin(username, password);
 }
 
-void LoginDialog::slotLoginResponse() {
+void LoginDialog::loginCorrect() {
     close();
 }
 
 void LoginDialog::loginFailed() {
     labelError->setText("Cannot login!");
     spinnerLabel->hide();
+    enableButton(true);
+}
+
+void LoginDialog::enableButton(bool enabled) {
+    loginButton->setEnabled(enabled);
+    registerButton->setEnabled(enabled);
 }

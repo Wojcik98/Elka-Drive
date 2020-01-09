@@ -14,8 +14,7 @@ RegisterDialog::~RegisterDialog() {
 void RegisterDialog::setUpGUI() {
     QGridLayout* formGridLayout = new QGridLayout(this);
 
-    comboUsername = new QComboBox(this);
-    comboUsername->setEditable(true);
+    editUsername = new QLineEdit(this);
     editPassword = new QLineEdit(this);
     editPassword->setEchoMode(QLineEdit::Password);
 
@@ -24,7 +23,7 @@ void RegisterDialog::setUpGUI() {
     labelPassword = new QLabel(this);
     labelError = new QLabel(this);
     labelUsername->setText(tr("Username"));
-    labelUsername->setBuddy(comboUsername);
+    labelUsername->setBuddy(editUsername);
     labelPassword->setText(tr("Password"));
     labelPassword->setBuddy(editPassword);
     labelError->setText("");
@@ -59,7 +58,7 @@ void RegisterDialog::setUpGUI() {
 
     // place components into the dialog
     formGridLayout->addWidget(labelUsername, 0, 0);
-    formGridLayout->addWidget(comboUsername, 0, 1, 1, 2);
+    formGridLayout->addWidget(editUsername, 0, 1, 1, 2);
     formGridLayout->addWidget(labelPassword, 1, 0);
     formGridLayout->addWidget(editPassword, 1, 1);
     formGridLayout->addWidget(editPassword, 1, 1, 1, 2);
@@ -70,34 +69,10 @@ void RegisterDialog::setUpGUI() {
     spinnerLabel->hide();
 }
 
-void RegisterDialog::setUsername(QString &username) {
-    bool found = false;
-    for (int i = 0; i < comboUsername->count() && !found; i++) {
-        if (comboUsername->itemText(i) == username) {
-            comboUsername->setCurrentIndex(i);
-            found = true;
-        }
-    }
-
-    if (!found) {
-        int index = comboUsername->count();
-        comboUsername->addItem(username);
-
-        comboUsername->setCurrentIndex(index);
-    }
-
-    // place the focus on the password field
-    editPassword->setFocus();
-}
-
-void RegisterDialog::setPassword(QString &password) {
-    editPassword->setText(password);
-}
-
 void RegisterDialog::slotTryRegister() {
     spinnerLabel->show();
-    registerButton->setEnabled(false);
-    QString username = comboUsername->currentText();
+    enableButton(false);
+    QString username = editUsername->text();
     QString password = editPassword->text();
 
     emit tryLogin(username, password);
@@ -107,19 +82,19 @@ void RegisterDialog::slotRegisterResponse() {
     labelError->setStyleSheet("color: green;");
     labelError->setText("Register successful!");
 
-    registerButton->setEnabled(true);
+    enableButton(true);
     spinnerLabel->hide();
-}
-
-void RegisterDialog::setUsernamesList(const QStringList &usernames) {
-    comboUsername->addItems(usernames);
 }
 
 void RegisterDialog::userExists() {
     labelError->setStyleSheet("color: red;");
     labelError->setText("User exists!");
 
-    registerButton->setEnabled(true);
+    enableButton(true);
     spinnerLabel->hide();
 
+}
+
+void RegisterDialog::enableButton(bool enabled) {
+    registerButton->setEnabled(enabled);
 }
