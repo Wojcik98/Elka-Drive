@@ -56,6 +56,7 @@ MainWindow::MainWindow(QWidget *parent) : View(parent), ui(new Ui::MainWindow) {
     ui->refreshButton->setIcon(QIcon(":/icons/refresh.svg"));
     ui->sendButton->setIcon(QIcon(":/icons/send.svg"));
     sendButton = ui->sendButton;
+    backButton = ui->backButton;
 }
 
 MainWindow::~MainWindow() {

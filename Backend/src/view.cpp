@@ -86,12 +86,14 @@ void View::setGroupsView() {
     groupsWidget.show();
     filesWidget.hide();
     sendButton->setEnabled(false);
+    backButton->setEnabled(false);
 }
 
 void View::setFilesView() {
     groupsWidget.hide();
     filesWidget.show();
     sendButton->setEnabled(true);
+    backButton->setEnabled(true);
 }
 
 void View::setSettingsButtonEnabled(bool enabled) {

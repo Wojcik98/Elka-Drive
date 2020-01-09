@@ -47,6 +47,7 @@ protected:
     QPushButton *uploadFileButton;
     QPushButton *uploadFolderButton;
     QPushButton *sendButton;
+    QPushButton *backButton;
 
     QWidget *uploadWidget;
     QProgressBar *uploadProgress;
