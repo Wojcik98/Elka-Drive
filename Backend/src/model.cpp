@@ -269,6 +269,13 @@ void Model::handleGroupsResponse(const Response &response) {
 
     receiver->connectOnlyGivenGroups(groupIds);
 
+    auto existingGroups = messages.keys();
+    for (auto group : existingGroups) {
+        if (!groupIds.contains(group)) {
+            messages.remove(group);
+        }
+    }
+
     emit groupsReceived(groups);
 }
 
