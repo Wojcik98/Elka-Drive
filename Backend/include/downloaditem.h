@@ -11,6 +11,7 @@ public:
     DownloadItem(const int id, const QString &path, const QUrl &url);
     bool openFile();
     void closeFile();
+    void deleteFile();
     void appendData(const QByteArray &data);
     QUrl getUrl();
     QString getFilePath();

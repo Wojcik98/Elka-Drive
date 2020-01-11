@@ -273,11 +273,18 @@ void WebBridge::downloadReplyFinished() {
     downloadReply->deleteLater();
     downloadReply = nullptr;
     currentDownload->closeFile();
-    delete currentDownload;
-    currentDownload = nullptr;
 
     if (error != QNetworkReply::NoError) {
+        // download failed, we don't want to store random bytes
+        currentDownload->deleteFile();
+
+        delete currentDownload;
+        currentDownload = nullptr;
+
         emit responseError(error, response);
+    } else {
+        delete currentDownload;
+        currentDownload = nullptr;
     }
 
     triggerDownload();

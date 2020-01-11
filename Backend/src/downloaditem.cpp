@@ -14,6 +14,10 @@ void DownloadItem::closeFile() {
     file.close();
 }
 
+void DownloadItem::deleteFile() {
+    file.remove();
+}
+
 void DownloadItem::appendData(const QByteArray &data) {
     file.write(data);
 }
