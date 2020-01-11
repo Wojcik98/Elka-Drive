@@ -16,6 +16,8 @@ public:
     void connectGroup(int groupId) override;
 
 private:
+    Message parseJson(QByteArray json);
+
     const int queueOptions = QAmqpQueue::Durable;
     bool connectedToHost = false;
     QAmqpClient client;

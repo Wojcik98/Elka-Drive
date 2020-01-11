@@ -1,4 +1,6 @@
 #include "include/rabbitreceiver.h"
+#include <QJsonDocument>
+#include <QJsonObject>
 
 RabbitReceiver::RabbitReceiver(RabbitConfig config, QObject *parent) : MessageReceiver(parent) {
     client.setAutoReconnect(true);
@@ -77,9 +79,19 @@ void RabbitReceiver::rawMessageReceived() {
     }
 
     QAmqpMessage message = queue->dequeue();
-    QByteArray content = message.payload();
+    QByteArray json = message.payload();
+    Message msg = parseJson(json);
     int groupId = queueToGroup[queue];
-    Message msg("", content);
 
     emit messageReceived(groupId, msg);
+}
+
+Message RabbitReceiver::parseJson(QByteArray json) {
+    auto dict = QJsonDocument::fromJson(json).object();
+    auto user = dict["sender"].toString();
+    auto timeMs = dict["sentAt"].toInt();
+    auto time = QDateTime::fromMSecsSinceEpoch(timeMs);
+    auto text = dict["message"].toString();
+
+    return Message(user, text, time);
 }
