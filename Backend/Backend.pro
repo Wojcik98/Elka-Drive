@@ -71,8 +71,6 @@ HEADERS += \
     include/view.h \
     include/webbridge.h
 
-RESOURCES +=
-
 # Default rules for deployment.
 unix {
     target.path = $$[QT_INSTALL_PLUGINS]/generic

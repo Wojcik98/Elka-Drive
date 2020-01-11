@@ -124,9 +124,9 @@ bool MainWindow::filesSort(QStandardItem *a, QStandardItem *b) {
 }
 
 void MainWindow::setFileList(QList<QStandardItem*> files) {
-    // TODO delete
-    std::sort(files.begin(), files.end(), filesSort);
     fileListModel.clear();
+
+    std::sort(files.begin(), files.end(), filesSort);
     fileListModel.appendColumn(files);
 }
 

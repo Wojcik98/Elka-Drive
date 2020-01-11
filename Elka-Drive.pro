@@ -4,8 +4,8 @@ SUBDIRS += \
     Backend \
     Elka-Drive-Desktop \
     ProcessResponse \
-    qamqp
+    qamqp/src
 
-Backend.depends = qamqp
+Backend.depends = qamqp/src
 Elka-Drive-Desktop.depends = Backend
 ProcessResponse.depends = Backend

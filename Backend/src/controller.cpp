@@ -207,9 +207,9 @@ void Controller::tryLogin() {
 
     if (!model->isLogged()) {
         emit closeApp();
+    } else {
+        model->requestGroups();
     }
-
-    model->requestGroups();
 }
 
 void Controller::openRegister() {
