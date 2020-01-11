@@ -31,6 +31,9 @@ private:
     void settingsButtonClicked() override;
     static bool filesSort(QStandardItem *a, QStandardItem *b);
     void sendButtonClicked();
+
+private slots:
+    void chatModelRowInserted(const QModelIndex&, int, int);
 };
 
 #endif // MAINWINDOW_H

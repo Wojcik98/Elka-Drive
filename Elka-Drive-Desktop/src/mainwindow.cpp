@@ -62,6 +62,13 @@ MainWindow::MainWindow(QWidget *parent) : View(parent), ui(new Ui::MainWindow) {
     ui->messagesList->setItemDelegate(new MessageDelegate(this));
     ui->messagesList->setSelectionMode(QAbstractItemView::NoSelection);
     ui->messagesList->setEditTriggers(QAbstractItemView::NoEditTriggers);
+
+    connect(
+        ui->messageEdit,
+        &QLineEdit::returnPressed,
+        sendButton,
+        &QPushButton::click
+    );
 }
 
 MainWindow::~MainWindow() {
@@ -125,7 +132,10 @@ void MainWindow::setFileList(QList<QStandardItem*> files) {
 
 void MainWindow::sendButtonClicked() {
     auto msg = ui->messageEdit->text();
-    emit sendMsg(msg);
+
+    if (!msg.trimmed().isEmpty()) {
+        emit sendMsg(msg);
+    }
 }
 
 void MainWindow::clearMsg() {
@@ -133,5 +143,25 @@ void MainWindow::clearMsg() {
 }
 
 void MainWindow::setChatModel(QStandardItemModel *model) {
+    if (ui->messagesList->model() != nullptr) {
+        disconnect(
+            ui->messagesList->model(), nullptr,
+            this, nullptr
+        );
+    }
+
     ui->messagesList->setModel(model);
+
+    if (ui->messagesList->model() != nullptr) {
+        connect(
+            ui->messagesList->model(), &QStandardItemModel::rowsInserted,
+            this, &MainWindow::chatModelRowInserted
+        );
+    }
+}
+
+void MainWindow::chatModelRowInserted(const QModelIndex&, int, int) {
+    auto model = ui->messagesList->model();
+    auto lastItem = model->index(model->rowCount() - 1, 0);
+    ui->messagesList->scrollTo(lastItem);
 }
