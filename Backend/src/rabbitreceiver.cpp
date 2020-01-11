@@ -33,17 +33,32 @@ void RabbitReceiver::clientConnected() {
     connectedToHost = true;
 }
 
+void RabbitReceiver::connectOnlyGivenGroups(QList<int> groups) {
+    // connect to given groups
+    for (auto group : groups) {
+        connectGroup(group);
+    }
+
+    // dosconnect from any other
+    auto existingGroups = groupToQueue.keys();
+    for (auto group : existingGroups) {
+        if (!groups.contains(group)) {
+            disconnectGroup(group);
+        }
+    }
+}
+
 void RabbitReceiver::connectGroup(int groupId) {
-    if (queueToGroup.values().contains(groupId)) {
+    if (groupToQueue.keys().contains(groupId)) {
         return;
     }
 
     QString queueName = user + "." + QString::number(groupId);
     QAmqpQueue *queue = client.createQueue(queueName);
-    queues.append(queue);
     queueToGroup[queue] = groupId;
+    groupToQueue[groupId] = queue;
 
-    disconnect(queue, nullptr, nullptr, nullptr); // in case this is a reconnect
+    disconnect(queue, nullptr, this, nullptr);
     connect(
         queue,
         &QAmqpQueue::declared,
@@ -52,6 +67,17 @@ void RabbitReceiver::connectGroup(int groupId) {
     );
 
     queue->declare(queueOptions);
+}
+
+void RabbitReceiver::disconnectGroup(int groupId) {
+    if (groupToQueue.contains(groupId)) {
+        auto queue = groupToQueue[groupId];
+
+        groupToQueue.remove(groupId);
+        queueToGroup.remove(queue);
+
+        queue->deleteLater();
+    }
 }
 
 void RabbitReceiver::groupConnected() {

@@ -13,7 +13,9 @@ public:
 
     void start() override;
     void setUser(QString user) override;
+    void connectOnlyGivenGroups(QList<int> groups) override;
     void connectGroup(int groupId) override;
+    void disconnectGroup(int groupId) override;
 
 private:
     Message parseJson(QByteArray json);
@@ -21,8 +23,8 @@ private:
     const int queueOptions = QAmqpQueue::Durable;
     bool connectedToHost = false;
     QAmqpClient client;
-    QList<QAmqpQueue*> queues;
     QMap<QAmqpQueue*, int> queueToGroup;
+    QMap<int, QAmqpQueue*> groupToQueue;
     QString user;
 
 private slots:

@@ -179,7 +179,8 @@ void Controller::tryLogin() {
         return;
     }
     model->clearPath();
-    // TODO clear msgs
+    model->clearMsgs();
+
     loginDialog = new LoginDialog();
 
     connect(

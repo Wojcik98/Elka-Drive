@@ -51,6 +51,13 @@ void Model::clearPath() {
     path.clear();
 }
 
+void Model::clearMsgs() {
+    for (auto model : messages.values()) {
+        model->deleteLater();
+    }
+    messages.clear();
+}
+
 void Model::requestGroups() {
     // TODO block requesting several paths at once
     clearPath();
@@ -245,9 +252,8 @@ void Model::handleGroupsResponse(Response response) {
         groupIds.append(id);
     }
 
-    for (auto id : groupIds) {
-        receiver->connectGroup(id);
-    }
+    receiver->connectOnlyGivenGroups(groupIds);
+
     emit groupsReceived(groups);
 }
 

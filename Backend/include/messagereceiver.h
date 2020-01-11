@@ -13,7 +13,9 @@ public:
 
     virtual void start() = 0;
     virtual void setUser(QString user) = 0;
+    virtual void connectOnlyGivenGroups(QList<int> groups) = 0;
     virtual void connectGroup(int groupId) = 0;
+    virtual void disconnectGroup(int groupId) = 0;
 
 signals:
     void messageReceived(int groupId, Message msg);

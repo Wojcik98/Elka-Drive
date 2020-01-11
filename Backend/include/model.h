@@ -32,6 +32,7 @@ public:
     bool isLogged();
     void setLogged(bool logged);
     void clearPath();
+    void clearMsgs();
 
     void requestDelete(const QModelIndex &index);
     void requestDownload(const QModelIndex &index, QString path);
