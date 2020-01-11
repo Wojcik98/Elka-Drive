@@ -1,7 +1,7 @@
 #include "include/downloaditem.h"
 #include <QDebug>
 
-DownloadItem::DownloadItem(int id, QString path, QUrl url) : id(id), path(path), file(path), url(url) {
+DownloadItem::DownloadItem(const int id, const QString &path, const QUrl &url) : id(id), path(path), file(path), url(url) {
 
 }
 
@@ -14,7 +14,7 @@ void DownloadItem::closeFile() {
     file.close();
 }
 
-void DownloadItem::appendData(QByteArray data) {
+void DownloadItem::appendData(const QByteArray &data) {
     file.write(data);
 }
 

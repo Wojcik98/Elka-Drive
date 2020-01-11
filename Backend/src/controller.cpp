@@ -125,7 +125,7 @@ void Controller::connectViewAndModel() {
     );
 }
 
-void Controller::responseError(QNetworkReply::NetworkError error, Response response) {
+void Controller::responseError(const QNetworkReply::NetworkError &error, const Response &response) {
     auto type = response.getType();
     switch (error) {
         case QNetworkReply::AuthenticationRequiredError:
@@ -218,7 +218,7 @@ void Controller::openRegister() {
 
     connect(
         registerDialog,
-        &RegisterDialog::tryLogin,
+        &RegisterDialog::tryRegister,
         model,
         &Model::requestRegister
     );
@@ -234,7 +234,7 @@ void Controller::openRegister() {
     registerDialog = nullptr;
 }
 
-void Controller::groupsReceived(QList<QStandardItem*> groups) {
+void Controller::groupsReceived(const QList<QStandardItem*> &groups) {
     view->setFileList(groups);
     view->setGroupsView();
     view->setSettingsButtonEnabled(false);
@@ -245,7 +245,7 @@ void Controller::newGroupStatusCode() {
     model->requestGroups();
 }
 
-void Controller::openGroupSettings(QModelIndex index) {
+void Controller::openGroupSettings(const QModelIndex &index) {
     QString groupName = index.data(Qt::DisplayRole).toString();
     int groupId = index.data(Model::ID_ROLE).toInt();
 
@@ -309,7 +309,7 @@ void Controller::openGroupSettings(QModelIndex index) {
     model->requestGroups();
 }
 
-void Controller::pathReceived(QList<QStandardItem*> path) {
+void Controller::pathReceived(const QList<QStandardItem*> &path) {
     view->setFileList(path);
     view->setFilesView();
     view->setChatModel(model->getCurrentGroupMessages());
@@ -394,7 +394,7 @@ void Controller::uploadFolder() {
     }
 }
 
-QStringList Controller::getAllFiles(QDir path) {
+QStringList Controller::getAllFiles(const QDir &path) {
     QStringList files;
     auto info = path.entryInfoList(QDir::AllEntries | QDir::NoDotAndDotDot);
 

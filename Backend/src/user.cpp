@@ -1,10 +1,10 @@
 #include "include/user.h"
 
-User::User(QString name, int id) : name(name), id(id) {
+User::User(const QString &name, const int id) : name(name), id(id) {
 
 }
 
-User User::fromJson(QJsonObject json) {
+User User::fromJson(const QJsonObject &json) {
     QString name = json["username"].toString();
     int id = json["id"].toInt();
 

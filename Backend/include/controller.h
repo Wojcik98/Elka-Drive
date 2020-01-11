@@ -33,7 +33,7 @@ private:
     void connectView();
     void connectModel();
     void connectViewAndModel();
-    QStringList getAllFiles(QDir path);
+    QStringList getAllFiles(const QDir &path);
     void unauthorized();
     void forbidden();
     void unknownError();
@@ -42,7 +42,7 @@ signals:
     void closeApp();
 
 public slots:
-    void responseError(QNetworkReply::NetworkError error, Response response);
+    void responseError(const QNetworkReply::NetworkError &error, const Response &response);
     void openRegister();
     void requestNewGroup();
     void requestDelete(const QModelIndex &index);
@@ -50,15 +50,15 @@ public slots:
     void fileClicked(const QModelIndex &index);
     void goBack();
     void refresh();
-    void groupsReceived(QList<QStandardItem*> groups);
+    void groupsReceived(const QList<QStandardItem*> &groups);
     void newGroupStatusCode();
-    void pathReceived(QList<QStandardItem*> dir);
-    void openGroupSettings(QModelIndex index);
+    void pathReceived(const QList<QStandardItem*> &dir);
+    void openGroupSettings(const QModelIndex &index);
     void createNewFolder();
     void uploadFile();
     void uploadFolder();
     void fileOpenError(const QString &filename);
-    void sendMsg(const QString &);
+    void sendMsg(const QString &msg);
 };
 
 #endif // CONTROLLER_H

@@ -5,7 +5,7 @@
 #include <QLineEdit>
 #include <QInputDialog>
 
-GroupSettingsDialog::GroupSettingsDialog(QString groupName, int groupID, QWidget *parent) : QDialog(parent), groupName(groupName), groupId(groupID) {
+GroupSettingsDialog::GroupSettingsDialog(const QString &groupName, const int groupID, QWidget *parent) : QDialog(parent), groupName(groupName), groupId(groupID) {
     setWindowFlags(Qt::Window | Qt::WindowTitleHint | Qt::CustomizeWindowHint);
     setUpGUI();
     setWindowTitle("Group settings");
@@ -76,7 +76,7 @@ void GroupSettingsDialog::setUpGUI() {
     formGridLayout->addWidget(advancedSettingsWidget, 3, 0, 1, 2);
 }
 
-void GroupSettingsDialog::groupUsersReceived(QList<User> users) {
+void GroupSettingsDialog::groupUsersReceived(const QList<User> &users) {
     QList<QStandardItem*> column;
     for (User user : users) {
         auto item = new QStandardItem(user.getName());

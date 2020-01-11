@@ -1,12 +1,13 @@
 #include "include/response.h"
 
-Response::Response(QByteArray body, RequestType type) : body(body), type(type) {
+Response::Response(const QByteArray &body, const RequestType &type)
+    : body(body), type(type) {
 }
 
-QByteArray Response::getBody() {
+QByteArray Response::getBody() const {
     return body;
 }
 
-RequestType Response::getType() {
+RequestType Response::getType() const {
     return type;
 }

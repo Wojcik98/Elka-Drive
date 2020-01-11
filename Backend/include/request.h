@@ -10,8 +10,8 @@ public:
         GET, POST, DELETE
     };
 
-    Request(Method method, QNetworkRequest request, RequestType type);
-    void setData(QByteArray data);
+    Request(const Method &method, const QNetworkRequest &request, const RequestType &type);
+    void setData(const QByteArray &data);
     Method getMethod();
     QNetworkRequest getRequest();
     RequestType getType();

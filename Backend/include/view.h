@@ -18,7 +18,7 @@ public:
     virtual ~View();
 
     virtual void setController(Controller *controller) = 0;
-    virtual void setFileList(QList<QStandardItem*> files) = 0;
+    virtual void setFileList(const QList<QStandardItem*> &files) = 0;
     virtual void clearMsg() = 0;
     virtual void setChatModel(QStandardItemModel *model) = 0;
     void setGroupsView();
@@ -32,7 +32,7 @@ public:
     QString getNewFolderName(bool *ok);
     QStringList getUploadFileNames();
     QString getUploadFolderName();
-    QString getSaveFilename(QString suggested);
+    QString getSaveFilename(const QString &suggested);
 
 protected:
     virtual void settingsButtonClicked() = 0;
@@ -59,15 +59,15 @@ protected:
 
 signals:
     void createNewGroup();
-    void openGroupSettings(QModelIndex index);
+    void openGroupSettings(const QModelIndex &index);
     void createNewFolder();
     void uploadFile();
     void uploadFolder();
     void sendMsg(const QString &msg);
 
 public slots:
-    void setUploadProgress(qint64 current, qint64 total);
-    void setDownloadProgress(qint64 current, qint64 total);
+    void setUploadProgress(const qint64 current, const qint64 total);
+    void setDownloadProgress(const qint64 current, const qint64 total);
 };
 
 #endif // VIEW_H

@@ -143,14 +143,14 @@ void View::showForbiddenMsg() {
 }
 
 void View::showUnknownErrorMsg() {
-    QMessageBox msgBox;
+    QMessageBox msgBox(this);
     msgBox.setText("Error while connecting to the server!");
     msgBox.setInformativeText("Try again. If error persists contact developer.");
     msgBox.exec();
 }
 
 void View::showFileOpenError(const QString &filename) {
-    QMessageBox msgBox;
+    QMessageBox msgBox(this);
     msgBox.setText("Could not open file!");
     msgBox.setInformativeText(filename);
     msgBox.exec();
@@ -183,6 +183,6 @@ QString View::getUploadFolderName() {
     );
 }
 
-QString View::getSaveFilename(QString suggested) {
+QString View::getSaveFilename(const QString &suggested) {
     return QFileDialog::getSaveFileName(this, "Save file", suggested);
 }

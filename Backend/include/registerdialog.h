@@ -36,7 +36,7 @@ private:
    void setUpGUI();
 
 signals:
-   void tryLogin(QString &username, QString &password);
+   void tryRegister(const QString &username, const QString &password);
 
 public slots:
    void slotTryRegister();

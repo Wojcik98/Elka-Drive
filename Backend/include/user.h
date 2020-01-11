@@ -6,9 +6,9 @@
 
 class User {
 public:
-    User(QString name, int id);
+    User(const QString &name, const int id);
 
-    static User fromJson(QJsonObject json);
+    static User fromJson(const QJsonObject &json);
 
     QString getName();
     int getId();

@@ -8,10 +8,10 @@
 
 class DownloadItem {
 public:
-    DownloadItem(int id, QString path, QUrl url);
+    DownloadItem(const int id, const QString &path, const QUrl &url);
     bool openFile();
     void closeFile();
-    void appendData(QByteArray data);
+    void appendData(const QByteArray &data);
     QUrl getUrl();
     QString getFilePath();
 

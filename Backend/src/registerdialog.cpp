@@ -75,7 +75,7 @@ void RegisterDialog::slotTryRegister() {
     QString username = editUsername->text();
     QString password = editPassword->text();
 
-    emit tryLogin(username, password);
+    emit tryRegister(username, password);
 }
 
 void RegisterDialog::slotRegisterResponse() {

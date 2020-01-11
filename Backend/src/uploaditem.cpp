@@ -1,6 +1,7 @@
 #include "include/uploaditem.h"
 
-UploadItem::UploadItem(QString rootLocal, QString rootServer, QString relativePath) : rootLocal(rootLocal), rootServer(rootServer), relativePath(relativePath) {
+UploadItem::UploadItem(const QString &rootLocal, const QString &rootServer, const QString &relativePath)
+    : rootLocal(rootLocal), rootServer(rootServer), relativePath(relativePath) {
     auto separation = relativePath.lastIndexOf("/") + 1;
     relativeDir = relativePath.left(separation);
     filename = relativePath.right(relativePath.size() - separation);

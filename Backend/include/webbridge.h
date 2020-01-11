@@ -13,36 +13,35 @@
 
 class WebBridge : public APIBridge {
 public:
-    WebBridge(QString mainUrl);
-    void requestLogin(QString user, QString password) override;
-    void requestRegister(QString user, QString password) override;
+    WebBridge(const QString &mainUrl);
+    void requestLogin(const QString &user, const QString &password) override;
+    void requestRegister(const QString &user, const QString &password) override;
     void requestGroups() override;
-    void requestNewGroup(QString groupName) override;
-    void requestPath(QString path) override;
-    void requestFileDownload(int id, QString path) override;
-    void requestDirectoryDownload(int id, QString path) override;
-    void requestGroupUsers(int groupId) override;
-    void requestGroupDelete(int groupId) override;
-    void requestAddUserToGroup(QString username, int groupId) override;
-    void requestRemoveUserFromGroup(QString username, int groupId) override;
-    void requestFileDelete(int id) override;
-    void requestDirectoryDelete(QString path) override;
-    void requestNewFolder(QString path) override;
-    void requestFileUpload(QString rootLocal, QString rootServer, QString relativePath) override;
-    void sendMsg(int groupId, const QString &msg) override;
+    void requestNewGroup(const QString &groupName) override;
+    void requestPath(const QString &path) override;
+    void requestFileDownload(const int id, const QString &path) override;
+    void requestDirectoryDownload(const int id, const QString &path) override;
+    void requestGroupUsers(const int groupId) override;
+    void requestGroupDelete(const int groupId) override;
+    void requestAddUserToGroup(const QString &username, const int groupId) override;
+    void requestRemoveUserFromGroup(const QString &username, const int groupId) override;
+    void requestFileDelete(const int id) override;
+    void requestDirectoryDelete(const QString &path) override;
+    void requestNewFolder(const QString &path) override;
+    void requestFileUpload(const QString &rootLocal, const QString &rootServer, const QString &relativePath) override;
+    void sendMsg(const int groupId, const QString &msg) override;
 
 private:
-    void get(QUrl url, RequestType type);
-    void post(QUrl url, QUrlQuery data, RequestType type);
-    void deleteResource(QUrl url, RequestType type);
+    void get(const QUrl &url, const RequestType &type);
+    void post(const QUrl &url, const QUrlQuery &data, const RequestType &type);
+    void deleteResource(const QUrl &url, const RequestType &type);
     void connectReply();
     void triggerRequest();
-    void requestDownload(int id, QString path, QUrl url);
+    void requestDownload(const int id, const QString &path, const QUrl &url);
     void triggerDownload();
     void triggerUpload();
     void triggerUploadCreateDirectory();
     void triggerUploadSendFile();
-    static const int PROTOCOL_ERROR_HIGH = 100;
 
     QString mainUrl;
     QNetworkAccessManager manager;

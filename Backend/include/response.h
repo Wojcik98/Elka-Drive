@@ -9,9 +9,9 @@ class Model;
 
 class Response {
 public:
-    Response(QByteArray body, RequestType type);
-    QByteArray getBody();
-    RequestType getType();
+    Response(const QByteArray &body, const RequestType &type);
+    QByteArray getBody() const;
+    RequestType getType() const;
 
 private:
     QByteArray body;

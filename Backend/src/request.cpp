@@ -1,10 +1,11 @@
 #include "include/request.h"
 
-Request::Request(Method method, QNetworkRequest request, RequestType type) : method(method), request(request), type(type) {
+Request::Request(const Method &method, const QNetworkRequest &request, const RequestType &type)
+    : method(method), request(request), type(type) {
 
 }
 
-void Request::setData(QByteArray data) {
+void Request::setData(const QByteArray &data) {
     this->data = data;
 }
 

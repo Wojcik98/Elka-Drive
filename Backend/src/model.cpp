@@ -66,7 +66,7 @@ void Model::requestGroups() {
     }
 }
 
-void Model::requestNewGroup(QString groupName) {
+void Model::requestNewGroup(const QString &groupName) {
     bridge->requestNewGroup(groupName);
 }
 
@@ -127,7 +127,7 @@ void Model::requestDelete(const QModelIndex &index) {
     }
 }
 
-void Model::requestDownload(const QModelIndex &index, QString path) {
+void Model::requestDownload(const QModelIndex &index, const QString &path) {
     auto id = index.data(ID_ROLE).toInt();
     int type = index.data(TYPE_ROLE).toInt();
 
@@ -138,12 +138,12 @@ void Model::requestDownload(const QModelIndex &index, QString path) {
     }
 }
 
-void Model::requestLogin(QString user, QString password) {
+void Model::requestLogin(const QString &user, const QString &password) {
     usernameTrying = user;
     bridge->requestLogin(user, password);
 }
 
-void Model::requestRegister(QString user, QString password) {
+void Model::requestRegister(const QString &user, const QString &password) {
     bridge->requestRegister(user, password);
 }
 
@@ -155,19 +155,19 @@ void Model::requestGroupDelete(int groupId) {
     bridge->requestGroupDelete(groupId);
 }
 
-void Model::requestAddUserToGroup(QString username, int groupId) {
+void Model::requestAddUserToGroup(const QString &username, const int groupId) {
     bridge->requestAddUserToGroup(username, groupId);
 }
 
-void Model::requestRemoveUserFromGroup(QString username, int groupId) {
+void Model::requestRemoveUserFromGroup(const QString &username, const int groupId) {
     bridge->requestRemoveUserFromGroup(username, groupId);
 }
 
-void Model::requestNewFolder(QString name) {
+void Model::requestNewFolder(const QString &name) {
     bridge->requestNewFolder(path.join("/") + "/" + name);
 }
 
-void Model::requestFileUpload(QString rootLocal, QString relativePath) {
+void Model::requestFileUpload(const QString &rootLocal, const QString &relativePath) {
     bridge->requestFileUpload(rootLocal, this->path.join("/"), relativePath);
 }
 
@@ -186,7 +186,7 @@ void Model::setLogged(bool logged) {
     this->logged = logged;
 }
 
-void Model::gotResponse(Response response) {
+void Model::gotResponse(const Response &response) {
     switch (response.getType()) {
         case RequestType::LOGIN:
             handleLoginResponse(response);
@@ -236,18 +236,18 @@ void Model::gotResponse(Response response) {
     }
 }
 
-void Model::handleLoginResponse(Response) {
+void Model::handleLoginResponse(const Response&) {
     logged = true;
     username = usernameTrying;
     receiver->setUser(username);
     emit userLogged();
 }
 
-void Model::handleRegisterResponse(Response) {
+void Model::handleRegisterResponse(const Response&) {
     emit userRegistered();
 }
 
-void Model::handleGroupsResponse(Response response) {
+void Model::handleGroupsResponse(const Response &response) {
     pathRequestInProgress = false;
 
     QList<int> groupIds;
@@ -272,11 +272,11 @@ void Model::handleGroupsResponse(Response response) {
     emit groupsReceived(groups);
 }
 
-void Model::handleNewGroupResponse(Response) {
+void Model::handleNewGroupResponse(const Response&) {
     emit newGroupStatusCode();
 }
 
-void Model::handlePathResponse(Response response) {
+void Model::handlePathResponse(const Response &response) {
     pathRequestInProgress = false;
 
     QList<QStandardItem*> dir = parseDirectory(response.getBody());
@@ -284,7 +284,7 @@ void Model::handlePathResponse(Response response) {
     emit pathReceived(dir);
 }
 
-QList<QStandardItem*> Model::parseDirectory(QByteArray json) {
+QList<QStandardItem*> Model::parseDirectory(const QByteArray &json) {
     QList<QStandardItem*> result;
 
     auto dirRaw = QJsonDocument::fromJson(json);
@@ -311,7 +311,7 @@ QList<QStandardItem*> Model::parseDirectory(QByteArray json) {
     return result;
 }
 
-void Model::handleGroupUsersResponse(Response response) {
+void Model::handleGroupUsersResponse(const Response &response) {
     QList<User> users;
 
     auto respRaw = QJsonDocument::fromJson(response.getBody()).object();
@@ -326,31 +326,31 @@ void Model::handleGroupUsersResponse(Response response) {
     emit groupUsersReceived(users);
 }
 
-void Model::handleGroupDeleteResponse(Response) {
+void Model::handleGroupDeleteResponse(const Response&) {
     emit groupDeletedReceived();
 }
 
-void Model::handleGroupAddUserResponse(Response) {
+void Model::handleGroupAddUserResponse(const Response&) {
     emit groupAddUserReceived();
 }
 
-void Model::handleGroupRemoveUserResponse(Response) {
+void Model::handleGroupRemoveUserResponse(const Response&) {
     emit groupRemoveUserReceived();
 }
 
-void Model::handleDeleteResponse(Response) {
+void Model::handleDeleteResponse(const Response&) {
     emit resourceDeleted();
 }
 
-void Model::handleNewFolderResponse(Response) {
+void Model::handleNewFolderResponse(const Response&) {
     emit newFolderCreated();
 }
 
-void Model::handleUploadResponse(Response) {
+void Model::handleUploadResponse(const Response&) {
     emit uploadComplete();
 }
 
-void Model::gotMessage(int groupId, Message msg) {
+void Model::gotMessage(const int groupId, const Message &msg) {
     QString text = msg.getMsg();
     auto item = new QStandardItem(text);
     item->setData(QVariant(msg.getUser()), Message::Role::USER);
@@ -375,7 +375,7 @@ QStandardItemModel *Model::getCurrentGroupMessages() {
     }
 }
 
-void Model::handleResponseError(QNetworkReply::NetworkError error, Response response) {
+void Model::handleResponseError(const QNetworkReply::NetworkError &error, const Response &response) {
     auto pathResponses = QList<RequestType>({RequestType::PATH, RequestType::GROUPS});
     if (pathResponses.contains(response.getType())) {
         pathRequestInProgress = false;

@@ -12,18 +12,18 @@ public:
         TIMESTAMP = Qt::UserRole + 2
     };
 
-    Message(QString user, QString text, QDateTime timestamp)
+    Message(const QString &user, const QString &text, const QDateTime &timestamp)
         : user(user), text(text), timestamp(timestamp) {}
 
-    QString getUser() {
+    QString getUser() const {
         return user;
     }
 
-    QString getMsg() {
+    QString getMsg() const {
         return text;
     }
 
-    QString getTimestamp() {
+    QString getTimestamp() const {
         return timestamp.toString("hh:mm:ss dd MMMM");
     }
 

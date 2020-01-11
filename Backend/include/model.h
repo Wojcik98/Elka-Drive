@@ -35,13 +35,13 @@ public:
     void clearMsgs();
 
     void requestDelete(const QModelIndex &index);
-    void requestDownload(const QModelIndex &index, QString path);
+    void requestDownload(const QModelIndex &index, const QString &path);
     void requestSubpath(const QModelIndex &index);
     void requestGroups();
-    void requestNewGroup(QString groupName);
-    void requestGroupUsers(int groupId);
-    void requestNewFolder(QString name);
-    void requestFileUpload(QString rootLocal, QString relativePath);
+    void requestNewGroup(const QString &groupName);
+    void requestGroupUsers(const int groupId);
+    void requestNewFolder(const QString &name);
+    void requestFileUpload(const QString &rootLocal, const QString &relativePath);
     void goBack();
     void refresh();
     void sendMsg(const QString &msg);
@@ -66,49 +66,49 @@ private:
     QMap<int, QStandardItemModel*> messages;
     bool pathRequestInProgress = false;
 
-    void handleLoginResponse(Response response);
-    void handleRegisterResponse(Response response);
-    void handleGroupsResponse(Response response);
-    void handleNewGroupResponse(Response response);
-    void handlePathResponse(Response response);
-    void handleGroupUsersResponse(Response response);
-    void handleGroupDeleteResponse(Response response);
-    void handleGroupAddUserResponse(Response response);
-    void handleGroupRemoveUserResponse(Response response);
-    void handleDeleteResponse(Response response);
-    void handleNewFolderResponse(Response response);
-    void handleUploadResponse(Response response);
-    void handleResponseError(QNetworkReply::NetworkError error, Response response);
+    void handleLoginResponse(const Response &response);
+    void handleRegisterResponse(const Response &response);
+    void handleGroupsResponse(const Response &response);
+    void handleNewGroupResponse(const Response &response);
+    void handlePathResponse(const Response &response);
+    void handleGroupUsersResponse(const Response &response);
+    void handleGroupDeleteResponse(const Response &response);
+    void handleGroupAddUserResponse(const Response &response);
+    void handleGroupRemoveUserResponse(const Response &response);
+    void handleDeleteResponse(const Response &response);
+    void handleNewFolderResponse(const Response &response);
+    void handleUploadResponse(const Response &response);
+    void handleResponseError(const QNetworkReply::NetworkError &error, const Response &response);
 
-    QList<QStandardItem*> parseDirectory(QByteArray json);
+    QList<QStandardItem*> parseDirectory(const QByteArray &json);
 
 signals:
-    void responseError(QNetworkReply::NetworkError error, Response response);
+    void responseError(const QNetworkReply::NetworkError &error, const Response &response);
     void userLogged();
     void userRegistered();
-    void groupsReceived(QList<QStandardItem*> groups);
+    void groupsReceived(const QList<QStandardItem*> &groups);
     void newGroupStatusCode();
-    void pathReceived(QList<QStandardItem*> groups);
-    void groupUsersReceived(QList<User> users);
+    void pathReceived(const QList<QStandardItem*> &groups);
+    void groupUsersReceived(const QList<User> &users);
     void groupDeletedReceived();
     void groupAddUserReceived();
     void groupRemoveUserReceived();
     void resourceDeleted();
     void newFolderCreated();
-    void downloadProgress(qint64 current, qint64 total);
-    void uploadProgress(qint64 current, qint64 total);
+    void downloadProgress(const qint64 current, const qint64 total);
+    void uploadProgress(const qint64 current, const qint64 total);
     void uploadComplete();
     void fileOpenError(const QString &filename);
 
 public slots:
-    void gotResponse(Response response);
-    void gotMessage(int groupId, Message msg);
+    void gotResponse(const Response &response);
+    void gotMessage(const int groupId, const Message &msg);
 
-    void requestRegister(QString user, QString password);
-    void requestLogin(QString user, QString password);
-    void requestGroupDelete(int groupId);
-    void requestAddUserToGroup(QString username, int groupId);
-    void requestRemoveUserFromGroup(QString username, int groupId);
+    void requestRegister(const QString &user, const QString &password);
+    void requestLogin(const QString &user, const QString &password);
+    void requestGroupDelete(const int groupId);
+    void requestAddUserToGroup(const QString &username, const int groupId);
+    void requestRemoveUserFromGroup(const QString &username, const int groupId);
 };
 
 #endif // MODEL_H

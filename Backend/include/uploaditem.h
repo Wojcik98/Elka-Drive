@@ -6,7 +6,7 @@
 
 class UploadItem : public QObject {
 public:
-    UploadItem(QString rootLocal, QString rootServer, QString relativePath);
+    UploadItem(const QString &rootLocal, const QString &rootServer, const QString &relativePath);
 
     QString getRootLocal();
     QString getRootServer();

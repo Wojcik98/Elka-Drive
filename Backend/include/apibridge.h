@@ -15,28 +15,28 @@ Q_OBJECT
 public:
     APIBridge();
     virtual ~APIBridge();
-    virtual void requestLogin(QString user, QString password) = 0;
-    virtual void requestRegister(QString user, QString password) = 0;
+    virtual void requestLogin(const QString &user, const QString &password) = 0;
+    virtual void requestRegister(const QString &user, const QString &password) = 0;
     virtual void requestGroups() = 0;
-    virtual void requestNewGroup(QString groupName) = 0;
-    virtual void requestPath(QString path) = 0;
-    virtual void requestFileDownload(int id, QString path) = 0;
-    virtual void requestDirectoryDownload(int id, QString path) = 0;
-    virtual void requestGroupUsers(int groupId) = 0;
-    virtual void requestGroupDelete(int groupId) = 0;
-    virtual void requestAddUserToGroup(QString username, int groupId) = 0;
-    virtual void requestRemoveUserFromGroup(QString username, int groupId) = 0;
-    virtual void requestFileDelete(int id) = 0;
-    virtual void requestDirectoryDelete(QString path) = 0;
-    virtual void requestNewFolder(QString path) = 0;
-    virtual void requestFileUpload(QString rootLocal, QString rootServer, QString path) = 0;
-    virtual void sendMsg(int groupId, const QString &msg) = 0;
+    virtual void requestNewGroup(const QString &groupName) = 0;
+    virtual void requestPath(const QString &path) = 0;
+    virtual void requestFileDownload(const int id, const QString &path) = 0;
+    virtual void requestDirectoryDownload(const int id, const QString &path) = 0;
+    virtual void requestGroupUsers(const int groupId) = 0;
+    virtual void requestGroupDelete(const int groupId) = 0;
+    virtual void requestAddUserToGroup(const QString &username, const int groupId) = 0;
+    virtual void requestRemoveUserFromGroup(const QString &username, const int groupId) = 0;
+    virtual void requestFileDelete(const int id) = 0;
+    virtual void requestDirectoryDelete(const QString &path) = 0;
+    virtual void requestNewFolder(const QString &path) = 0;
+    virtual void requestFileUpload(const QString &rootLocal, const QString &rootServer, const QString &path) = 0;
+    virtual void sendMsg(const int groupId, const QString &msg) = 0;
 
 signals:
-    void responseError(QNetworkReply::NetworkError error, Response requestType);
-    void gotResponse(Response response);    // TODO reference?
-    void downloadProgress(qint64 bytesReceived, qint64 bytesTotal);
-    void uploadProgress(qint64 bytesSent, qint64 bytesTotal);
+    void responseError(const QNetworkReply::NetworkError &error, const Response &requestType);
+    void gotResponse(const Response &response);
+    void downloadProgress(const qint64 bytesReceived, const qint64 bytesTotal);
+    void uploadProgress(const qint64 bytesSent, const qint64 bytesTotal);
     void fileOpenError(const QString &filename);
 };
 

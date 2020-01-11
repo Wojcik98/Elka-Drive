@@ -85,8 +85,8 @@ void MainWindow::settingsButtonClicked() {
     }
 }
 
-void MainWindow::setController(Controller *controller) {
-    this->controller = controller;
+void MainWindow::setController(Controller *newController) {
+    controller = newController;
     connect(
         ui->fileList,
         &QAbstractItemView::doubleClicked,
@@ -123,11 +123,12 @@ bool MainWindow::filesSort(QStandardItem *a, QStandardItem *b) {
     return a->data(Model::TYPE_ROLE).toInt() < b->data(Model::TYPE_ROLE).toInt();
 }
 
-void MainWindow::setFileList(QList<QStandardItem*> files) {
+void MainWindow::setFileList(const QList<QStandardItem*> &files) {
     fileListModel.clear();
 
-    std::sort(files.begin(), files.end(), filesSort);
-    fileListModel.appendColumn(files);
+    QList<QStandardItem*> copy(files);
+    std::sort(copy.begin(), copy.end(), filesSort);
+    fileListModel.appendColumn(copy);
 }
 
 void MainWindow::sendButtonClicked() {

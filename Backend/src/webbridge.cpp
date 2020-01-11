@@ -4,7 +4,7 @@
 #include <QNetworkReply>
 #include <QHttpMultiPart>
 
-WebBridge::WebBridge(QString mainUrl) : mainUrl(mainUrl) {
+WebBridge::WebBridge(const QString &mainUrl) : mainUrl(mainUrl) {
     requestReply = nullptr;
     currentRequest = nullptr;
     downloadReply = nullptr;
@@ -13,7 +13,7 @@ WebBridge::WebBridge(QString mainUrl) : mainUrl(mainUrl) {
     currentUpload = nullptr;
 }
 
-void WebBridge::requestLogin(QString user, QString password) {
+void WebBridge::requestLogin(const QString &user, const QString &password) {
     auto url = QUrl(mainUrl + "/login");
     QUrlQuery data;
     data.addQueryItem("username", user);
@@ -22,7 +22,7 @@ void WebBridge::requestLogin(QString user, QString password) {
     post(url, data, RequestType::LOGIN);
 }
 
-void WebBridge::requestRegister(QString user, QString password) {
+void WebBridge::requestRegister(const QString &user, const QString &password) {
     auto url = QUrl(mainUrl + "/register");
     QUrlQuery data;
     data.addQueryItem("username", user);
@@ -31,13 +31,13 @@ void WebBridge::requestRegister(QString user, QString password) {
     post(url, data, RequestType::REGISTER);
 }
 
-void WebBridge::requestFileDelete(int id) {
+void WebBridge::requestFileDelete(const int id) {
     auto url = QUrl(mainUrl + "/files/" + QString::number(id));
 
     deleteResource(url, RequestType::DELETE);
 }
 
-void WebBridge::requestDirectoryDelete(QString path) {
+void WebBridge::requestDirectoryDelete(const QString &path) {
     auto url = QUrl(mainUrl + "/files/del");
     QUrlQuery query;
     query.addQueryItem("path", path);
@@ -52,7 +52,7 @@ void WebBridge::requestGroups() {
     get(url, RequestType::GROUPS);
 }
 
-void WebBridge::requestNewGroup(QString groupName) {
+void WebBridge::requestNewGroup(const QString &groupName) {
     auto url = QUrl(mainUrl + "/groups");
     QUrlQuery data;
     data.addQueryItem("name", groupName);
@@ -60,7 +60,7 @@ void WebBridge::requestNewGroup(QString groupName) {
     post(url, data, RequestType::NEW_GROUP);
 }
 
-void WebBridge::requestPath(QString path) {
+void WebBridge::requestPath(const QString &path) {
     auto url = QUrl(mainUrl + "/files/dir");
     QUrlQuery query;
     query.addQueryItem("path", path);
@@ -69,19 +69,19 @@ void WebBridge::requestPath(QString path) {
     get(url, RequestType::PATH);
 }
 
-void WebBridge::requestGroupUsers(int groupId) {
+void WebBridge::requestGroupUsers(const int groupId) {
     auto url = QUrl(mainUrl + "/groups/" + QString::number(groupId));
 
     get(url, RequestType::GROUP_USERS);
 }
 
-void WebBridge::requestGroupDelete(int groupId) {
+void WebBridge::requestGroupDelete(const int groupId) {
     auto url = QUrl(mainUrl + "/groups/" + QString::number(groupId));
 
     deleteResource(url, RequestType::GROUP_DELETE);
 }
 
-void WebBridge::requestAddUserToGroup(QString username, int groupId) {
+void WebBridge::requestAddUserToGroup(const QString &username, const int groupId) {
     auto url = QUrl(mainUrl + "/groups/add/" + QString::number(groupId));
     QUrlQuery data;
     data.addQueryItem("username", username);
@@ -89,7 +89,7 @@ void WebBridge::requestAddUserToGroup(QString username, int groupId) {
     post(url, data, RequestType::GROUP_ADD_USER);
 }
 
-void WebBridge::requestRemoveUserFromGroup(QString username, int groupId) {
+void WebBridge::requestRemoveUserFromGroup(const QString &username, const int groupId) {
     auto url = QUrl(mainUrl + "/groups/remove/" + QString::number(groupId));
     QUrlQuery data;
     data.addQueryItem("username", username);
@@ -97,7 +97,7 @@ void WebBridge::requestRemoveUserFromGroup(QString username, int groupId) {
     post(url, data, RequestType::GROUP_REMOVE_USER);
 }
 
-void WebBridge::requestNewFolder(QString path) {
+void WebBridge::requestNewFolder(const QString &path) {
     auto url = QUrl(mainUrl + "/files/dir");
     QUrlQuery data;
     data.addQueryItem("path", path);
@@ -105,7 +105,7 @@ void WebBridge::requestNewFolder(QString path) {
     post(url, data, RequestType::NEW_FOLDER);
 }
 
-void WebBridge::sendMsg(int groupId, const QString &msg) {
+void WebBridge::sendMsg(const int groupId, const QString &msg) {
     auto url = QUrl(mainUrl + "/message");
     QUrlQuery data;
     data.addQueryItem("message", msg);
@@ -114,7 +114,7 @@ void WebBridge::sendMsg(int groupId, const QString &msg) {
     post(url, data, RequestType::SEND_MSG);
 }
 
-void WebBridge::get(QUrl url, RequestType type) {
+void WebBridge::get(const QUrl &url, const RequestType &type) {
     auto request = QNetworkRequest(url);
     auto newRequest = new Request(Request::Method::GET, request, type);
     requestQueue.enqueue(newRequest);
@@ -122,7 +122,7 @@ void WebBridge::get(QUrl url, RequestType type) {
     triggerRequest();
 }
 
-void WebBridge::post(QUrl url, QUrlQuery data, RequestType type) {
+void WebBridge::post(const QUrl &url, const QUrlQuery &data, const RequestType &type) {
     auto request = QNetworkRequest(url);
     request.setHeader(QNetworkRequest::ContentTypeHeader,
         "application/x-www-form-urlencoded");
@@ -134,7 +134,7 @@ void WebBridge::post(QUrl url, QUrlQuery data, RequestType type) {
     triggerRequest();
 }
 
-void WebBridge::deleteResource(QUrl url, RequestType type) {
+void WebBridge::deleteResource(const QUrl &url, const RequestType &type) {
     auto request = QNetworkRequest(url);
     auto newRequest = new Request(Request::Method::DELETE, request, type);
     requestQueue.enqueue(newRequest);
@@ -206,17 +206,17 @@ void WebBridge::networkReplyFinished() {
     triggerRequest();
 }
 
-void WebBridge::requestFileDownload(int id, QString path) {
+void WebBridge::requestFileDownload(const int id, const QString &path) {
     auto url = QUrl(mainUrl + "/files/" + QString::number(id));
     requestDownload(id, path, url);
 }
 
-void WebBridge::requestDirectoryDownload(int id, QString path) {
+void WebBridge::requestDirectoryDownload(const int id, const QString &path) {
     auto url = QUrl(mainUrl + "/files/dir/" + QString::number(id));
     requestDownload(id, path, url);
 }
 
-void WebBridge::requestDownload(int id, QString path, QUrl url) {
+void WebBridge::requestDownload(const int id, const QString &path, const QUrl &url) {
     auto newItem = new DownloadItem(id, path, url);
     downloadQueue.enqueue(newItem);
     triggerDownload();
@@ -283,7 +283,11 @@ void WebBridge::downloadReplyFinished() {
     triggerDownload();
 }
 
-void WebBridge::requestFileUpload(QString rootLocal, QString rootServer, QString relativePath) {
+void WebBridge::requestFileUpload(
+        const QString &rootLocal,
+        const QString &rootServer,
+        const QString &relativePath
+    ) {
     auto newUpload = new UploadItem(rootLocal, rootServer, relativePath);
     uploadQueue.enqueue(newUpload);
     triggerUpload();

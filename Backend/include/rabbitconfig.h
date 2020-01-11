@@ -5,28 +5,28 @@
 
 class RabbitConfig {
 public:
-    RabbitConfig(QString host, QString vhost, QString username, QString password, quint16 port)
+    RabbitConfig(const QString &host, const QString &vhost, const QString &username, const QString &password, const quint16 port)
         : host(host), vhost(vhost), username(username), password(password), port(port) {
 
     }
 
-    QString getHost() {
+    QString getHost() const {
         return host;
     }
 
-    QString getVhost() {
+    QString getVhost() const {
         return vhost;
     }
 
-    QString getUsername() {
+    QString getUsername() const {
         return username;
     }
 
-    QString getPassword() {
+    QString getPassword() const {
         return password;
     }
 
-    quint16 getPort() {
+    quint16 getPort() const {
         return port;
     }
 

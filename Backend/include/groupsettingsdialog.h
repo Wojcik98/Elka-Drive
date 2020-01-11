@@ -17,7 +17,7 @@ class GroupSettingsDialog: public QDialog {
  Q_OBJECT
 
 public:
-    explicit GroupSettingsDialog(QString groupName, int groupID, QWidget *parent=nullptr);
+    explicit GroupSettingsDialog(const QString &groupName, const int groupID, QWidget *parent=nullptr);
     ~GroupSettingsDialog();
 
 private:
@@ -40,15 +40,15 @@ private:
     void permissionDenied();
 
 signals:
-    void requestGroupUsers(int groupId);
-    void requestAddUserToGroup(QString username, int groupId);
-    void requestRemoveUserFromGroup(QString username, int groupId);
+    void requestGroupUsers(const int groupId);
+    void requestAddUserToGroup(const QString &username, const int groupId);
+    void requestRemoveUserFromGroup(const QString &username, const int groupId);
     void requestGroupDelete(int groupId);
     void openRegister();
 
 public slots:
-    void enableAdvanced(int state);
-    void groupUsersReceived(QList<User> users);
+    void enableAdvanced(const int state);
+    void groupUsersReceived(const QList<User> &users);
     void groupDeletedReceived();
     void groupAddUserReceived();
     void groupRemoveUserReceived();

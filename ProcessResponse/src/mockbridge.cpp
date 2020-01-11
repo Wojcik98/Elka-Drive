@@ -5,11 +5,11 @@ MockBridge::MockBridge() : response(Response(QByteArray(), RequestType::LOGIN)) 
 
 }
 
-void MockBridge::requestLogin(QString, QString) {
+void MockBridge::requestLogin(const QString&, const QString&) {
     takeAction();
 }
 
-void MockBridge::requestRegister(QString, QString) {
+void MockBridge::requestRegister(const QString&, const QString&) {
     takeAction();
 }
 
@@ -17,56 +17,56 @@ void MockBridge::requestGroups() {
     takeAction();
 }
 
-void MockBridge::requestNewGroup(QString) {
+void MockBridge::requestNewGroup(const QString&) {
     takeAction();
 }
 
-void MockBridge::requestPath(QString) {
+void MockBridge::requestPath(const QString&) {
     takeAction();
 }
 
-void MockBridge::requestFileDownload(int, QString) {
+void MockBridge::requestFileDownload(const int, const QString&) {
     takeAction();
 }
 
-void MockBridge::requestDirectoryDownload(int, QString) {
+void MockBridge::requestDirectoryDownload(const int, const QString&) {
     takeAction();
 }
 
-void MockBridge::requestGroupUsers(int) {
+void MockBridge::requestGroupUsers(const int) {
     takeAction();
 }
 
-void MockBridge::requestGroupDelete(int) {
+void MockBridge::requestGroupDelete(const int) {
     takeAction();
 }
 
-void MockBridge::requestAddUserToGroup(QString, int) {
+void MockBridge::requestAddUserToGroup(const QString&, const int) {
     takeAction();
 }
 
-void MockBridge::requestRemoveUserFromGroup(QString, int) {
+void MockBridge::requestRemoveUserFromGroup(const QString&, const int) {
     takeAction();
 }
 
-void MockBridge::requestFileDelete(int) {
+void MockBridge::requestFileDelete(const int) {
     takeAction();
 }
 
-void MockBridge::requestDirectoryDelete(QString) {
+void MockBridge::requestDirectoryDelete(const QString&) {
     takeAction();
 }
 
-void MockBridge::requestNewFolder(QString) {
+void MockBridge::requestNewFolder(const QString&) {
     takeAction();
 }
 
 
-void MockBridge::requestFileUpload(QString, QString, QString) {
+void MockBridge::requestFileUpload(const QString&, const QString&, const QString&) {
     takeAction();
 }
 
-void MockBridge::sendMsg(int, const QString&) {
+void MockBridge::sendMsg(const int, const QString&) {
     takeAction();
 }
 
@@ -90,24 +90,24 @@ void MockBridge::takeAction() {
     }
 }
 
-void MockBridge::emitGotResponse(Response response) {
+void MockBridge::emitGotResponse(const Response &response) {
     action = GOT_RESPONSE;
     this->response = response;
 }
 
-void MockBridge::emitResponseError(QNetworkReply::NetworkError error, Response response) {
+void MockBridge::emitResponseError(const QNetworkReply::NetworkError &error, const Response &response) {
     action = RESPONSE_ERROR;
     this->error = error;
     this->response = response;
 }
 
-void MockBridge::emitDownloadProgress(qint64 bytesReceived, qint64 bytesTotal) {
+void MockBridge::emitDownloadProgress(const qint64 bytesReceived, const qint64 bytesTotal) {
     action = DOWNLOAD_PROGRESS;
     this->current = bytesReceived;
     this->total = bytesTotal;
 }
 
-void MockBridge::emitUploadProgress(qint64 bytesSent, qint64 bytesTotal) {
+void MockBridge::emitUploadProgress(const qint64 bytesSent, const qint64 bytesTotal) {
     action = UPLOAD_PROGRESS;
     this->current = bytesSent;
     this->total = bytesTotal;

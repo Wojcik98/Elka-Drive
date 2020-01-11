@@ -2,7 +2,7 @@
 #include <QJsonDocument>
 #include <QJsonObject>
 
-RabbitReceiver::RabbitReceiver(RabbitConfig config, QObject *parent) : MessageReceiver(parent) {
+RabbitReceiver::RabbitReceiver(const RabbitConfig &config, QObject *parent) : MessageReceiver(parent) {
     client.setAutoReconnect(true);
     client.setHost(config.getHost());
     client.setVirtualHost(config.getVhost());
@@ -15,7 +15,7 @@ RabbitReceiver::~RabbitReceiver() {
 
 }
 
-void RabbitReceiver::setUser(QString user) {
+void RabbitReceiver::setUser(const QString &user) {
     this->user = user;
 }
 
@@ -33,7 +33,7 @@ void RabbitReceiver::clientConnected() {
     connectedToHost = true;
 }
 
-void RabbitReceiver::connectOnlyGivenGroups(QList<int> groups) {
+void RabbitReceiver::connectOnlyGivenGroups(const QList<int> &groups) {
     // connect to given groups
     for (auto group : groups) {
         connectGroup(group);
@@ -48,7 +48,7 @@ void RabbitReceiver::connectOnlyGivenGroups(QList<int> groups) {
     }
 }
 
-void RabbitReceiver::connectGroup(int groupId) {
+void RabbitReceiver::connectGroup(const int groupId) {
     if (groupToQueue.keys().contains(groupId)) {
         return;
     }
@@ -69,7 +69,7 @@ void RabbitReceiver::connectGroup(int groupId) {
     queue->declare(queueOptions);
 }
 
-void RabbitReceiver::disconnectGroup(int groupId) {
+void RabbitReceiver::disconnectGroup(const int groupId) {
     if (groupToQueue.contains(groupId)) {
         auto queue = groupToQueue[groupId];
 

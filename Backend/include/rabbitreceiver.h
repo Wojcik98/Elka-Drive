@@ -8,14 +8,14 @@
 
 class RabbitReceiver : public MessageReceiver {
 public:
-    RabbitReceiver(RabbitConfig config, QObject *parent = nullptr);
+    RabbitReceiver(const RabbitConfig &config, QObject *parent = nullptr);
     ~RabbitReceiver() override;
 
     void start() override;
-    void setUser(QString user) override;
-    void connectOnlyGivenGroups(QList<int> groups) override;
-    void connectGroup(int groupId) override;
-    void disconnectGroup(int groupId) override;
+    void setUser(const QString &user) override;
+    void connectOnlyGivenGroups(const QList<int> &groups) override;
+    void connectGroup(const int groupId) override;
+    void disconnectGroup(const int groupId) override;
 
 private:
     Message parseJson(QByteArray json);

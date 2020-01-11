@@ -7,27 +7,27 @@
 class MockBridge : public APIBridge {
 public:
     MockBridge();
-    void requestLogin(QString user, QString password) override;
-    void requestRegister(QString user, QString password) override;
+    void requestLogin(const QString &user, const QString &password) override;
+    void requestRegister(const QString &user, const QString &password) override;
     void requestGroups() override;
-    void requestNewGroup(QString groupName) override;
-    void requestPath(QString path) override;
-    void requestFileDownload(int id, QString path) override;
-    void requestDirectoryDownload(int id, QString path) override;
-    void requestGroupUsers(int groupId) override;
-    void requestGroupDelete(int groupId) override;
-    void requestAddUserToGroup(QString username, int groupId) override;
-    void requestRemoveUserFromGroup(QString username, int groupId) override;
-    void requestFileDelete(int id) override;
-    void requestDirectoryDelete(QString path) override;
-    void requestNewFolder(QString path) override;
-    void requestFileUpload(QString rootLocal, QString rootServer, QString path) override;
-    void sendMsg(int groupId, const QString &msg) override;
+    void requestNewGroup(const QString &groupName) override;
+    void requestPath(const QString &path) override;
+    void requestFileDownload(const int id, const QString &path) override;
+    void requestDirectoryDownload(const int id, const QString &path) override;
+    void requestGroupUsers(const int groupId) override;
+    void requestGroupDelete(const int groupId) override;
+    void requestAddUserToGroup(const QString &username, const int groupId) override;
+    void requestRemoveUserFromGroup(const QString &username, const int groupId) override;
+    void requestFileDelete(const int id) override;
+    void requestDirectoryDelete(const QString &path) override;
+    void requestNewFolder(const QString &path) override;
+    void requestFileUpload(const QString &rootLocal, const QString &rootServer, const QString &path) override;
+    void sendMsg(const int groupId, const QString &msg) override;
 
-    void emitGotResponse(Response response);
-    void emitResponseError(QNetworkReply::NetworkError error, Response response);
-    void emitDownloadProgress(qint64 bytesReceived, qint64 bytesTotal);
-    void emitUploadProgress(qint64 bytesSent, qint64 bytesTotal);
+    void emitGotResponse(const Response &response);
+    void emitResponseError(const QNetworkReply::NetworkError &error, const Response &response);
+    void emitDownloadProgress(const qint64 bytesReceived, const qint64 bytesTotal);
+    void emitUploadProgress(const qint64 bytesSent, const qint64 bytesTotal);
     void emitFileOpenError(const QString &filename);
 
 private:
