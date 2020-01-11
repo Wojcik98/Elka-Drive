@@ -64,6 +64,7 @@ private:
     QString usernameTrying;
     QString username;
     QMap<int, QStandardItemModel*> messages;
+    bool pathRequestInProgress = false;
 
     void handleLoginResponse(Response response);
     void handleRegisterResponse(Response response);
@@ -77,11 +78,12 @@ private:
     void handleDeleteResponse(Response response);
     void handleNewFolderResponse(Response response);
     void handleUploadResponse(Response response);
+    void handleResponseError(QNetworkReply::NetworkError error, Response response);
 
     QList<QStandardItem*> parseDirectory(QByteArray json);
 
 signals:
-    void responseError(QNetworkReply::NetworkError error, Response requestType);
+    void responseError(QNetworkReply::NetworkError error, Response response);
     void userLogged();
     void userRegistered();
     void groupsReceived(QList<QStandardItem*> groups);

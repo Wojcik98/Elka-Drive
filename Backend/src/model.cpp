@@ -19,7 +19,7 @@ Model::Model(APIBridge *bridge, MessageReceiver *receiver) : bridge(bridge), rec
         bridge,
         &APIBridge::responseError,
         this,
-        &Model::responseError
+        &Model::handleResponseError
     );
     connect(
         bridge,
@@ -59,9 +59,11 @@ void Model::clearMsgs() {
 }
 
 void Model::requestGroups() {
-    // TODO block requesting several paths at once
-    clearPath();
-    bridge->requestGroups();
+    if (!pathRequestInProgress) {
+        pathRequestInProgress = true;
+        clearPath();
+        bridge->requestGroups();
+    }
 }
 
 void Model::requestNewGroup(QString groupName) {
@@ -69,36 +71,47 @@ void Model::requestNewGroup(QString groupName) {
 }
 
 void Model::requestSubpath(const QModelIndex &index) {
-    QString subdir;
-    auto type = index.data(Model::TYPE_ROLE).toInt();
+    if (!pathRequestInProgress) {
+        QString subdir;
+        auto type = index.data(Model::TYPE_ROLE).toInt();
 
-    if (type == ItemType::GROUP) {
-        subdir = index.data(Model::ID_ROLE).toString();
-    } else if (type == ItemType::FOLDER) {
-        subdir = index.data(Qt::DisplayRole).toString();
-    } else {
-        return;
+        if (type == ItemType::GROUP) {
+            subdir = index.data(Model::ID_ROLE).toString();
+        } else if (type == ItemType::FOLDER) {
+            subdir = index.data(Qt::DisplayRole).toString();
+        } else {
+            return;
+        }
+
+        path.append(subdir);
+        pathRequestInProgress = true;
+        bridge->requestPath(path.join("/"));
     }
-
-    path.append(subdir); // TODO read path from response?
-    bridge->requestPath(path.join("/"));
 }
 
 void Model::goBack() {
-    if (path.length() > 1) {
-        path.pop_back();
-        bridge->requestPath(path.join("/"));
-    } else if (path.length() == 1) {
-        path.pop_back();
-        bridge->requestGroups();
+    if (!pathRequestInProgress) {
+        pathRequestInProgress = true;
+
+        if (path.length() > 1) {
+            path.pop_back();
+            bridge->requestPath(path.join("/"));
+        } else if (path.length() == 1) {
+            path.pop_back();
+            bridge->requestGroups();
+        }
     }
 }
 
 void Model::refresh() {
-    if (path.length() > 0) {
-        bridge->requestPath(path.join("/"));
-    } else {
-        bridge->requestGroups();
+    if (!pathRequestInProgress) {
+        pathRequestInProgress = true;
+
+        if (path.length() > 0) {
+            bridge->requestPath(path.join("/"));
+        } else {
+            bridge->requestGroups();
+        }
     }
 }
 
@@ -220,7 +233,7 @@ void Model::gotResponse(Response response) {
         case RequestType::SEND_MSG:
             // do nothing
             break;
-        }
+    }
 }
 
 void Model::handleLoginResponse(Response) {
@@ -235,6 +248,8 @@ void Model::handleRegisterResponse(Response) {
 }
 
 void Model::handleGroupsResponse(Response response) {
+    pathRequestInProgress = false;
+
     QList<int> groupIds;
     QList<QStandardItem*> groups;
     auto groupsRaw = QJsonDocument::fromJson(response.getBody());
@@ -262,6 +277,8 @@ void Model::handleNewGroupResponse(Response) {
 }
 
 void Model::handlePathResponse(Response response) {
+    pathRequestInProgress = false;
+
     QList<QStandardItem*> dir = parseDirectory(response.getBody());
 
     emit pathReceived(dir);
@@ -356,4 +373,13 @@ QStandardItemModel *Model::getCurrentGroupMessages() {
     } else {
         return nullptr;
     }
+}
+
+void Model::handleResponseError(QNetworkReply::NetworkError error, Response response) {
+    auto pathResponses = QList<RequestType>({RequestType::PATH, RequestType::GROUPS});
+    if (pathResponses.contains(response.getType())) {
+        pathRequestInProgress = false;
+    }
+
+    emit responseError(error, response);
 }

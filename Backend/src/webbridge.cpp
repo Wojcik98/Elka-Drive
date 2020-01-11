@@ -198,8 +198,6 @@ void WebBridge::networkReplyFinished() {
     requestReply = nullptr;
 
     if (error != QNetworkReply::NoError) {
-        qDebug() << "error: " << error;
-
         emit responseError(error, response);
     } else {
         emit gotResponse(response);
@@ -279,8 +277,6 @@ void WebBridge::downloadReplyFinished() {
     currentDownload = nullptr;
 
     if (error != QNetworkReply::NoError) {
-        qDebug() << "error: " << error;
-
         emit responseError(error, response);
     }
 
@@ -326,8 +322,6 @@ void WebBridge::uploadCreateDirectoryFinished() {
 
     auto error = uploadReply->error();
     if (error != QNetworkReply::NoError) {
-        qDebug() << "error: " << error;
-
         delete currentUpload;
         currentUpload = nullptr;
         uploadReply->deleteLater();
@@ -407,8 +401,6 @@ void WebBridge::uploadSendFileFinished() {
     uploadReply = nullptr;
 
     if (error != QNetworkReply::NoError) {
-        qDebug() << "error: " << error;
-
         emit responseError(error, response);
     } else {
         emit gotResponse(response);
