@@ -330,6 +330,8 @@ void Model::handleUploadResponse(Response) {
 void Model::gotMessage(int groupId, Message msg) {
     QString text = msg.getMsg();
     auto item = new QStandardItem(text);
+    item->setData(QVariant(msg.getUser()), Message::Role::USER);
+    item->setData(QVariant(msg.getTimestamp()), Message::Role::TIMESTAMP);
 
     if (!messages.contains(groupId)) {
         messages[groupId] = new QStandardItemModel(this);

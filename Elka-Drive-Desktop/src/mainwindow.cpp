@@ -3,6 +3,7 @@
 #include <QUrl>
 #include <algorithm>
 
+#include "include/messagedelegate.h"
 #include "include/mainwindow.h"
 #include "include/view.h"
 #include "include/controller.h"
@@ -57,6 +58,10 @@ MainWindow::MainWindow(QWidget *parent) : View(parent), ui(new Ui::MainWindow) {
     ui->sendButton->setIcon(QIcon(":/icons/send.svg"));
     sendButton = ui->sendButton;
     backButton = ui->backButton;
+
+    ui->messagesList->setItemDelegate(new MessageDelegate(this));
+    ui->messagesList->setSelectionMode(QAbstractItemView::NoSelection);
+    ui->messagesList->setEditTriggers(QAbstractItemView::NoEditTriggers);
 }
 
 MainWindow::~MainWindow() {

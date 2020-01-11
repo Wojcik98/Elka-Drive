@@ -35,6 +35,7 @@ unix {
 SOURCES += \
     src/downloaditem.cpp \
     src/groupsettingsdialog.cpp \
+    src/messagedelegate.cpp \
     src/messagereceiver.cpp \
     src/rabbitreceiver.cpp \
     src/registerdialog.cpp \
@@ -56,6 +57,7 @@ HEADERS += \
     include/groupsettingsdialog.h \
     include/logindialog.h \
     include/message.h \
+    include/messagedelegate.h \
     include/messagereceiver.h \
     include/model.h \
     include/rabbitconfig.h \

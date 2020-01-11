@@ -90,7 +90,7 @@ Message RabbitReceiver::parseJson(QByteArray json) {
     auto dict = QJsonDocument::fromJson(json).object();
     auto user = dict["sender"].toString();
     auto timeMs = dict["sentAt"].toInt();
-    auto time = QDateTime::fromMSecsSinceEpoch(timeMs);
+    auto time = QDateTime::fromSecsSinceEpoch(timeMs);
     auto text = dict["message"].toString();
 
     return Message(user, text, time);
