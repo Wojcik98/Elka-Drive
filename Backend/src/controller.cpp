@@ -353,7 +353,13 @@ void Controller::requestNewGroup() {
 }
 
 void Controller::fileDoubleClicked(const QModelIndex &index) {
-    model->requestSubpath(index);
+    auto type = index.data(Model::TYPE_ROLE).toInt();
+
+    if (type == Model::ItemType::GROUP || type == Model::ItemType::FOLDER) {
+        model->requestSubpath(index);
+    } else if (type == Model::ItemType::FILE) {
+        requestDownload(index);
+    }
 }
 
 void Controller::fileClicked(const QModelIndex&) {

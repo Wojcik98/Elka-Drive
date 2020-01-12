@@ -1,6 +1,5 @@
 #include "include/webbridge.h"
 #include <QUrlQuery>
-#include <QDebug>
 #include <QNetworkReply>
 #include <QHttpMultiPart>
 
@@ -438,8 +437,7 @@ void WebBridge::uploadSendFileFinished() {
 }
 
 void WebBridge::uploadProgressPreprocess(const qint64 bytesSent, const qint64 bytesTotal) {
-    qDebug() << totalUploads << uploadQueue.size() << bytesSent;
-    if (totalUploads == 1 || (uploadQueue.empty() && bytesSent == bytesTotal)) {
+     if (totalUploads == 1 || (uploadQueue.empty() && bytesSent == bytesTotal)) {
         emit uploadProgress(bytesSent, bytesTotal);
     } else {
         auto progress = totalUploads - uploadQueue.size() - 1;
