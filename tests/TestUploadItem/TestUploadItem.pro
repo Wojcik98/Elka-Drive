@@ -26,16 +26,15 @@ DEFINES += QT_DEPRECATED_WARNINGS
 #DEFINES += QT_DISABLE_DEPRECATED_BEFORE=0x060000    # disables all the APIs deprecated before Qt 6.0.0
 
 INCLUDEPATH += \
-    ../../Backend \
-    ../Mocks
+    ../../Backend
 
 win32 {
     LIBS += -L../../Backend/release \
-        -lBackend \
+        -lBackend
 }
 unix {
     LIBS += -L../../Backend \
-        -lBackend \
+        -lBackend
 }
 
 INCLUDEPATH += $$INCDIR
