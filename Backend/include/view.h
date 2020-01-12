@@ -18,7 +18,7 @@ public:
     virtual ~View();
 
     virtual void setController(Controller *controller) = 0;
-    virtual void setFileList(const QList<QStandardItem*> &files) = 0;
+    virtual void setFileList(const QList<QStandardItem*> &files, const QString &path) = 0;
     virtual void clearMsg() = 0;
     virtual void setChatModel(QStandardItemModel *model) = 0;
     void setGroupsView();

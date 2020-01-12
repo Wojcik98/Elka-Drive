@@ -46,6 +46,7 @@ public:
     void refresh();
     void sendMsg(const QString &msg);
     QStandardItemModel *getCurrentGroupMessages();
+    QString getPath();
 
     static const int TYPE_ROLE = Qt::UserRole + 1;
     static const int ID_ROLE = Qt::UserRole + 2;
@@ -64,6 +65,7 @@ private:
     QString usernameTrying;
     QString username;
     QMap<int, QStandardItemModel*> messages;
+    QMap<int, QString> groupIdToName;
     bool pathRequestInProgress = false;
 
     void handleLoginResponse(const Response &response);

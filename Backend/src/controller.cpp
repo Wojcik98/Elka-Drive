@@ -243,7 +243,8 @@ void Controller::openRegister() {
 }
 
 void Controller::groupsReceived(const QList<QStandardItem*> &groups) {
-    view->setFileList(groups);
+    auto path = model->getPath();
+    view->setFileList(groups, path);
     view->setGroupsView();
     view->setSettingsButtonEnabled(false);
     view->setChatModel(nullptr);
@@ -317,8 +318,9 @@ void Controller::openGroupSettings(const QModelIndex &index) {
     model->requestGroups();
 }
 
-void Controller::pathReceived(const QList<QStandardItem*> &path) {
-    view->setFileList(path);
+void Controller::pathReceived(const QList<QStandardItem*> &dirs) {
+    auto path = model->getPath();
+    view->setFileList(dirs, path);
     view->setFilesView();
     view->setChatModel(model->getCurrentGroupMessages());
 }

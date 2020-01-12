@@ -123,12 +123,14 @@ bool MainWindow::filesSort(QStandardItem *a, QStandardItem *b) {
     return a->data(Model::TYPE_ROLE).toInt() < b->data(Model::TYPE_ROLE).toInt();
 }
 
-void MainWindow::setFileList(const QList<QStandardItem*> &files) {
+void MainWindow::setFileList(const QList<QStandardItem*> &files, const QString &path) {
     fileListModel.clear();
 
     QList<QStandardItem*> copy(files);
     std::sort(copy.begin(), copy.end(), filesSort);
     fileListModel.appendColumn(copy);
+
+    ui->pathLabel->setText("Location: " + path);
 }
 
 void MainWindow::sendButtonClicked() {

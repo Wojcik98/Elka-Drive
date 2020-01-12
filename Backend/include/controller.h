@@ -53,7 +53,7 @@ public slots:
     void refresh();
     void groupsReceived(const QList<QStandardItem*> &groups);
     void newGroupStatusCode();
-    void pathReceived(const QList<QStandardItem*> &dir);
+    void pathReceived(const QList<QStandardItem*> &dirs);
     void openGroupSettings(const QModelIndex &index);
     void createNewFolder();
     void uploadFile();

@@ -265,6 +265,7 @@ void Model::handleGroupsResponse(const Response &response) {
         group->setData(QVariant(QString::number(id)), ID_ROLE);
         groups.append(group);
         groupIds.append(id);
+        groupIdToName[id] = name;
     }
 
     receiver->connectOnlyGivenGroups(groupIds);
@@ -389,4 +390,16 @@ void Model::handleResponseError(const QNetworkReply::NetworkError &error, const 
     }
 
     emit responseError(error, response);
+}
+
+QString Model::getPath() {
+    if (path.size() > 0) {
+        auto copy(path);
+        auto id = copy.takeFirst().toInt();
+        copy.prepend(groupIdToName[id]);
+
+        return copy.join("/");
+    } else {
+        return "Groups";
+    }
 }

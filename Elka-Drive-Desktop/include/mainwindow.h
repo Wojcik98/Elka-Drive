@@ -21,7 +21,7 @@ public:
     ~MainWindow() override;
 
     void setController(Controller *controller) override;
-    void setFileList(const QList<QStandardItem*> &files) override;
+    void setFileList(const QList<QStandardItem*> &files, const QString &path) override;
     void clearMsg() override;
     void setChatModel(QStandardItemModel *model) override;
 
