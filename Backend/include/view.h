@@ -5,6 +5,7 @@
 #include <QStandardItem>
 #include <QLayout>
 #include <QProgressBar>
+#include <QTimer>
 
 #include "include/controller.h"
 
@@ -54,9 +55,11 @@ protected:
     QWidget *uploadWidget;
     QProgressBar *uploadProgress;
     QLabel *uploadFinishedLabel;
+    QTimer uploadTimer;
     QWidget *downloadWidget;
     QProgressBar *downloadProgress;
     QLabel *downloadFinishedLabel;
+    QTimer downloadTimer;
 
 signals:
     void createNewGroup();
@@ -69,6 +72,8 @@ signals:
 public slots:
     void setUploadProgress(const qint64 current, const qint64 total);
     void setDownloadProgress(const qint64 current, const qint64 total);
+    void resetUploadProgress();
+    void resetDownloadProgress();
 };
 
 #endif // VIEW_H

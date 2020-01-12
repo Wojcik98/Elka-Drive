@@ -41,6 +41,23 @@ View::View(QWidget *parent) : QMainWindow(parent), groupsWidget(this), filesWidg
     downloadProgress->setVisible(true);
     downloadFinishedLabel->setVisible(false);
 
+    uploadTimer.setInterval(3000);
+    uploadTimer.setSingleShot(true);
+    downloadTimer.setInterval(3000);
+    downloadTimer.setSingleShot(true);
+
+    connect(
+        &uploadTimer,
+        &QTimer::timeout,
+        this,
+        &View::resetUploadProgress
+    );
+    connect(
+        &downloadTimer,
+        &QTimer::timeout,
+        this,
+        &View::resetDownloadProgress
+    );
     connect(
         newButton,
         &QPushButton::clicked,
@@ -102,10 +119,12 @@ void View::setSettingsButtonEnabled(bool enabled) {
 
 void View::setUploadProgress(qint64 current, qint64 total) {
     if (current == total && current != -1) {
+        uploadTimer.start();
         uploadProgress->reset();
         uploadProgress->setVisible(false);
         uploadFinishedLabel->setVisible(true);
     } else {
+        uploadTimer.stop();
         uploadProgress->setVisible(true);
         uploadFinishedLabel->setVisible(false);
 
@@ -115,12 +134,20 @@ void View::setUploadProgress(qint64 current, qint64 total) {
     }
 }
 
+void View::resetUploadProgress() {
+    uploadProgress->reset();
+    uploadProgress->setVisible(true);
+    uploadFinishedLabel->setVisible(false);
+}
+
 void View::setDownloadProgress(qint64 current, qint64 total) {
     if (current == total && current != -1) {
+        downloadTimer.start();
         downloadProgress->reset();
         downloadProgress->setVisible(false);
         downloadFinishedLabel->setVisible(true);
     } else {
+        downloadTimer.stop();
         downloadProgress->setVisible(true);
         downloadFinishedLabel->setVisible(false);
 
@@ -128,6 +155,12 @@ void View::setDownloadProgress(qint64 current, qint64 total) {
         downloadProgress->setMaximum(static_cast<int>(total));
         downloadProgress->setValue(static_cast<int>(current));
     }
+}
+
+void View::resetDownloadProgress() {
+    downloadProgress->reset();
+    downloadProgress->setVisible(true);
+    downloadFinishedLabel->setVisible(false);
 }
 
 void View::showLogoutMsg() {
