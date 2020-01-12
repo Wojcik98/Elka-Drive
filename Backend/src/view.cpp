@@ -3,15 +3,28 @@
 #include <QFileDialog>
 #include <QInputDialog>
 
-View::View(QWidget *parent) : QMainWindow(parent), groupsWidget(this), filesWidget(this) {
+View::View(QWidget *parent)
+    : QMainWindow(parent), groupsWidget(this), filesWidget(this) {
+    setupBottomButtons();
+    setupUpload();
+    setupDownload();
+
+    connectSignals();
+}
+
+View::~View() {
+
+}
+
+void View::setupBottomButtons() {
     QHBoxLayout *groupsButtons = new QHBoxLayout();
-    newButton = new QPushButton(QIcon(":/icons/add_circle.svg"), "New", this);
+    newButton = new QPushButton(QIcon(":/icons/add_circle.svg"), "Group", this);
     settingsButton = new QPushButton(QIcon(":/icons/settings.svg"), "Settings", this);
     groupsButtons->addWidget(settingsButton);
     groupsButtons->addWidget(newButton);
 
     QHBoxLayout *filesButtons = new QHBoxLayout();
-    dirButton = new QPushButton(QIcon(":/icons/create_new_folder.svg"), "New folder", this);
+    dirButton = new QPushButton(QIcon(":/icons/create_new_folder.svg"), "Folder", this);
     uploadFileButton = new QPushButton(QIcon(":/icons/cloud_upload.svg"), "Upload file", this);
     uploadFolderButton = new QPushButton(QIcon(":/icons/cloud_upload.svg"), "Upload folder", this);
     filesButtons->addWidget(dirButton);
@@ -22,7 +35,9 @@ View::View(QWidget *parent) : QMainWindow(parent), groupsWidget(this), filesWidg
     groupsWidget.show();
     filesWidget.setLayout(filesButtons);
     filesWidget.hide();
+}
 
+void View::setupUpload() {
     uploadWidget = new QWidget(this);
     auto uploadLayout = new QGridLayout(uploadWidget);
     uploadProgress = new QProgressBar(uploadWidget);
@@ -32,6 +47,11 @@ View::View(QWidget *parent) : QMainWindow(parent), groupsWidget(this), filesWidg
     uploadProgress->setVisible(true);
     uploadFinishedLabel->setVisible(false);
 
+    uploadTimer.setInterval(3000);
+    uploadTimer.setSingleShot(true);
+}
+
+void View::setupDownload() {
     downloadWidget = new QWidget(this);
     auto downloadLayout = new QGridLayout(downloadWidget);
     downloadProgress = new QProgressBar(downloadWidget);
@@ -41,11 +61,11 @@ View::View(QWidget *parent) : QMainWindow(parent), groupsWidget(this), filesWidg
     downloadProgress->setVisible(true);
     downloadFinishedLabel->setVisible(false);
 
-    uploadTimer.setInterval(3000);
-    uploadTimer.setSingleShot(true);
     downloadTimer.setInterval(3000);
     downloadTimer.setSingleShot(true);
+}
 
+void View::connectSignals() {
     connect(
         &uploadTimer,
         &QTimer::timeout,
@@ -88,10 +108,6 @@ View::View(QWidget *parent) : QMainWindow(parent), groupsWidget(this), filesWidg
         this,
         &View::uploadFolder
     );
-}
-
-View::~View() {
-
 }
 
 void View::showEvent(QShowEvent *ev) {

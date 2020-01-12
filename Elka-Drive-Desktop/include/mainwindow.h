@@ -31,6 +31,7 @@ private:
     void settingsButtonClicked() override;
     static bool filesSort(QStandardItem *a, QStandardItem *b);
     void sendButtonClicked();
+    void handleContextMenuRequested(const QPoint &pos);
 
 private slots:
     void chatModelRowInserted(const QModelIndex&, int, int);

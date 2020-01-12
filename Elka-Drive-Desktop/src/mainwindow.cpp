@@ -17,31 +17,10 @@ MainWindow::MainWindow(QWidget *parent) : View(parent), ui(new Ui::MainWindow) {
     ui->fileList->setModel(&fileListModel);
 
     ui->fileList->setContextMenuPolicy(Qt::CustomContextMenu);
-    connect(ui->fileList, &QListView::customContextMenuRequested, [this](QPoint pos) {
-        QModelIndex *index = new QModelIndex(ui->fileList->indexAt(pos));
-        auto type = index->data(Model::TYPE_ROLE);
-        if (type == Model::ItemType::GROUP) {
-            return;
-        }
-
-        QMenu *menu = new QMenu(this);
-
-        auto download = new QAction(QIcon(":/icons/cloud_download"), "Download", this);
-        connect(download, &QAction::triggered, controller, [this, index]() {
-            controller->requestDownload(*index);
-            delete index;
-        });
-        menu->addAction(download);
-
-        auto del = new QAction(QIcon(":/icons/delete.svg"), "Delete", this);
-        connect(del, &QAction::triggered, controller, [this, index]() {
-            controller->requestDelete(*index);
-            delete index;
-        });
-        menu->addAction(del);
-
-        menu->popup(ui->fileList->viewport()->mapToGlobal(pos));
-    });
+    connect(
+        ui->fileList, &QListView::customContextMenuRequested,
+        this, &MainWindow::handleContextMenuRequested
+    );
 
     ui->buttonsLayout->addWidget(&groupsWidget, 0, 0);
     ui->buttonsLayout->addWidget(&filesWidget, 0, 0);
@@ -73,6 +52,30 @@ MainWindow::MainWindow(QWidget *parent) : View(parent), ui(new Ui::MainWindow) {
 
 MainWindow::~MainWindow() {
     delete ui;
+}
+
+void MainWindow::handleContextMenuRequested(const QPoint &pos) {
+    QModelIndex index = ui->fileList->indexAt(pos);
+    auto type = index.data(Model::TYPE_ROLE);
+    if (type == Model::ItemType::GROUP) {
+        return;
+    }
+
+    QMenu *menu = new QMenu(this);
+
+    auto download = new QAction(QIcon(":/icons/cloud_download"), "Download", this);
+    connect(download, &QAction::triggered, controller, [this, index]() {
+        controller->requestDownload(index);
+    });
+    menu->addAction(download);
+
+    auto del = new QAction(QIcon(":/icons/delete.svg"), "Delete", this);
+    connect(del, &QAction::triggered, controller, [this, index]() {
+        controller->requestDelete(index);
+    });
+    menu->addAction(del);
+
+    menu->popup(ui->fileList->viewport()->mapToGlobal(pos));
 }
 
 void MainWindow::settingsButtonClicked() {

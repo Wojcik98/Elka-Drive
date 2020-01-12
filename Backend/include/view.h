@@ -61,6 +61,12 @@ protected:
     QLabel *downloadFinishedLabel;
     QTimer downloadTimer;
 
+private:
+    void setupBottomButtons();
+    void setupUpload();
+    void setupDownload();
+    void connectSignals();
+
 signals:
     void createNewGroup();
     void openGroupSettings(const QModelIndex &index);
