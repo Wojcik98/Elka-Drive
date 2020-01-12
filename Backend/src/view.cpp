@@ -23,13 +23,17 @@ void View::setupBottomButtons() {
     groupsButtons->addWidget(settingsButton);
     groupsButtons->addWidget(newButton);
 
-    QHBoxLayout *filesButtons = new QHBoxLayout();
+    QGridLayout *filesButtons = new QGridLayout();
     dirButton = new QPushButton(QIcon(":/icons/create_new_folder.svg"), "Folder", this);
     uploadFileButton = new QPushButton(QIcon(":/icons/cloud_upload.svg"), "Upload file", this);
     uploadFolderButton = new QPushButton(QIcon(":/icons/cloud_upload.svg"), "Upload folder", this);
-    filesButtons->addWidget(dirButton);
-    filesButtons->addWidget(uploadFolderButton);
-    filesButtons->addWidget(uploadFileButton);
+    downloadButton = new QPushButton(QIcon(":/icons/cloud_download.svg"), "Download", this);
+    deleteButton = new QPushButton(QIcon(":/icons/delete.svg"), "Delete", this);
+    filesButtons->addWidget(dirButton, 0, 0);
+    filesButtons->addWidget(uploadFolderButton, 0, 1);
+    filesButtons->addWidget(uploadFileButton, 0, 2);
+    filesButtons->addWidget(downloadButton, 1, 0);
+    filesButtons->addWidget(deleteButton, 1, 1);
 
     groupsWidget.setLayout(groupsButtons);
     groupsWidget.show();
@@ -91,6 +95,18 @@ void View::connectSignals() {
         &View::settingsButtonClicked
     );
     connect(
+        downloadButton,
+        &QPushButton::clicked,
+        this,
+        &View::downloadButtonClicked
+    );
+    connect(
+        deleteButton,
+        &QPushButton::clicked,
+        this,
+        &View::deleteButtonClicked
+    );
+    connect(
         dirButton,
         &QPushButton::clicked,
         this,
@@ -129,8 +145,10 @@ void View::setFilesView() {
     backButton->setEnabled(true);
 }
 
-void View::setSettingsButtonEnabled(bool enabled) {
+void View::anyItemSelected(bool enabled) {
     settingsButton->setEnabled(enabled);
+    downloadButton->setEnabled(enabled);
+    deleteButton->setEnabled(enabled);
 }
 
 void View::setUploadProgress(qint64 current, qint64 total) {

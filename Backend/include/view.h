@@ -24,7 +24,7 @@ public:
     virtual void setChatModel(QStandardItemModel *model) = 0;
     void setGroupsView();
     void setFilesView();
-    void setSettingsButtonEnabled(bool enabled);
+    void anyItemSelected(bool enabled);
     void showLogoutMsg();
     void showForbiddenMsg();
     void showDirectoryNotFound();
@@ -38,6 +38,8 @@ public:
 
 protected:
     virtual void settingsButtonClicked() = 0;
+    virtual void downloadButtonClicked() = 0;
+    virtual void deleteButtonClicked() = 0;
     void showEvent(QShowEvent *ev);
 
     QStandardItemModel fileListModel;
@@ -49,6 +51,8 @@ protected:
     QPushButton *dirButton;
     QPushButton *uploadFileButton;
     QPushButton *uploadFolderButton;
+    QPushButton *downloadButton;
+    QPushButton *deleteButton;
     QPushButton *sendButton;
     QPushButton *backButton;
 
@@ -70,6 +74,8 @@ private:
 signals:
     void createNewGroup();
     void openGroupSettings(const QModelIndex &index);
+    void requestDownload(const QModelIndex &index);
+    void requestDelete(const QModelIndex &index);
     void createNewFolder();
     void uploadFile();
     void uploadFolder();

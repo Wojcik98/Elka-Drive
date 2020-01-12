@@ -63,15 +63,15 @@ void MainWindow::handleContextMenuRequested(const QPoint &pos) {
 
     QMenu *menu = new QMenu(this);
 
-    auto download = new QAction(QIcon(":/icons/cloud_download"), "Download", this);
+    auto download = new QAction(QIcon(":/icons/cloud_download.svg"), "Download", this);
     connect(download, &QAction::triggered, controller, [this, index]() {
-        controller->requestDownload(index);
+         emit requestDownload(index);
     });
     menu->addAction(download);
 
     auto del = new QAction(QIcon(":/icons/delete.svg"), "Delete", this);
     connect(del, &QAction::triggered, controller, [this, index]() {
-        controller->requestDelete(index);
+        emit requestDelete(index);
     });
     menu->addAction(del);
 
@@ -85,6 +85,26 @@ void MainWindow::settingsButtonClicked() {
     if (list.length() > 0) {
         auto index = list.first();
         emit openGroupSettings(index);
+    }
+}
+
+void MainWindow::downloadButtonClicked() {
+    auto selectionModel = ui->fileList->selectionModel();
+    auto list = selectionModel->selectedIndexes();
+
+    if (list.length() > 0) {
+        auto index = list.first();
+        emit requestDownload(index);
+    }
+}
+
+void MainWindow::deleteButtonClicked() {
+    auto selectionModel = ui->fileList->selectionModel();
+    auto list = selectionModel->selectedIndexes();
+
+    if (list.length() > 0) {
+        auto index = list.first();
+        emit requestDelete(index);
     }
 }
 

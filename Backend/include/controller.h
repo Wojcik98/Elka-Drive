@@ -16,7 +16,6 @@ class Controller : public QObject {
     Q_OBJECT
 public:
     explicit Controller(QApplication *app, View *view, Model *model);
-    void requestDownload(const QModelIndex &index);
 
     void tryLogin();
     void showGroups();
@@ -46,6 +45,7 @@ public slots:
     void responseError(const QNetworkReply::NetworkError &error, const Response &response);
     void openRegister();
     void requestNewGroup();
+    void requestDownload(const QModelIndex &index);
     void requestDelete(const QModelIndex &index);
     void fileDoubleClicked(const QModelIndex &index);
     void fileClicked(const QModelIndex &index);

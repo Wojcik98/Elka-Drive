@@ -57,6 +57,18 @@ void Controller::connectView() {
         this,
         &Controller::sendMsg
     );
+    connect(
+        view,
+        &View::requestDownload,
+        this,
+        &Controller::requestDownload
+    );
+    connect(
+        view,
+        &View::requestDelete,
+        this,
+        &Controller::requestDelete
+    );
 }
 
 void Controller::connectModel() {
@@ -246,7 +258,7 @@ void Controller::groupsReceived(const QList<QStandardItem*> &groups) {
     auto path = model->getPath();
     view->setFileList(groups, path);
     view->setGroupsView();
-    view->setSettingsButtonEnabled(false);
+    view->anyItemSelected(false);
     view->setChatModel(nullptr);
 }
 
@@ -322,6 +334,7 @@ void Controller::pathReceived(const QList<QStandardItem*> &dirs) {
     auto path = model->getPath();
     view->setFileList(dirs, path);
     view->setFilesView();
+    view->anyItemSelected(false);
     view->setChatModel(model->getCurrentGroupMessages());
 }
 
@@ -363,7 +376,7 @@ void Controller::fileDoubleClicked(const QModelIndex &index) {
 }
 
 void Controller::fileClicked(const QModelIndex&) {
-    view->setSettingsButtonEnabled(true);
+    view->anyItemSelected(true);
 }
 
 void Controller::goBack() {

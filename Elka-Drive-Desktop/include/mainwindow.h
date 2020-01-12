@@ -29,6 +29,8 @@ private:
     Ui::MainWindow *ui;
 
     void settingsButtonClicked() override;
+    void downloadButtonClicked() override;
+    void deleteButtonClicked() override;
     static bool filesSort(QStandardItem *a, QStandardItem *b);
     void sendButtonClicked();
     void handleContextMenuRequested(const QPoint &pos);
