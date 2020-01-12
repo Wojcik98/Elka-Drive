@@ -51,10 +51,12 @@ private:
     QNetworkReply *requestReply;
     Request *currentRequest;
 
+    int totalDownloads = 0;
     QQueue<DownloadItem *> downloadQueue;
     QNetworkReply *downloadReply;
     DownloadItem *currentDownload;
 
+    int totalUploads = 0;
     QQueue<UploadItem *> uploadQueue;
     QNetworkReply *uploadReply;
     UploadItem *currentUpload;
@@ -66,6 +68,8 @@ private slots:
     void downloadReplyFinished();
     void uploadCreateDirectoryFinished();
     void uploadSendFileFinished();
+    void downloadProgressPreprocess(const qint64 bytesReceived, const qint64 bytesTotal);
+    void uploadProgressPreprocess(const qint64 bytesSent, const qint64 bytesTotal);
 };
 
 #endif // WEBBRIDGE_H

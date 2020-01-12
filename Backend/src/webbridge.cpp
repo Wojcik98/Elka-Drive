@@ -218,12 +218,16 @@ void WebBridge::requestDirectoryDownload(const int id, const QString &path) {
 
 void WebBridge::requestDownload(const int id, const QString &path, const QUrl &url) {
     auto newItem = new DownloadItem(id, path, url);
+    ++totalDownloads;
     downloadQueue.enqueue(newItem);
     triggerDownload();
 }
 
 void WebBridge::triggerDownload() {
-    if (downloadReply != nullptr || currentDownload != nullptr || downloadQueue.empty()) {
+    if (downloadQueue.empty()) {
+        totalDownloads = 0;
+        return;
+    } else if (downloadReply != nullptr || currentDownload != nullptr) {
         return;
     }
 
@@ -250,7 +254,7 @@ void WebBridge::triggerDownload() {
             downloadReply,
             &QNetworkReply::downloadProgress,
             this,
-            &WebBridge::downloadProgress
+            &WebBridge::downloadProgressPreprocess
         );
     } else {
         emit fileOpenError(currentDownload->getFilePath());
@@ -290,18 +294,31 @@ void WebBridge::downloadReplyFinished() {
     triggerDownload();
 }
 
+void WebBridge::downloadProgressPreprocess(const qint64 bytesReceived, const qint64 bytesTotal) {
+    if (totalDownloads == 1 || (downloadQueue.empty() && bytesReceived == bytesTotal)) {
+        emit downloadProgress(bytesReceived, bytesTotal);
+    } else {
+        auto progress = totalDownloads - downloadQueue.size() - 1;
+        emit downloadProgress(progress, totalDownloads);
+    }
+}
+
 void WebBridge::requestFileUpload(
         const QString &rootLocal,
         const QString &rootServer,
         const QString &relativePath
     ) {
     auto newUpload = new UploadItem(rootLocal, rootServer, relativePath);
+    ++totalUploads;
     uploadQueue.enqueue(newUpload);
     triggerUpload();
 }
 
 void WebBridge::triggerUpload() {
-    if (uploadReply != nullptr || currentUpload != nullptr || uploadQueue.empty()) {
+    if (uploadQueue.empty()) {
+        totalUploads = 0;
+        return;
+    } else if (uploadReply != nullptr || currentUpload != nullptr) {
         return;
     }
 
@@ -389,7 +406,7 @@ void WebBridge::triggerUploadSendFile() {
             uploadReply,
             &QNetworkReply::uploadProgress,
             this,
-            &WebBridge::uploadProgress
+            &WebBridge::uploadProgressPreprocess
         );
     } else {
         delete currentUpload;
@@ -418,4 +435,14 @@ void WebBridge::uploadSendFileFinished() {
     }
 
     triggerUpload();
+}
+
+void WebBridge::uploadProgressPreprocess(const qint64 bytesSent, const qint64 bytesTotal) {
+    qDebug() << totalUploads << uploadQueue.size() << bytesSent;
+    if (totalUploads == 1 || (uploadQueue.empty() && bytesSent == bytesTotal)) {
+        emit uploadProgress(bytesSent, bytesTotal);
+    } else {
+        auto progress = totalUploads - uploadQueue.size() - 1;
+        emit uploadProgress(progress, totalUploads);
+    }
 }
