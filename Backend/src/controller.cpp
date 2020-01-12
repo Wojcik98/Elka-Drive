@@ -3,7 +3,8 @@
 
 #include "include/controller.h"
 
-Controller::Controller(QApplication *app, View *view, Model *model) : app(app), view(view), model(model) {
+Controller::Controller(QApplication *app, View *view, Model *model)
+    : app(app), view(view), model(model) {
     connectApp();
     connectView();
     connectModel();

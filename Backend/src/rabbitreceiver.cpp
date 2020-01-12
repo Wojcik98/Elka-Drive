@@ -2,7 +2,8 @@
 #include <QJsonDocument>
 #include <QJsonObject>
 
-RabbitReceiver::RabbitReceiver(const RabbitConfig &config, QObject *parent) : MessageReceiver(parent) {
+RabbitReceiver::RabbitReceiver(const RabbitConfig &config, QObject *parent)
+    : MessageReceiver(parent) {
     client.setAutoReconnect(true);
     client.setHost(config.getHost());
     client.setVirtualHost(config.getVhost());

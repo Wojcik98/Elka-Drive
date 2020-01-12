@@ -1,7 +1,8 @@
 #include "include/downloaditem.h"
 #include <QDebug>
 
-DownloadItem::DownloadItem(const int id, const QString &path, const QUrl &url) : id(id), path(path), file(path), url(url) {
+DownloadItem::DownloadItem(const int id, const QString &path, const QUrl &url)
+    : id(id), path(path), file(path), url(url) {
 
 }
 

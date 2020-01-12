@@ -5,7 +5,8 @@
 #include <QLineEdit>
 #include <QInputDialog>
 
-GroupSettingsDialog::GroupSettingsDialog(const QString &groupName, const int groupID, QWidget *parent) : QDialog(parent), groupName(groupName), groupId(groupID) {
+GroupSettingsDialog::GroupSettingsDialog(const QString &groupName, const int groupID, QWidget *parent)
+    : QDialog(parent), groupName(groupName), groupId(groupID) {
     setWindowFlags(Qt::Window | Qt::WindowTitleHint | Qt::CustomizeWindowHint);
     setUpGUI();
     setWindowTitle("Group settings");

@@ -7,7 +7,8 @@
 
 #include "include/model.h"
 
-Model::Model(APIBridge *bridge, MessageReceiver *receiver) : bridge(bridge), receiver(receiver) {
+Model::Model(APIBridge *bridge, MessageReceiver *receiver)
+    : bridge(bridge), receiver(receiver) {
     receiver->start();
     connect(
         bridge,
