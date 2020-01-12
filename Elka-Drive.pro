@@ -3,9 +3,9 @@ TEMPLATE = subdirs
 SUBDIRS += \
     Backend \
     Elka-Drive-Desktop \
-    ProcessResponse \
+    tests \
     qamqp/src
 
 Backend.depends = qamqp/src
 Elka-Drive-Desktop.depends = Backend
-ProcessResponse.depends = Backend
+tests.depends = Backend

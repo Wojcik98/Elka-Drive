@@ -6,12 +6,12 @@
 #include "include/rabbitconfig.h"
 #include "include/rabbitreceiver.h"
 
-class ProcessResponseTest : public QObject {
+class ModelTest : public QObject {
     Q_OBJECT
 
 public:
-    ProcessResponseTest();
-    ~ProcessResponseTest();
+    ModelTest();
+    ~ModelTest();
 
 private:
     Model *model;
@@ -28,24 +28,24 @@ private Q_SLOTS:
     void testLoginFailed();
 };
 
-ProcessResponseTest::ProcessResponseTest() {
+ModelTest::ModelTest() {
     RabbitConfig rabbitConfig("", "", "", "", 0);
     rabbitReceiver = new RabbitReceiver(rabbitConfig);
 }
 
-ProcessResponseTest::~ProcessResponseTest() {
+ModelTest::~ModelTest() {
     delete rabbitReceiver;
 }
 
-void ProcessResponseTest::initTestCase() {
+void ModelTest::initTestCase() {
     model = new Model(&bridge, rabbitReceiver);
 }
 
-void ProcessResponseTest::cleanupTestCase() {
+void ModelTest::cleanupTestCase() {
     delete model;
 }
 
-void ProcessResponseTest::testLoginCorrect() {
+void ModelTest::testLoginCorrect() {
     QSignalSpy spy(model, &Model::userLogged);
 
     auto response = Response("", RequestType::LOGIN);
@@ -54,7 +54,7 @@ void ProcessResponseTest::testLoginCorrect() {
     QCOMPARE(spy.count(), 1);
 }
 
-void ProcessResponseTest::testLoginFailed() {
+void ModelTest::testLoginFailed() {
     QSignalSpy spy(model, &Model::responseError);
 
     auto response = Response("", RequestType::LOGIN);
@@ -63,6 +63,6 @@ void ProcessResponseTest::testLoginFailed() {
     QCOMPARE(spy.count(), 1);
 }
 
-QTEST_APPLESS_MAIN(ProcessResponseTest)
+QTEST_APPLESS_MAIN(ModelTest)
 
-#include "tst_processresponsetest.moc"
+#include "tst_modeltest.moc"

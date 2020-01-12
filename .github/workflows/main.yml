@@ -24,7 +24,7 @@ jobs:
         sudo make install
     - name: Run tests
       run: |
-        ./ProcessResponse/test
+        ./tests/TestModel/test
 
   integration-windows:
     runs-on: windows-latest
@@ -47,7 +47,7 @@ jobs:
     - name: Run tests
       run: |
         echo "copy dll"
-        cp qamqp/src/qamqp0.dll ProcessResponse/release
+        cp qamqp/src/qamqp0.dll tests/TestModel/release
         echo "run test"
-        ./ProcessResponse/release/test.exe
+        ./tests/TestModel/release/test.exe
 

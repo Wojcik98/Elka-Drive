@@ -10,7 +10,7 @@ ui_*.h
 
 # Executables
 Elka-Drive-Desktop/Elka-Drive-Desktop
-ProcessResponse/test
+tests/TestModel/test
 
 # Secrets
 rabbitmqsecrets.h

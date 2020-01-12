@@ -26,19 +26,19 @@ DEFINES += QT_DEPRECATED_WARNINGS
 #DEFINES += QT_DISABLE_DEPRECATED_BEFORE=0x060000    # disables all the APIs deprecated before Qt 6.0.0
 
 INCLUDEPATH += \
-    ../Backend \
-    ../qamqp/src
+    ../../Backend \
+    ../../qamqp/src
 
 win32 {
-    LIBS += -L../Backend/release \
+    LIBS += -L../../Backend/release \
         -lBackend \
-        -L../qamqp/src \
+        -L../../qamqp/src \
         -lqamqp
 }
 unix {
-    LIBS += -L../Backend \
+    LIBS += -L../../Backend \
         -lBackend \
-        -L../qamqp/src \
+        -L../../qamqp/src \
         -lqamqp
 }
 
@@ -46,9 +46,9 @@ INCLUDEPATH += $$INCDIR
 HEADERS += \
     include/mockbridge.h
 SOURCES += \
-    src/mockbridge.cpp
+    src/mockbridge.cpp \
+    src/tst_modeltest.cpp
 
-SOURCES += \
-    src/tst_processresponsetest.cpp
+SOURCES +=
 
 DEFINES += SRCDIR=\\\"$$PWD/\\\"
