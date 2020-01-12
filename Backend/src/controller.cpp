@@ -149,6 +149,9 @@ void Controller::responseError(const QNetworkReply::NetworkError &error, const R
                 unknownError();
             }
             break;
+        case QNetworkReply::ContentNotFoundError:
+            directoryNotFound();
+            break;
         default:
             unknownError();
             break;
@@ -168,6 +171,11 @@ void Controller::unauthorized() {
 void Controller::forbidden() {
     view->showForbiddenMsg();
     model->requestGroups();
+}
+
+void Controller::directoryNotFound() {
+    view->showDirectoryNotFound();
+    model->goBack();
 }
 
 void Controller::unknownError() {

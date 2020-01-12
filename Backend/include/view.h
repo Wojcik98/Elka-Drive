@@ -26,6 +26,7 @@ public:
     void setSettingsButtonEnabled(bool enabled);
     void showLogoutMsg();
     void showForbiddenMsg();
+    void showDirectoryNotFound();
     void showUnknownErrorMsg();
     void showFileOpenError(const QString &filename);
     QString getNewGroupName(bool *ok);

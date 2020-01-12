@@ -36,6 +36,7 @@ private:
     QStringList getAllFiles(const QDir &path);
     void unauthorized();
     void forbidden();
+    void directoryNotFound();
     void unknownError();
 
 signals:

@@ -142,6 +142,13 @@ void View::showForbiddenMsg() {
     msgBox.exec();
 }
 
+void View::showDirectoryNotFound() {
+    QMessageBox msgBox(this);
+    msgBox.setText("Directory does not exist!");
+    msgBox.setInformativeText("It could be deleted. You will be moved up in directory structure.");
+    msgBox.exec();
+}
+
 void View::showUnknownErrorMsg() {
     QMessageBox msgBox(this);
     msgBox.setText("Error while connecting to the server!");
