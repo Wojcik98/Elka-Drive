@@ -27,26 +27,29 @@ DEFINES += QT_DEPRECATED_WARNINGS
 
 INCLUDEPATH += \
     ../../Backend \
-    ../../qamqp/src
+    ../../qamqp/src \
+    ../Mocks
 
 win32 {
     LIBS += -L../../Backend/release \
         -lBackend \
         -L../../qamqp/src \
-        -lqamqp
+        -lqamqp \
+        -L../Mocks/release \
+        -lMocks
 }
 unix {
     LIBS += -L../../Backend \
         -lBackend \
         -L../../qamqp/src \
-        -lqamqp
+        -lqamqp \
+        -L../Mocks \
+        -lMocks
 }
 
 INCLUDEPATH += $$INCDIR
-HEADERS += \
-    include/mockbridge.h
+# HEADERS +=
 SOURCES += \
-    src/mockbridge.cpp \
     src/tst_modeltest.cpp
 
 SOURCES +=

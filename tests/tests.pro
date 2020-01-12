@@ -1,4 +1,7 @@
 TEMPLATE = subdirs
 
 SUBDIRS += \
-    TestModel
+    Mocks \
+    TestModel \
+
+TestModel.depends = Mocks
