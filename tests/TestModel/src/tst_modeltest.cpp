@@ -291,7 +291,12 @@ void ModelTest::testRemoveUserFromGroup() {
 }
 
 void ModelTest::testNewFolder() {
+    QSignalSpy spy(model, &Model::newFolderCreated);
 
+    auto response = Response("", RequestType::NEW_FOLDER);
+    bridge.emitGotResponse(response);
+    model->requestNewFolder("new folder");
+    QCOMPARE(spy.count(), 1);
 }
 
 void ModelTest::testFileUpload() {
