@@ -7,10 +7,13 @@ moc_*.h
 qrc_res.cpp
 *.moc
 ui_*.h
+TestTemplate
 
 # Executables
 Elka-Drive-Desktop/Elka-Drive-Desktop
 tests/TestModel/test
+tests/TestUser/test
+tests/TestUploadItem/test
 
 # Secrets
 rabbitmqsecrets.h
