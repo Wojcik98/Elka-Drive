@@ -346,9 +346,28 @@ void ModelTest::testRefresh() {
 }
 
 void ModelTest::testSendMsg() {
+    QSignalSpy spy(&bridge, &APIBridge::gotResponse);
 
+    auto msgResponse = Response("", RequestType::SEND_MSG);
+    bridge.emitGotResponse(msgResponse);
+    model->sendMsg("message");
+    QCOMPARE(spy.count(), 0);
+
+    QString jsonGroup = "[{\"id\":0,\"name\":\"group\"}]";
+    auto responseGroup = Response(jsonGroup.toUtf8(), RequestType::GROUPS);
+    bridge.emitGotResponse(responseGroup);
+    model->requestGroups();
+
+    QString json = "[{\"id\":0,\"name\":\"directory\",\"dir\":true}, {\"id\":1,\"name\":\"file\",\"dir\":false}]";
+    auto dirResponse = Response(json.toUtf8(), RequestType::PATH);
+    bridge.emitGotResponse(dirResponse);
+    model->requestSubpath(groupItem.index());
+
+    spy.clear();
+    bridge.emitGotResponse(msgResponse);
+    model->sendMsg("message");
+    QCOMPARE(spy.count(), 1);
 }
-
 
 void ModelTest::testErrorResponse() {
     QSignalSpy spy(model, &Model::responseError);
