@@ -14,8 +14,6 @@ public:
     void start() override;
     void setUser(const QString &user) override;
     void connectOnlyGivenGroups(const QList<int> &groups) override;
-    void connectGroup(const int groupId) override;
-    void disconnectGroup(const int groupId) override;
 
 private:
     Message parseJson(QByteArray json);
@@ -26,6 +24,9 @@ private:
     QMap<QAmqpQueue*, int> queueToGroup;
     QMap<int, QAmqpQueue*> groupToQueue;
     QString user;
+
+    void connectGroup(const int groupId);
+    void disconnectGroup(const int groupId);
 
 private slots:
     void clientConnected();

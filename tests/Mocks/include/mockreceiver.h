@@ -10,10 +10,10 @@ public:
     void start() override;
     void setUser(const QString &user) override;
     void connectOnlyGivenGroups(const QList<int> &groups) override;
-    void connectGroup(const int groupId) override;
-    void disconnectGroup(const int groupId) override;
 
     void emitMsg(const int groupId, const Message &msg);
+
+    QList<int> connectedGroups;
 };
 
 #endif // MOCKRECEIVER_H
