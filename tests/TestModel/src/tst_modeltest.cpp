@@ -6,6 +6,7 @@
 #include "include/mockreceiver.h"
 
 Q_DECLARE_METATYPE(QList<QStandardItem*>)
+Q_DECLARE_METATYPE(QList<User>)
 
 class ModelTest : public QObject {
     Q_OBJECT
@@ -50,6 +51,7 @@ private Q_SLOTS:
 
 ModelTest::ModelTest() : groupItem("groupname"), dirItem("dirname"), fileItem("filename")  {
     qRegisterMetaType<QList<QStandardItem*>>("QList<QStandardItem*>");
+    qRegisterMetaType<QList<User>>("QList<User>");
 
     groupItem.setData(QVariant(0), Model::ID_ROLE);
     groupItem.setData(QVariant(Model::ItemType::GROUP), Model::TYPE_ROLE);
@@ -240,7 +242,34 @@ void ModelTest::testGroupDelete() {
 }
 
 void ModelTest::testGroupUsers() {
+    QSignalSpy spy(model, &Model::groupUsersReceived);
 
+    QString json = "{\"users\":[{\"id\":0,\"username\":\"user\"},{\"id\":1,\"username\":\"Jacek\"}]}";
+    auto response = Response(json.toUtf8(), RequestType::GROUP_USERS);
+    bridge.emitGotResponse(response);
+
+    model->requestGroupUsers(0);
+    QCOMPARE(spy.count(), 1);
+
+    QList<QVariant> arguments = spy.takeFirst();
+    auto users = qvariant_cast<QList<User>>(arguments.first());
+
+    QCOMPARE(users.size(), 2);
+    auto first = &users[0];
+    auto second = &users[1];
+
+    auto firstId = first->getId();
+    QVERIFY(QList<int>({0, 1}).contains(firstId));
+    if (firstId == 1) {
+        auto tmp = first;
+        first = second;
+        second = tmp;
+    }
+
+    QCOMPARE(first->getId(), 0);
+    QCOMPARE(first->getName(), QString("user"));
+    QCOMPARE(second->getId(), 1);
+    QCOMPARE(second->getName(), QString("Jacek"));
 }
 
 void ModelTest::testAddUserToGroup() {

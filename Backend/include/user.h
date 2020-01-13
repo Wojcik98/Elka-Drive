@@ -7,6 +7,7 @@
 class User {
 public:
     User(const QString &name, const int id);
+    User(const User &other);
 
     static User fromJson(const QJsonObject &json);
 
