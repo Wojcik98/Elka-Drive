@@ -195,6 +195,8 @@ void ModelTest::testSubpath() {
 }
 
 void ModelTest::testGetPath() {
+    QCOMPARE(model->getPath(), QString("Groups"));
+
     // request group so model knows mapping <id> -> <name>
     QString jsonGroup = "[{\"id\":0,\"name\":\"group\"}]";
     auto responseGroup = Response(jsonGroup.toUtf8(), RequestType::GROUPS);
@@ -248,7 +250,30 @@ void ModelTest::testFileUpload() {
 }
 
 void ModelTest::testBack() {
+    QSignalSpy spy(model, &Model::pathReceived);
 
+    QString jsonGroup = "[{\"id\":0,\"name\":\"group\"}]";
+    auto responseGroup = Response(jsonGroup.toUtf8(), RequestType::GROUPS);
+    bridge.emitGotResponse(responseGroup);
+    model->requestGroups();
+
+    QString json = "[{\"id\":0,\"name\":\"directory\",\"dir\":true}, {\"id\":1,\"name\":\"file\",\"dir\":false}]";
+    auto response = Response(json.toUtf8(), RequestType::PATH);
+    bridge.emitGotResponse(response);
+
+    model->requestSubpath(groupItem.index());
+    model->requestSubpath(dirItem.index());
+    QCOMPARE(model->getPath(), QString("group/dirname"));
+
+    spy.clear();
+    model->goBack();
+    QCOMPARE(spy.count(), 1);
+    QCOMPARE(model->getPath(), QString("group"));
+
+    spy.clear();
+    model->goBack();
+    QCOMPARE(spy.count(), 1);
+    QCOMPARE(model->getPath(), QString("Groups"));
 }
 
 void ModelTest::testRefresh() {
