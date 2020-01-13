@@ -300,7 +300,18 @@ void ModelTest::testNewFolder() {
 }
 
 void ModelTest::testFileUpload() {
+    QSignalSpy spy(model, &Model::uploadComplete);
 
+    auto response = Response("", RequestType::UPLOAD_SEND_FILE);
+    bridge.emitGotResponse(response);
+    model->requestFileUpload("localRoot", "path/to/file.jpg");
+    QCOMPARE(spy.count(), 1);
+
+    QSignalSpy progressSpy(model, &Model::uploadProgress);
+
+    bridge.emitUploadProgress(42, 42);
+    model->requestNewFolder("new folder");
+    QCOMPARE(progressSpy.count(), 1);
 }
 
 void ModelTest::testBack() {
