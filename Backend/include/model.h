@@ -90,7 +90,7 @@ signals:
     void userRegistered();
     void groupsReceived(const QList<QStandardItem*> &groups);
     void newGroupStatusCode();
-    void pathReceived(const QList<QStandardItem*> &groups);
+    void pathReceived(const QList<QStandardItem*> &dir);
     void groupUsersReceived(const QList<User> &users);
     void groupDeletedReceived();
     void groupAddUserReceived();

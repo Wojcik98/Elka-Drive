@@ -18,8 +18,9 @@ private:
     MockBridge bridge;
     MockReceiver receiver;
     QStandardItemModel standardModel;
-    QStandardItem fileItem;
+    QStandardItem groupItem;
     QStandardItem dirItem;
+    QStandardItem fileItem;
 
     QString user = "user";
     QString password = "pwd";
@@ -46,16 +47,20 @@ private Q_SLOTS:
     void testErrorResponse();
 };
 
-ModelTest::ModelTest() : fileItem("filename"), dirItem("dirname") {
+ModelTest::ModelTest() : groupItem("groupname"), dirItem("dirname"), fileItem("filename")  {
     qRegisterMetaType<QList<QStandardItem*>>("QList<QStandardItem*>");
 
-    fileItem.setData(QVariant(0), Model::ID_ROLE);
-    fileItem.setData(QVariant(Model::ItemType::FILE), Model::TYPE_ROLE);
-    standardModel.appendRow(&fileItem);
+    groupItem.setData(QVariant(0), Model::ID_ROLE);
+    groupItem.setData(QVariant(Model::ItemType::GROUP), Model::TYPE_ROLE);
+    standardModel.appendRow(&groupItem);
 
     dirItem.setData(QVariant(1), Model::ID_ROLE);
     dirItem.setData(QVariant(Model::ItemType::FOLDER), Model::TYPE_ROLE);
     standardModel.appendRow(&dirItem);
+
+    fileItem.setData(QVariant(2), Model::ID_ROLE);
+    fileItem.setData(QVariant(Model::ItemType::FILE), Model::TYPE_ROLE);
+    standardModel.appendRow(&fileItem);
 }
 
 void ModelTest::init() {
@@ -112,6 +117,7 @@ void ModelTest::testGroupsCorrect() {
         first = second;
         second = tmp;
     }
+    QCOMPARE(first->data(Model::ID_ROLE).toInt(), 0);
     QCOMPARE(second->data(Model::ID_ROLE).toInt(), 1);
 
     QCOMPARE(first->data(Model::TYPE_ROLE).toInt(), static_cast<int>(Model::ItemType::GROUP));
@@ -149,7 +155,51 @@ void ModelTest::testDownload() {
 }
 
 void ModelTest::testPath() {
+    QString jsonGroup = "[{\"id\":0,\"name\":\"group\"}]";
+    auto responseGroup = Response(jsonGroup.toUtf8(), RequestType::GROUPS);
+    bridge.emitGotResponse(responseGroup);
+    model->requestGroups();
 
+    QSignalSpy spy(model, &Model::pathReceived);
+
+    QString json = "[{\"id\":0,\"name\":\"directory\",\"dir\":true}, {\"id\":1,\"name\":\"file\",\"dir\":false}]";
+    auto response = Response(json.toUtf8(), RequestType::PATH);
+    bridge.emitGotResponse(response);
+
+    model->requestSubpath(groupItem.index());
+    QCOMPARE(spy.count(), 1);
+
+    QList<QVariant> arguments = spy.takeFirst();
+    auto dir = qvariant_cast<QList<QStandardItem*>>(arguments.first());
+    QCOMPARE(dir.size(), 2);
+
+    auto first = dir[0];
+    auto second = dir[1];
+
+    auto firstId = first->data(Model::ID_ROLE).toInt();
+    QVERIFY(QList<int>({0, 1}).contains(firstId));
+    if (firstId == 1) {
+        auto tmp = first;
+        first = second;
+        second = tmp;
+    }
+    QCOMPARE(first->data(Model::ID_ROLE).toInt(), 0);
+    QCOMPARE(first->data(Model::TYPE_ROLE).toInt(), static_cast<int>(Model::ItemType::FOLDER));
+    QCOMPARE(first->data(Qt::DisplayRole).toString(), QString("directory"));
+    QCOMPARE(second->data(Model::ID_ROLE).toInt(), 1);
+    QCOMPARE(second->data(Model::TYPE_ROLE).toInt(), static_cast<int>(Model::ItemType::FILE));
+    QCOMPARE(second->data(Qt::DisplayRole).toString(), QString("file"));
+
+    QCOMPARE(model->getPath(), QString("group"));
+
+    model->requestSubpath(dirItem.index());
+    QCOMPARE(spy.count(), 1);
+    QCOMPARE(model->getPath(), QString("group/dirname"));
+    spy.removeFirst();
+
+    model->requestSubpath(fileItem.index());
+    QCOMPARE(spy.count(), 0);
+    QCOMPARE(model->getPath(), QString("group/dirname"));
 }
 
 void ModelTest::testNewGroup() {

@@ -85,6 +85,7 @@ void Model::requestSubpath(const QModelIndex &index) {
         }
 
         path.append(subdir);
+        qDebug() << path;
         pathRequestInProgress = true;
         bridge->requestPath(path.join("/"));
     }
