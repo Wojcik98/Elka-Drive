@@ -33,7 +33,8 @@ private Q_SLOTS:
     void testGroupsCorrect();
     void testDelete();
     void testDownload();
-    void testPath();
+    void testGetPath();
+    void testSubpath();
     void testNewGroup();
     void testGroupDelete();
     void testGroupUsers();
@@ -154,12 +155,7 @@ void ModelTest::testDownload() {
     QCOMPARE(spy.count(), 2);
 }
 
-void ModelTest::testPath() {
-    QString jsonGroup = "[{\"id\":0,\"name\":\"group\"}]";
-    auto responseGroup = Response(jsonGroup.toUtf8(), RequestType::GROUPS);
-    bridge.emitGotResponse(responseGroup);
-    model->requestGroups();
-
+void ModelTest::testSubpath() {
     QSignalSpy spy(model, &Model::pathReceived);
 
     QString json = "[{\"id\":0,\"name\":\"directory\",\"dir\":true}, {\"id\":1,\"name\":\"file\",\"dir\":false}]";
@@ -190,16 +186,37 @@ void ModelTest::testPath() {
     QCOMPARE(second->data(Model::TYPE_ROLE).toInt(), static_cast<int>(Model::ItemType::FILE));
     QCOMPARE(second->data(Qt::DisplayRole).toString(), QString("file"));
 
-    QCOMPARE(model->getPath(), QString("group"));
-
     model->requestSubpath(dirItem.index());
     QCOMPARE(spy.count(), 1);
-    QCOMPARE(model->getPath(), QString("group/dirname"));
     spy.removeFirst();
 
     model->requestSubpath(fileItem.index());
     QCOMPARE(spy.count(), 0);
+}
+
+void ModelTest::testGetPath() {
+    // request group so model knows mapping <id> -> <name>
+    QString jsonGroup = "[{\"id\":0,\"name\":\"group\"}]";
+    auto responseGroup = Response(jsonGroup.toUtf8(), RequestType::GROUPS);
+    bridge.emitGotResponse(responseGroup);
+    model->requestGroups();
+
+    QString json = "[{\"id\":0,\"name\":\"directory\",\"dir\":true}, {\"id\":1,\"name\":\"file\",\"dir\":false}]";
+    auto response = Response(json.toUtf8(), RequestType::PATH);
+    bridge.emitGotResponse(response);
+
+    model->requestSubpath(groupItem.index());
+
+    QCOMPARE(model->getPath(), QString("group"));
+
+    model->requestSubpath(dirItem.index());
     QCOMPARE(model->getPath(), QString("group/dirname"));
+
+    model->requestSubpath(fileItem.index());
+    QCOMPARE(model->getPath(), QString("group/dirname"));
+
+    model->goBack();
+    QCOMPARE(model->getPath(), QString("group"));
 }
 
 void ModelTest::testNewGroup() {
