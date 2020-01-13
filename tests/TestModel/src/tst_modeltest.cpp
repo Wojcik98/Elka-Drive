@@ -273,11 +273,21 @@ void ModelTest::testGroupUsers() {
 }
 
 void ModelTest::testAddUserToGroup() {
+    QSignalSpy spy(model, &Model::groupAddUserReceived);
 
+    auto response = Response("", RequestType::GROUP_ADD_USER);
+    bridge.emitGotResponse(response);
+    model->requestAddUserToGroup("user", 0);
+    QCOMPARE(spy.count(), 1);
 }
 
 void ModelTest::testRemoveUserFromGroup() {
+    QSignalSpy spy(model, &Model::groupRemoveUserReceived);
 
+    auto response = Response("", RequestType::GROUP_REMOVE_USER);
+    bridge.emitGotResponse(response);
+    model->requestRemoveUserFromGroup("user", 0);
+    QCOMPARE(spy.count(), 1);
 }
 
 void ModelTest::testNewFolder() {
