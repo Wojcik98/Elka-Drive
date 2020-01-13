@@ -342,7 +342,22 @@ void ModelTest::testBack() {
 }
 
 void ModelTest::testRefresh() {
+    QSignalSpy groupsSpy(model, &Model::groupsReceived);
+    QSignalSpy folderSpy(model, &Model::pathReceived);
 
+    QString jsonGroup = "[{\"id\":0,\"name\":\"group\"}]";
+    auto responseGroup = Response(jsonGroup.toUtf8(), RequestType::GROUPS);
+    bridge.emitGotResponse(responseGroup);
+    model->refresh();
+    QCOMPARE(groupsSpy.count(), 1);
+    QCOMPARE(folderSpy.count(), 0);
+    groupsSpy.clear();
+
+    auto dirResponse = Response("[]", RequestType::PATH);
+    bridge.emitGotResponse(dirResponse);
+    model->refresh();
+    QCOMPARE(groupsSpy.count(), 0);
+    QCOMPARE(folderSpy.count(), 1);
 }
 
 void ModelTest::testSendMsg() {
