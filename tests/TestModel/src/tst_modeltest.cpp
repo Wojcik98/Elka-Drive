@@ -137,7 +137,26 @@ void ModelTest::testDelete() {
 }
 
 void ModelTest::testDownload() {
+    QStandardItemModel tmpModel;
+    QSignalSpy spy(model, &Model::downloadProgress);
+    bridge.emitDownloadProgress(42, 42);
+    QString path = "some/path";
 
+    QStandardItem fileItem("filename");
+    fileItem.setData(QVariant(0), Model::ID_ROLE);
+    fileItem.setData(QVariant(Model::ItemType::FILE), Model::TYPE_ROLE);
+    tmpModel.appendRow(&fileItem);
+
+    model->requestDownload(fileItem.index(), path);
+    QCOMPARE(spy.count(), 1);
+
+    QStandardItem dirItem("dirname");
+    dirItem.setData(QVariant(1), Model::ID_ROLE);
+    dirItem.setData(QVariant(Model::ItemType::FOLDER), Model::TYPE_ROLE);
+    tmpModel.appendRow(&dirItem);
+
+    model->requestDownload(dirItem.index(), path);
+    QCOMPARE(spy.count(), 2);
 }
 
 void ModelTest::testPath() {
