@@ -283,7 +283,7 @@ void Model::handleGroupsResponse(const Response &response) {
 }
 
 void Model::handleNewGroupResponse(const Response&) {
-    emit newGroupStatusCode();
+    emit newGroupCreated();
 }
 
 void Model::handlePathResponse(const Response &response) {

@@ -222,11 +222,21 @@ void ModelTest::testGetPath() {
 }
 
 void ModelTest::testNewGroup() {
+    QSignalSpy spy(model, &Model::newGroupCreated);
 
+    auto response = Response("", RequestType::NEW_GROUP);
+    bridge.emitGotResponse(response);
+    model->requestNewGroup("new group");
+    QCOMPARE(spy.count(), 1);
 }
 
 void ModelTest::testGroupDelete() {
+    QSignalSpy spy(model, &Model::groupDeletedReceived);
 
+    auto response = Response("", RequestType::GROUP_DELETE);
+    bridge.emitGotResponse(response);
+    model->requestGroupDelete(0);
+    QCOMPARE(spy.count(), 1);
 }
 
 void ModelTest::testGroupUsers() {

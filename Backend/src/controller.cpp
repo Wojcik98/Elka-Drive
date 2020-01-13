@@ -87,7 +87,7 @@ void Controller::connectModel() {
     );
     connect(
         model,
-        &Model::newGroupStatusCode,
+        &Model::newGroupCreated,
         this,
         &Controller::newGroupStatusCode
     );
