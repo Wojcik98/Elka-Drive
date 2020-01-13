@@ -17,6 +17,9 @@ private:
     Model *model;
     MockBridge bridge;
     MockReceiver receiver;
+    QStandardItemModel standardModel;
+    QStandardItem fileItem;
+    QStandardItem dirItem;
 
     QString user = "user";
     QString password = "pwd";
@@ -43,8 +46,16 @@ private Q_SLOTS:
     void testErrorResponse();
 };
 
-ModelTest::ModelTest() {
+ModelTest::ModelTest() : fileItem("filename"), dirItem("dirname") {
     qRegisterMetaType<QList<QStandardItem*>>("QList<QStandardItem*>");
+
+    fileItem.setData(QVariant(0), Model::ID_ROLE);
+    fileItem.setData(QVariant(Model::ItemType::FILE), Model::TYPE_ROLE);
+    standardModel.appendRow(&fileItem);
+
+    dirItem.setData(QVariant(1), Model::ID_ROLE);
+    dirItem.setData(QVariant(Model::ItemType::FOLDER), Model::TYPE_ROLE);
+    standardModel.appendRow(&dirItem);
 }
 
 void ModelTest::init() {
@@ -114,46 +125,24 @@ void ModelTest::testGroupsCorrect() {
 }
 
 void ModelTest::testDelete() {
-    QStandardItemModel tmpModel;
     QSignalSpy spy(model, &Model::resourceDeleted);
     Response response("", RequestType::DELETE);
     bridge.emitGotResponse(response);
 
-    QStandardItem fileItem("filename");
-    fileItem.setData(QVariant(0), Model::ID_ROLE);
-    fileItem.setData(QVariant(Model::ItemType::FILE), Model::TYPE_ROLE);
-    tmpModel.appendRow(&fileItem);
-
     model->requestDelete(fileItem.index());
     QCOMPARE(spy.count(), 1);
-
-    QStandardItem dirItem("dirname");
-    dirItem.setData(QVariant(1), Model::ID_ROLE);
-    dirItem.setData(QVariant(Model::ItemType::FOLDER), Model::TYPE_ROLE);
-    tmpModel.appendRow(&dirItem);
 
     model->requestDelete(dirItem.index());
     QCOMPARE(spy.count(), 2);
 }
 
 void ModelTest::testDownload() {
-    QStandardItemModel tmpModel;
     QSignalSpy spy(model, &Model::downloadProgress);
     bridge.emitDownloadProgress(42, 42);
     QString path = "some/path";
 
-    QStandardItem fileItem("filename");
-    fileItem.setData(QVariant(0), Model::ID_ROLE);
-    fileItem.setData(QVariant(Model::ItemType::FILE), Model::TYPE_ROLE);
-    tmpModel.appendRow(&fileItem);
-
     model->requestDownload(fileItem.index(), path);
     QCOMPARE(spy.count(), 1);
-
-    QStandardItem dirItem("dirname");
-    dirItem.setData(QVariant(1), Model::ID_ROLE);
-    dirItem.setData(QVariant(Model::ItemType::FOLDER), Model::TYPE_ROLE);
-    tmpModel.appendRow(&dirItem);
 
     model->requestDownload(dirItem.index(), path);
     QCOMPARE(spy.count(), 2);
