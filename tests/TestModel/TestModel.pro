@@ -27,22 +27,17 @@ DEFINES += QT_DEPRECATED_WARNINGS
 
 INCLUDEPATH += \
     ../../Backend \
-    ../../qamqp/src \
     ../Mocks
 
 win32 {
     LIBS += -L../../Backend/release \
         -lBackend \
-        -L../../qamqp/src \
-        -lqamqp \
         -L../Mocks/release \
         -lMocks
 }
 unix {
     LIBS += -L../../Backend \
         -lBackend \
-        -L../../qamqp/src \
-        -lqamqp \
         -L../Mocks \
         -lMocks
 }

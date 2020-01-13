@@ -3,20 +3,15 @@
 #include <QSignalSpy>
 #include "include/model.h"
 #include "include/mockbridge.h"
-#include "include/rabbitconfig.h"
-#include "include/rabbitreceiver.h"
+#include "include/mockreceiver.h"
 
 class ModelTest : public QObject {
     Q_OBJECT
 
-public:
-    ModelTest();
-    ~ModelTest();
-
 private:
     Model *model;
     MockBridge bridge;
-    RabbitReceiver *rabbitReceiver; // TODO make mock
+    MockReceiver receiver;
 
     QString user = "user";
     QString password = "pwd";
@@ -28,17 +23,8 @@ private Q_SLOTS:
     void testLoginFailed();
 };
 
-ModelTest::ModelTest() {
-    RabbitConfig rabbitConfig("", "", "", "", 0);
-    rabbitReceiver = new RabbitReceiver(rabbitConfig);
-}
-
-ModelTest::~ModelTest() {
-    delete rabbitReceiver;
-}
-
 void ModelTest::initTestCase() {
-    model = new Model(&bridge, rabbitReceiver);
+    model = new Model(&bridge, &receiver);
 }
 
 void ModelTest::cleanupTestCase() {

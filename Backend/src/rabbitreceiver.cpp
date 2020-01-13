@@ -40,7 +40,7 @@ void RabbitReceiver::connectOnlyGivenGroups(const QList<int> &groups) {
         connectGroup(group);
     }
 
-    // dosconnect from any other
+    // disconnect from any other
     auto existingGroups = groupToQueue.keys();
     for (auto group : existingGroups) {
         if (!groups.contains(group)) {
