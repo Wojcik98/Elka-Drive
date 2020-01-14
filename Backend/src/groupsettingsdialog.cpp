@@ -5,6 +5,12 @@
 #include <QLineEdit>
 #include <QInputDialog>
 
+/*!
+ * \brief Konstruktor.
+ * \param groupName Nazwa grupy
+ * \param groupID ID grupy
+ * \param parent Rodzic w strukturze Qt
+ */
 GroupSettingsDialog::GroupSettingsDialog(const QString &groupName, const int groupID, QWidget *parent)
     : QDialog(parent), groupName(groupName), groupId(groupID) {
     setWindowFlags(Qt::Window | Qt::WindowTitleHint | Qt::CustomizeWindowHint | Qt::WindowCloseButtonHint);
@@ -14,6 +20,9 @@ GroupSettingsDialog::GroupSettingsDialog(const QString &groupName, const int gro
     usersList->setModel(&usersModel);
 }
 
+/*!
+ * \brief Destruktor.
+ */
 GroupSettingsDialog::~GroupSettingsDialog() {
 }
 
@@ -89,6 +98,10 @@ void GroupSettingsDialog::placeComponents() {
     mainLayout->addWidget(advancedSettingsWidget, 3, 0, 1, 2);
 }
 
+/*!
+ * \brief Wyświetla użytkowników.
+ * \param users Lista użytkowników
+ */
 void GroupSettingsDialog::groupUsersReceived(const QList<User> &users) {
     QList<QStandardItem*> column;
     for (User user : users) {
@@ -121,6 +134,9 @@ void GroupSettingsDialog::addUser() {
     }
 }
 
+/*!
+ * \brief Obsługuje sygnał o dodaniu użytkownika do grupy.
+ */
 void GroupSettingsDialog::groupAddUserReceived() {
     emit requestGroupUsers(groupId);
 }
@@ -144,10 +160,17 @@ void GroupSettingsDialog::removeUser() {
     }
 }
 
+/*!
+ * \brief Obsługuje sygnał o usunięciu użytkonika z grupy.
+ */
 void GroupSettingsDialog::groupRemoveUserReceived() {
     emit requestGroupUsers(groupId);
 }
 
+/*!
+ * \brief Wyświetla zaawansowane ustawienia.
+ * \param state Czy wyświetlać
+ */
 void GroupSettingsDialog::enableAdvanced(int state) {
     if (state == Qt::Unchecked) {
         advancedSettingsWidget->hide();
@@ -173,6 +196,9 @@ void GroupSettingsDialog::confirmGroupDelete() {
     }
 }
 
+/*!
+ * \brief Obsługuje sygnał o usunięciu grupy.
+ */
 void GroupSettingsDialog::groupDeletedReceived() {
     close();
 }

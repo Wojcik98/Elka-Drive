@@ -13,6 +13,9 @@
 
 #include "include/user.h"
 
+/*!
+ * \brief GroupSettingsDialog wyświetla i pozwala na zmianę ustawień grupy.
+ */
 class GroupSettingsDialog: public QDialog {
  Q_OBJECT
 
@@ -48,11 +51,31 @@ private:
     void permissionDenied();
 
 signals:
+    /*!
+     * \brief Żądanie listy użytkonwików w grupie.
+     * \param groupId ID grupy
+     */
     void requestGroupUsers(const int groupId);
+
+    /*!
+     * \brief Żądanie dodania użytkownika do grupy.
+     * \param username Nazwa użytkownika
+     * \param groupId ID grupy
+     */
     void requestAddUserToGroup(const QString &username, const int groupId);
+
+    /*!
+     * \brief Żądanie usunięcia użytkownika z grupy.
+     * \param username Nazwa użytkownika
+     * \param groupId ID grupy
+     */
     void requestRemoveUserFromGroup(const QString &username, const int groupId);
+
+    /*!
+     * \brief Żądanie usunięcia grupy.
+     * \param groupId ID grupy
+     */
     void requestGroupDelete(int groupId);
-    void openRegister();
 
 public slots:
     void enableAdvanced(const int state);
