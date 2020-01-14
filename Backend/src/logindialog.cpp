@@ -1,6 +1,10 @@
 #include <QMovie>
 #include "include/logindialog.h"
 
+/*!
+ * \brief Konstruktor.
+ * \param parent Rodzic w strukturze Qt
+ */
 LoginDialog::LoginDialog(QWidget *parent) : QDialog(parent) {
     setWindowFlags(Qt::Window | Qt::WindowTitleHint | Qt::CustomizeWindowHint);
     setUpGUI();
@@ -8,6 +12,9 @@ LoginDialog::LoginDialog(QWidget *parent) : QDialog(parent) {
     setModal(true);
 }
 
+/*!
+ * \brief Destruktor
+ */
 LoginDialog::~LoginDialog() {
     spinnerMovie->deleteLater();
 }
@@ -92,6 +99,9 @@ void LoginDialog::placeComponents() {
     mainLayout->addLayout(buttonsLayout, 3, 0, 1, 2);
 }
 
+/*!
+ * \brief Wysyła żądanie logowania z podanymi danymi.
+ */
 void LoginDialog::slotTryLogin() {
     enableButton(false);
     spinnerLabel->show();
@@ -101,16 +111,26 @@ void LoginDialog::slotTryLogin() {
     emit tryLogin(username, password);
 }
 
+/*!
+ * \brief Obsługuje sygnał o pomyślnym logowaniu.
+ */
 void LoginDialog::loginCorrect() {
     close();
 }
 
+/*!
+ * \brief Wyświetla komunikat o niepoprawnym logowaniu.
+ */
 void LoginDialog::loginFailed() {
     labelError->setText("Cannot login!");
     spinnerLabel->hide();
     enableButton(true);
 }
 
+/*!
+ * \brief Aktywuje przyciski logowania i rejestracji.
+ * \param enabled Czy aktywować
+ */
 void LoginDialog::enableButton(bool enabled) {
     loginButton->setEnabled(enabled);
     registerButton->setEnabled(enabled);

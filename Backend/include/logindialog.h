@@ -11,6 +11,9 @@
 #include <QStringList>
 #include <QDebug>
 
+/*!
+ * \brief LoginDialog wyświetla okno logowania.
+ */
 class LoginDialog : public QDialog {
  Q_OBJECT
 
@@ -43,7 +46,16 @@ private:
     void placeComponents();
 
 signals:
+    /*!
+     * \brief Żądanie logowania.
+     * \param username Nazwa użytkownika
+     * \param password Hasło
+     */
     void tryLogin(QString &username, QString &password);
+
+    /*!
+     * \brief Żądanie otworzeina okna rejestracji.
+     */
     void openRegister();
 
 public slots:
