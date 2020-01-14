@@ -9,6 +9,9 @@
 
 class Response;
 
+/*!
+ * \brief APIBridge Interfejs do komunikacji z serwerem.
+ */
 class APIBridge : public QObject {
 Q_OBJECT
 

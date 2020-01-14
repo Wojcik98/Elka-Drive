@@ -1,5 +1,9 @@
 #include "include/view.h"
 
+/*!
+ * \brief Konstruktor.
+ * \param parent Rodzic w strukturze Qt
+ */
 View::View(QWidget *parent)
     : QMainWindow(parent), groupsWidget(this), filesWidget(this) {
     setupBottomButtons();
@@ -9,6 +13,9 @@ View::View(QWidget *parent)
     connectSignals();
 }
 
+/*!
+ * \brief Destruktor.
+ */
 View::~View() {
 
 }
@@ -123,6 +130,9 @@ void View::connectSignals() {
     );
 }
 
+/*!
+ * \brief Pokazuje widgety związane z grupami i ukrywa związane z plikami.
+ */
 void View::setGroupsView() {
     groupsWidget.show();
     filesWidget.hide();
@@ -130,6 +140,9 @@ void View::setGroupsView() {
     backButton->setEnabled(false);
 }
 
+/*!
+ * \brief Pokazuje widgety związane z plikami i ukrywa związane z grupami.
+ */
 void View::setFilesView() {
     groupsWidget.hide();
     filesWidget.show();
@@ -137,12 +150,21 @@ void View::setFilesView() {
     backButton->setEnabled(true);
 }
 
+/*!
+ * \brief Aktywuje widgety które wymagają zaznaczonego przynajmniej jednego obiektu.
+ * \param enabled Czy aktywować
+ */
 void View::anyItemSelected(bool enabled) {
     settingsButton->setEnabled(enabled);
     downloadButton->setEnabled(enabled);
     deleteButton->setEnabled(enabled);
 }
 
+/*!
+ * \brief Aktualizuje pasek postępu wysyłania.
+ * \param current Liczba wykonanych kroków
+ * \param total Całkowita liczba kroków
+ */
 void View::setUploadProgress(qint64 current, qint64 total) {
     if (current == total && current != -1) {
         uploadTimer.start();
@@ -160,12 +182,20 @@ void View::setUploadProgress(qint64 current, qint64 total) {
     }
 }
 
+/*!
+ * \brief Resetuje pasek postępu wysyłania.
+ */
 void View::resetUploadProgress() {
     uploadProgress->reset();
     uploadProgress->setVisible(true);
     uploadFinishedLabel->setVisible(false);
 }
 
+/*!
+ * \brief Aktualizuje pasek postępu pobierania.
+ * \param current Liczba wykonanych kroków
+ * \param total Całkowita liczba kroków
+ */
 void View::setDownloadProgress(qint64 current, qint64 total) {
     if (current == total && current != -1) {
         downloadTimer.start();
@@ -183,6 +213,9 @@ void View::setDownloadProgress(qint64 current, qint64 total) {
     }
 }
 
+/*!
+ * \brief Resetuje pasek postępu pobierania.
+ */
 void View::resetDownloadProgress() {
     downloadProgress->reset();
     downloadProgress->setVisible(true);

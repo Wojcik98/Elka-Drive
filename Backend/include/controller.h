@@ -22,7 +22,6 @@ public:
     explicit Controller(QApplication *app, View *view, Model *model);
 
     void tryLogin();
-    void showGroups();
 
 private:
     QApplication *app;
