@@ -9,6 +9,9 @@ RegisterDialog::RegisterDialog(QWidget *parent) : QDialog(parent) {
     setUpGUI();
     setWindowTitle(tr("New account"));
     setModal(true);
+
+    closeTimer.setInterval(1000);
+    closeTimer.setSingleShot(true);
 }
 
 /*!
@@ -86,6 +89,12 @@ void RegisterDialog::connectSlots() {
         this,
         &RegisterDialog::slotTryRegister
     );
+    connect(
+        &closeTimer,
+        &QTimer::timeout,
+        this,
+        &RegisterDialog::reject
+    );
 }
 
 /*!
@@ -107,6 +116,7 @@ void RegisterDialog::slotRegisterResponse() {
     labelError->setStyleSheet("color: green;");
     labelError->setText("Register successful!");
 
+    closeTimer.start();
     enableButton(true);
     spinnerLabel->hide();
 }

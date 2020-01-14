@@ -9,7 +9,7 @@
 #include <QComboBox>
 #include <QGridLayout>
 #include <QStringList>
-#include <QDebug>
+#include <QTimer>
 #include <QMovie>
 
 /*!
@@ -37,6 +37,7 @@ private:
    QPushButton *registerButton;
    QHBoxLayout *buttonsLayout;
    QGridLayout *mainLayout;
+   QTimer closeTimer;
 
    void setUpGUI();
    void initInputs();
