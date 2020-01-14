@@ -161,6 +161,8 @@ void Controller::responseError(const QNetworkReply::NetworkError &error, const R
         case QNetworkReply::ContentConflictError:
             if (type == RequestType::REGISTER) {
                 if (registerDialog) registerDialog->userExists();
+            } else if (type == RequestType::NEW_GROUP) {
+                groupExist();
             } else {
                 unknownError();
             }
@@ -192,6 +194,11 @@ void Controller::forbidden() {
 void Controller::directoryNotFound() {
     view->showDirectoryNotFound();
     model->goBack();
+}
+
+void Controller::groupExist() {
+    view->showGroupExist();
+    model->refresh();
 }
 
 void Controller::unknownError() {

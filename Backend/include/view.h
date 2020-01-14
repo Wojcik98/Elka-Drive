@@ -28,6 +28,7 @@ public:
     virtual void showLogoutMsg() = 0;
     virtual void showForbiddenMsg() = 0;
     virtual void showDirectoryNotFound() = 0;
+    virtual void showGroupExist() = 0;
     virtual void showUnknownErrorMsg() = 0;
     virtual void showFileOpenError(const QString &filename) = 0;
     virtual QString getNewGroupName(bool *ok) = 0;

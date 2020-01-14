@@ -30,6 +30,7 @@ public:
     void showLogoutMsg() override;
     void showForbiddenMsg() override;
     void showDirectoryNotFound() override;
+    void showGroupExist() override;
     void showUnknownErrorMsg() override;
     void showFileOpenError(const QString &filename) override;
     QString getNewGroupName(bool *ok) override;

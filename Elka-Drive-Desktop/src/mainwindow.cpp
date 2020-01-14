@@ -219,6 +219,13 @@ void MainWindow::showDirectoryNotFound() {
     msgBox.exec();
 }
 
+void MainWindow::showGroupExist() {
+    QMessageBox msgBox(this);
+    msgBox.setText("Group with this name already exists!");
+    msgBox.setInformativeText("Choose another name");
+    msgBox.exec();
+}
+
 void MainWindow::showUnknownErrorMsg() {
     QMessageBox msgBox(this);
     msgBox.setText("Error while connecting to the server!");

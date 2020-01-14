@@ -36,6 +36,7 @@ private:
     void unauthorized();
     void forbidden();
     void directoryNotFound();
+    void groupExist();
     void unknownError();
 
 signals:
