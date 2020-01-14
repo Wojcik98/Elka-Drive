@@ -13,6 +13,10 @@
 #include "include/model.h"
 #include "ui_mainwindow.h"
 
+/*!
+ * \brief Konstruktor.
+ * \param parent Rodzic w strukturze Qt
+ */
 MainWindow::MainWindow(QWidget *parent) : View(parent), ui(new Ui::MainWindow) {
     ui->setupUi(this);
     ui->fileList->setSelectionMode(QAbstractItemView::SingleSelection);
@@ -53,6 +57,9 @@ MainWindow::MainWindow(QWidget *parent) : View(parent), ui(new Ui::MainWindow) {
     );
 }
 
+/*!
+ * \brief Destruktor.
+ */
 MainWindow::~MainWindow() {
     delete ui;
 }
@@ -86,6 +93,9 @@ void MainWindow::handleContextMenuRequested(const QPoint &pos) {
     menu->popup(ui->fileList->viewport()->mapToGlobal(pos));
 }
 
+/*!
+ * \brief Obsługuje naciśnięcie przycisku ustawień grupy.
+ */
 void MainWindow::settingsButtonClicked() {
     auto selectionModel = ui->fileList->selectionModel();
     auto list = selectionModel->selectedIndexes();
@@ -96,6 +106,9 @@ void MainWindow::settingsButtonClicked() {
     }
 }
 
+/*!
+ * \brief Obsługuje naciśnięcie przycisku pobierania.
+ */
 void MainWindow::downloadButtonClicked() {
     auto selectionModel = ui->fileList->selectionModel();
     auto list = selectionModel->selectedIndexes();
@@ -106,6 +119,9 @@ void MainWindow::downloadButtonClicked() {
     }
 }
 
+/*!
+ * \brief Obsługuje naciśnięcie przycisku usuwania.
+ */
 void MainWindow::deleteButtonClicked() {
     auto selectionModel = ui->fileList->selectionModel();
     auto list = selectionModel->selectedIndexes();
@@ -116,6 +132,10 @@ void MainWindow::deleteButtonClicked() {
     }
 }
 
+/*!
+ * \brief Ustawia kontroler i łączy sygnały.
+ * \param newController Kontroler
+ */
 void MainWindow::setController(Controller *newController) {
     controller = newController;
     connect(
@@ -154,6 +174,11 @@ bool MainWindow::filesSort(QStandardItem *a, QStandardItem *b) {
     return a->data(Model::TYPE_ROLE).toInt() < b->data(Model::TYPE_ROLE).toInt();
 }
 
+/*!
+ * \brief Wyświetla ścieżkę i jej zawartość.
+ * \param files Zawartość ścieżki
+ * \param path Ścieżka
+ */
 void MainWindow::setFileList(const QList<QStandardItem*> &files, const QString &path) {
     fileListModel.clear();
 
@@ -172,10 +197,17 @@ void MainWindow::sendButtonClicked() {
     }
 }
 
+/*!
+ * \brief Czyści linię edycji wiadomości.
+ */
 void MainWindow::clearMsg() {
     ui->messageEdit->clear();
 }
 
+/*!
+ * \brief Ustawia nowy model wiadomości w czacie.
+ * \param model Nowy model
+ */
 void MainWindow::setChatModel(QStandardItemModel *model) {
     if (ui->messagesList->model() != nullptr) {
         disconnect(
@@ -200,18 +232,27 @@ void MainWindow::chatModelRowInserted(const QModelIndex&, int, int) {
     ui->messagesList->scrollTo(lastItem);
 }
 
+/*!
+ * \brief Wyświetla komunikat o wylogowaniu.
+ */
 void MainWindow::showLogoutMsg() {
     QMessageBox msgBox(this);
     msgBox.setText("You have been logged out!");
     msgBox.exec();
 }
 
+/*!
+ * \brief Wyświetla komunikat o braku dostępu do grupy.
+ */
 void MainWindow::showForbiddenMsg() {
     QMessageBox msgBox(this);
     msgBox.setText("You don't have access to this group!");
     msgBox.exec();
 }
 
+/*!
+ * \brief Wyświetla komunikat o przebywaniu w nieistniejącym folderze.
+ */
 void MainWindow::showDirectoryNotFound() {
     QMessageBox msgBox(this);
     msgBox.setText("Directory does not exist!");
@@ -219,6 +260,9 @@ void MainWindow::showDirectoryNotFound() {
     msgBox.exec();
 }
 
+/*!
+ * \brief Wyświetla komunikat, że żądana nazwa grupy już istnieje.
+ */
 void MainWindow::showGroupExist() {
     QMessageBox msgBox(this);
     msgBox.setText("Group with this name already exists!");
@@ -226,6 +270,9 @@ void MainWindow::showGroupExist() {
     msgBox.exec();
 }
 
+/*!
+ * \brief Wyświetla komunikat o nieznanym błędzie.
+ */
 void MainWindow::showUnknownErrorMsg() {
     QMessageBox msgBox(this);
     msgBox.setText("Error while connecting to the server!");
@@ -233,6 +280,10 @@ void MainWindow::showUnknownErrorMsg() {
     msgBox.exec();
 }
 
+/*!
+ * \brief Wyświetla komunikat o błędzie otwierania pliku.
+ * \param filename Nazwa pliku
+ */
 void MainWindow::showFileOpenError(const QString &filename) {
     QMessageBox msgBox(this);
     msgBox.setText("Could not open file!");
@@ -240,6 +291,11 @@ void MainWindow::showFileOpenError(const QString &filename) {
     msgBox.exec();
 }
 
+/*!
+ * \brief Wyświetla okno do wpisania nazwy nowej grupy.
+ * \param ok Parametr, w którym zostanie zapisane powodzenie operacji
+ * \return Nazwa nowej grupy
+ */
 QString MainWindow::getNewGroupName(bool *ok) {
     return QInputDialog::getText(
         this, "Create new group", "Group name:",
@@ -247,6 +303,11 @@ QString MainWindow::getNewGroupName(bool *ok) {
     );
 }
 
+/*!
+ * \brief Wyświetla okno do wpisania nazwy nowego folderu.
+ * \param ok Parametr, w którym zostanie zapisane powodzenie operacji
+ * \return Nazwa nowego folderu
+ */
 QString MainWindow::getNewFolderName(bool *ok) {
     return QInputDialog::getText(
         this, "New folder", "Name:",
@@ -254,12 +315,20 @@ QString MainWindow::getNewFolderName(bool *ok) {
     );
 }
 
+/*!
+ * \brief Wyświetla okno do wybrania plików do wysłania.
+ * \return Lista ścieżek do plików
+ */
 QStringList MainWindow::getUploadFileNames() {
     return QFileDialog::getOpenFileNames(
         this, "Select one or more files to upload", QDir::homePath()
     );
 }
 
+/*!
+ * \brief Wyświetla okno do wybrania folderu do wysłania.
+ * \return Ścieżka folderu
+ */
 QString MainWindow::getUploadFolderName() {
     return QFileDialog::getExistingDirectory(
         this, "Select directory to upload", QDir::homePath(),
@@ -267,6 +336,11 @@ QString MainWindow::getUploadFolderName() {
     );
 }
 
+/*!
+ * \brief Wyświetla okno do wybrania nazwy, gdzie zostanie zapisany plik.
+ * \param suggested Sugerowana nazwa pliku
+ * \return Ścieżka pliku
+ */
 QString MainWindow::getSaveFilename(const QString &suggested) {
     return QFileDialog::getSaveFileName(this, "Save file", suggested);
 }

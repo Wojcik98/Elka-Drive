@@ -13,6 +13,9 @@ namespace Ui {
 class MainWindow;
 }
 
+/*!
+ * \brief MainWindow wyświetla główne okno aplikacji.
+ */
 class MainWindow : public View {
     Q_OBJECT
 

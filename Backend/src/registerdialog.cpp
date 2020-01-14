@@ -130,7 +130,6 @@ void RegisterDialog::userExists() {
 
     enableButton(true);
     spinnerLabel->hide();
-
 }
 
 /*!
