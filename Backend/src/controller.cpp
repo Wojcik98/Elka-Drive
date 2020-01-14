@@ -151,6 +151,9 @@ void Controller::responseError(const QNetworkReply::NetworkError &error, const R
         case QNetworkReply::ContentAccessDenied:
             if (type == RequestType::DELETE || type == RequestType::DOWNLOAD) {
                 refresh();
+            } else if (type == RequestType::GROUP_USERS) {
+                groupSettingsDialog->close();
+                forbidden();
             } else {
                 forbidden();
             }

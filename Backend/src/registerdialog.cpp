@@ -65,7 +65,6 @@ void RegisterDialog::setUpGUI() {
     formGridLayout->addWidget(labelError, 2, 0, 1, 2);
     formGridLayout->addLayout(hbox, 3, 0, 1, 2);
 
-    setLayout(formGridLayout);
     spinnerLabel->hide();
 }
 
