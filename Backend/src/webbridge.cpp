@@ -3,6 +3,10 @@
 #include <QNetworkReply>
 #include <QHttpMultiPart>
 
+/*!
+ * \brief Konstruktor.
+ * \param mainUrl URL serwera bez kończącego slasha
+ */
 WebBridge::WebBridge(const QString &mainUrl) : mainUrl(mainUrl) {
     requestReply = nullptr;
     currentRequest = nullptr;
@@ -12,6 +16,14 @@ WebBridge::WebBridge(const QString &mainUrl) : mainUrl(mainUrl) {
     currentUpload = nullptr;
 }
 
+/*!
+ * \brief Wysyła żądanie zalogowania użytkownika.
+ * \param user Nazwa nowego użytkownika
+ * \param password Hasło nowego użytkownika
+ *
+ * Jeśli operacja się powiadła, zapisywane są cookies odpowiedzialne
+ * za autentykację przy kolejnych żądaniach.
+ */
 void WebBridge::requestLogin(const QString &user, const QString &password) {
     auto url = QUrl(mainUrl + "/login");
     QUrlQuery data;
@@ -21,6 +33,11 @@ void WebBridge::requestLogin(const QString &user, const QString &password) {
     post(url, data, RequestType::LOGIN);
 }
 
+/*!
+ * \brief Wysyła żądanie rejestracji nowego użytkownika
+ * \param user Nazwa nowego użytkownika
+ * \param password Hasło nowego użytkownika
+ */
 void WebBridge::requestRegister(const QString &user, const QString &password) {
     auto url = QUrl(mainUrl + "/register");
     QUrlQuery data;
@@ -30,12 +47,20 @@ void WebBridge::requestRegister(const QString &user, const QString &password) {
     post(url, data, RequestType::REGISTER);
 }
 
+/*!
+ * \brief Wysyła żądanie usunięcia pliku z serwera.
+ * \param id ID pliku do usunięcia
+ */
 void WebBridge::requestFileDelete(const int id) {
     auto url = QUrl(mainUrl + "/files/" + QString::number(id));
 
     deleteResource(url, RequestType::DELETE);
 }
 
+/*!
+ * \brief Wysyła żądanie usunięcia folderu z serwera.
+ * \param path Ścieżka folderu na serwerze do usunięcia
+ */
 void WebBridge::requestDirectoryDelete(const QString &path) {
     auto url = QUrl(mainUrl + "/files/del");
     QUrlQuery query;
@@ -45,12 +70,22 @@ void WebBridge::requestDirectoryDelete(const QString &path) {
     deleteResource(url, RequestType::DELETE);
 }
 
+/*!
+ * \brief Wysyła żądanie pobrania listy grup, w których znajduje się zalogowany użytkownik.
+ */
 void WebBridge::requestGroups() {
     auto url = QUrl(mainUrl + "/groups/my");
 
     get(url, RequestType::GROUPS);
 }
 
+/*!
+ * \brief Wysyła żądanie stworzenia nowej grupy na serwerze.
+ * \param groupName Nazwa grupy do stworzenia
+ *
+ * Jeśli grupa o podanej nazwie istnieje zostanie wyemitowany sygnał responseError()
+ * z argumentem QNetworkReply::ContentConflictError i odpowiedzią z serwera.
+ */
 void WebBridge::requestNewGroup(const QString &groupName) {
     auto url = QUrl(mainUrl + "/groups");
     QUrlQuery data;
@@ -59,6 +94,10 @@ void WebBridge::requestNewGroup(const QString &groupName) {
     post(url, data, RequestType::NEW_GROUP);
 }
 
+/*!
+ * \brief Wysyła żądanie pobrania listy plików pod wskazaną ścieżką.
+ * \param path Ścieżka
+ */
 void WebBridge::requestPath(const QString &path) {
     auto url = QUrl(mainUrl + "/files/dir");
     QUrlQuery query;
@@ -68,18 +107,31 @@ void WebBridge::requestPath(const QString &path) {
     get(url, RequestType::PATH);
 }
 
+/*!
+ * \brief Wysyła żądanie pobranie listy użytkowników mających dostęp do grupy.
+ * \param groupId ID grupy
+ */
 void WebBridge::requestGroupUsers(const int groupId) {
     auto url = QUrl(mainUrl + "/groups/" + QString::number(groupId));
 
     get(url, RequestType::GROUP_USERS);
 }
 
+/*!
+ * \brief Wysyła żądanie usunięcia grupy z serwera.
+ * \param groupId ID grupy
+ */
 void WebBridge::requestGroupDelete(const int groupId) {
     auto url = QUrl(mainUrl + "/groups/" + QString::number(groupId));
 
     deleteResource(url, RequestType::GROUP_DELETE);
 }
 
+/*!
+ * \brief Wysyła żądanie dodania użytkownika do grupy.
+ * \param username Nazwa użytkownika do dodania
+ * \param groupId ID grupy
+ */
 void WebBridge::requestAddUserToGroup(const QString &username, const int groupId) {
     auto url = QUrl(mainUrl + "/groups/add/" + QString::number(groupId));
     QUrlQuery data;
@@ -88,6 +140,11 @@ void WebBridge::requestAddUserToGroup(const QString &username, const int groupId
     post(url, data, RequestType::GROUP_ADD_USER);
 }
 
+/*!
+ * \brief Wysyła żądanie usunięcia użytkownika z grupy.
+ * \param username Nazwa użytkownika do usunięcia
+ * \param groupId ID grupy
+ */
 void WebBridge::requestRemoveUserFromGroup(const QString &username, const int groupId) {
     auto url = QUrl(mainUrl + "/groups/remove/" + QString::number(groupId));
     QUrlQuery data;
@@ -96,6 +153,10 @@ void WebBridge::requestRemoveUserFromGroup(const QString &username, const int gr
     post(url, data, RequestType::GROUP_REMOVE_USER);
 }
 
+/*!
+ * \brief Wysyła żądanie stworzenia wskazanej ścieżki.
+ * \param path Ścieżka do stworzenia
+ */
 void WebBridge::requestNewFolder(const QString &path) {
     auto url = QUrl(mainUrl + "/files/dir");
     QUrlQuery data;
@@ -104,6 +165,11 @@ void WebBridge::requestNewFolder(const QString &path) {
     post(url, data, RequestType::NEW_FOLDER);
 }
 
+/*!
+ * \brief Wysyła żądanie wysłania wiadomości do grupy.
+ * \param groupId ID grupy
+ * \param msg Wiadomość
+ */
 void WebBridge::sendMsg(const int groupId, const QString &msg) {
     auto url = QUrl(mainUrl + "/message");
     QUrlQuery data;
@@ -205,11 +271,21 @@ void WebBridge::networkReplyFinished() {
     triggerRequest();
 }
 
+/*!
+ * \brief Wysyła żądanie pobrania pliku i zapisania go pod wskazaną ścieżką.
+ * \param id ID pliku
+ * \param path Ścieżka zapisu
+ */
 void WebBridge::requestFileDownload(const int id, const QString &path) {
     auto url = QUrl(mainUrl + "/files/" + QString::number(id));
     requestDownload(id, path, url);
 }
 
+/*!
+ * \brief Wysyła żądanie pobrania folderu w archiwum zip i zapisania go pod wskazaną ścieżką.
+ * \param id ID folderu
+ * \param path Ścieżka zapisu
+ */
 void WebBridge::requestDirectoryDownload(const int id, const QString &path) {
     auto url = QUrl(mainUrl + "/files/dir/" + QString::number(id));
     requestDownload(id, path, url);
@@ -302,6 +378,15 @@ void WebBridge::downloadProgressPreprocess(const qint64 bytesReceived, const qin
     }
 }
 
+/*!
+ * \brief Wysyła żądanie wysłania pliku na serwer.
+ * \param rootLocal Folder odniesienia na komputerze użytkownika
+ * \param rootServer Folder odniesienia na serwerze
+ * \param relativePath Ścieżka względna do pliku względem obu folderów
+ *
+ * Przykład: rootLocal = /home/user/Desktop, rootServer = 2/path, relativePath = some/file.jpg.
+ * Wtedy plik /home/user/Desktop/some/file.jpg zostanie wysłany na ścieżkę 2/path/some/file.jpg.
+ */
 void WebBridge::requestFileUpload(
         const QString &rootLocal,
         const QString &rootServer,

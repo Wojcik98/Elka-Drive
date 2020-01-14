@@ -11,6 +11,21 @@
 #include "include/request.h"
 #include "include/requesttype.h"
 
+/*!
+ * \brief WebBridge łączy się z serwerem danych poprzez HTTP wykorzystując REST API.
+ *
+ * Klasa wysyła żądania asynchronicznie żądania HTTP do serwera. Jeśli przyjdzie odpowiedź
+ * zostaje wyemitowany sygnał gotResponse() gdy żądanie zostało obsłużone poprawnie lub
+ * APIBridge::responseError() gdy wystąpił błąd. Błędy mogą wynikać z błędnej komunikacji, ale mogą też
+ * być przewidywane, np. żądanie rejestracji użytkownika o już istniejącej nazwie zwróci błąd
+ * QNetworkReply::ContentConflictError.
+ *
+ * Żądania REST API, pobrania i wysłania pliku są obsługiwane niezależnie od siebie i jest możliwa
+ * ich obsługa równolegle, jednak w każdej z tych kategorii żądania są kolejkowane i wykonywane jedne po drugich.
+ * Np. jeśli wywołamy kolejno requestGroups(), requestFileUpload() i requestAddUserToGroup(),
+ * to requestGroups i requestFileUpload wykonają się równolegle, a requestAddUserToGroup zaczeka
+ * na zakończenie requestGroups.
+ */
 class WebBridge : public APIBridge {
 public:
     WebBridge(const QString &mainUrl);
