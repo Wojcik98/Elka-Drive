@@ -26,3 +26,5 @@ W systemie Linux jest to `ProcessResponse/test`, w systemie Windows `ProcessResp
 Kod jest automatycznie testowany na platformie Github po każdej akcji `push` do repozytorium.
 Wyniki testów można zobaczyć wchodząc w zakładkę `Actions`.
 
+## Dokumentacja
+Dokumentację można wygenerować komendą `doxygen Doxyfile`.
