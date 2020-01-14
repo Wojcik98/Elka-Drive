@@ -25,22 +25,21 @@ public:
     void setGroupsView();
     void setFilesView();
     void anyItemSelected(bool enabled);
-    void showLogoutMsg();
-    void showForbiddenMsg();
-    void showDirectoryNotFound();
-    void showUnknownErrorMsg();
-    void showFileOpenError(const QString &filename);
-    QString getNewGroupName(bool *ok);
-    QString getNewFolderName(bool *ok);
-    QStringList getUploadFileNames();
-    QString getUploadFolderName();
-    QString getSaveFilename(const QString &suggested);
+    virtual void showLogoutMsg() = 0;
+    virtual void showForbiddenMsg() = 0;
+    virtual void showDirectoryNotFound() = 0;
+    virtual void showUnknownErrorMsg() = 0;
+    virtual void showFileOpenError(const QString &filename) = 0;
+    virtual QString getNewGroupName(bool *ok) = 0;
+    virtual QString getNewFolderName(bool *ok) = 0;
+    virtual QStringList getUploadFileNames() = 0;
+    virtual QString getUploadFolderName() = 0;
+    virtual QString getSaveFilename(const QString &suggested) = 0;
 
 protected:
     virtual void settingsButtonClicked() = 0;
     virtual void downloadButtonClicked() = 0;
     virtual void deleteButtonClicked() = 0;
-    void showEvent(QShowEvent *ev);
 
     QStandardItemModel fileListModel;
     Controller *controller;

@@ -1,7 +1,4 @@
 #include "include/view.h"
-#include <QMessageBox>
-#include <QFileDialog>
-#include <QInputDialog>
 
 View::View(QWidget *parent)
     : QMainWindow(parent), groupsWidget(this), filesWidget(this) {
@@ -126,11 +123,6 @@ void View::connectSignals() {
     );
 }
 
-void View::showEvent(QShowEvent *ev) {
-    QMainWindow::showEvent(ev);
-    controller->tryLogin();
-}
-
 void View::setGroupsView() {
     groupsWidget.show();
     filesWidget.hide();
@@ -195,68 +187,4 @@ void View::resetDownloadProgress() {
     downloadProgress->reset();
     downloadProgress->setVisible(true);
     downloadFinishedLabel->setVisible(false);
-}
-
-void View::showLogoutMsg() {
-    QMessageBox msgBox(this);
-    msgBox.setText("You have been logged out!");
-    msgBox.exec();
-}
-
-void View::showForbiddenMsg() {
-    QMessageBox msgBox(this);
-    msgBox.setText("You don't have access to this group!");
-    msgBox.exec();
-}
-
-void View::showDirectoryNotFound() {
-    QMessageBox msgBox(this);
-    msgBox.setText("Directory does not exist!");
-    msgBox.setInformativeText("It could be deleted. You will be moved up in directory structure.");
-    msgBox.exec();
-}
-
-void View::showUnknownErrorMsg() {
-    QMessageBox msgBox(this);
-    msgBox.setText("Error while connecting to the server!");
-    msgBox.setInformativeText("Try again. If error persists contact developer.");
-    msgBox.exec();
-}
-
-void View::showFileOpenError(const QString &filename) {
-    QMessageBox msgBox(this);
-    msgBox.setText("Could not open file!");
-    msgBox.setInformativeText(filename);
-    msgBox.exec();
-}
-
-QString View::getNewGroupName(bool *ok) {
-    return QInputDialog::getText(
-        this, "Create new group", "Group name:",
-        QLineEdit::Normal, "", ok
-    );
-}
-
-QString View::getNewFolderName(bool *ok) {
-    return QInputDialog::getText(
-        this, "New folder", "Name:",
-        QLineEdit::Normal, "", ok
-    );
-}
-
-QStringList View::getUploadFileNames() {
-    return QFileDialog::getOpenFileNames(
-        this, "Select one or more files to upload", QDir::homePath()
-    );
-}
-
-QString View::getUploadFolderName() {
-    return QFileDialog::getExistingDirectory(
-        this, "Select directory to upload", QDir::homePath(),
-        QFileDialog::ShowDirsOnly | QFileDialog::DontResolveSymlinks
-    );
-}
-
-QString View::getSaveFilename(const QString &suggested) {
-    return QFileDialog::getSaveFileName(this, "Save file", suggested);
 }

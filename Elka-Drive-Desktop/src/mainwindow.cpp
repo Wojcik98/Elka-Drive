@@ -1,6 +1,9 @@
 #include <QStandardItem>
 #include <QStringListModel>
 #include <QUrl>
+#include <QMessageBox>
+#include <QFileDialog>
+#include <QInputDialog>
 #include <algorithm>
 
 #include "include/messagedelegate.h"
@@ -52,6 +55,11 @@ MainWindow::MainWindow(QWidget *parent) : View(parent), ui(new Ui::MainWindow) {
 
 MainWindow::~MainWindow() {
     delete ui;
+}
+
+void MainWindow::showEvent(QShowEvent *ev) {
+    QMainWindow::showEvent(ev);
+    controller->tryLogin();
 }
 
 void MainWindow::handleContextMenuRequested(const QPoint &pos) {
@@ -190,4 +198,68 @@ void MainWindow::chatModelRowInserted(const QModelIndex&, int, int) {
     auto model = ui->messagesList->model();
     auto lastItem = model->index(model->rowCount() - 1, 0);
     ui->messagesList->scrollTo(lastItem);
+}
+
+void MainWindow::showLogoutMsg() {
+    QMessageBox msgBox(this);
+    msgBox.setText("You have been logged out!");
+    msgBox.exec();
+}
+
+void MainWindow::showForbiddenMsg() {
+    QMessageBox msgBox(this);
+    msgBox.setText("You don't have access to this group!");
+    msgBox.exec();
+}
+
+void MainWindow::showDirectoryNotFound() {
+    QMessageBox msgBox(this);
+    msgBox.setText("Directory does not exist!");
+    msgBox.setInformativeText("It could be deleted. You will be moved up in directory structure.");
+    msgBox.exec();
+}
+
+void MainWindow::showUnknownErrorMsg() {
+    QMessageBox msgBox(this);
+    msgBox.setText("Error while connecting to the server!");
+    msgBox.setInformativeText("Try again. If error persists contact developer.");
+    msgBox.exec();
+}
+
+void MainWindow::showFileOpenError(const QString &filename) {
+    QMessageBox msgBox(this);
+    msgBox.setText("Could not open file!");
+    msgBox.setInformativeText(filename);
+    msgBox.exec();
+}
+
+QString MainWindow::getNewGroupName(bool *ok) {
+    return QInputDialog::getText(
+        this, "Create new group", "Group name:",
+        QLineEdit::Normal, "", ok
+    );
+}
+
+QString MainWindow::getNewFolderName(bool *ok) {
+    return QInputDialog::getText(
+        this, "New folder", "Name:",
+        QLineEdit::Normal, "", ok
+    );
+}
+
+QStringList MainWindow::getUploadFileNames() {
+    return QFileDialog::getOpenFileNames(
+        this, "Select one or more files to upload", QDir::homePath()
+    );
+}
+
+QString MainWindow::getUploadFolderName() {
+    return QFileDialog::getExistingDirectory(
+        this, "Select directory to upload", QDir::homePath(),
+        QFileDialog::ShowDirsOnly | QFileDialog::DontResolveSymlinks
+    );
+}
+
+QString MainWindow::getSaveFilename(const QString &suggested) {
+    return QFileDialog::getSaveFileName(this, "Save file", suggested);
 }
