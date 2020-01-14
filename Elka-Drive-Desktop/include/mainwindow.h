@@ -24,11 +24,6 @@ public:
     void setFileList(const QList<QStandardItem*> &files, const QString &path) override;
     void clearMsg() override;
     void setChatModel(QStandardItemModel *model) override;
-
-private:
-    Ui::MainWindow *ui;
-    void showEvent(QShowEvent *ev) override;
-
     void settingsButtonClicked() override;
     void downloadButtonClicked() override;
     void deleteButtonClicked() override;
@@ -42,6 +37,10 @@ private:
     QStringList getUploadFileNames() override;
     QString getUploadFolderName() override;
     QString getSaveFilename(const QString &suggested) override;
+
+private:
+    Ui::MainWindow *ui;
+    void showEvent(QShowEvent *ev) override;
 
     static bool filesSort(QStandardItem *a, QStandardItem *b);
     void sendButtonClicked();

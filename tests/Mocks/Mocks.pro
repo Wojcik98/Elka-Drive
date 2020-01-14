@@ -34,11 +34,13 @@ unix {
 
 SOURCES += \
     src/mockbridge.cpp \
-    src/mockreceiver.cpp
+    src/mockreceiver.cpp \
+    src/mockview.cpp
 
 HEADERS += \
     include/mockbridge.h \
-    include/mockreceiver.h
+    include/mockreceiver.h \
+    include/mockview.h
 
 # Default rules for deployment.
 unix {
