@@ -15,8 +15,8 @@ tests/TestModel/test
 tests/TestUser/test
 tests/TestUploadItem/test
 
-# Secrets
-rabbitmqsecrets.h
+# Documentation
+docs
 
 # Prerequisites
 *.d
