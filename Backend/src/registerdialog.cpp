@@ -1,5 +1,9 @@
 #include "include/registerdialog.h"
 
+/*!
+ * \brief Konstruktor.
+ * \param parent Rodzic w strukturze Qt
+ */
 RegisterDialog::RegisterDialog(QWidget *parent) : QDialog(parent) {
     setWindowFlags(Qt::Window | Qt::WindowTitleHint | Qt::CustomizeWindowHint);
     setUpGUI();
@@ -7,6 +11,9 @@ RegisterDialog::RegisterDialog(QWidget *parent) : QDialog(parent) {
     setModal(true);
 }
 
+/*!
+ * \brief Destruktor.
+ */
 RegisterDialog::~RegisterDialog() {
     spinnerMovie->deleteLater();
 }
@@ -81,7 +88,9 @@ void RegisterDialog::connectSlots() {
     );
 }
 
-
+/*!
+ * \brief Wysyła żądanie rejestracji z podanymi danymi.
+ */
 void RegisterDialog::slotTryRegister() {
     spinnerLabel->show();
     enableButton(false);
@@ -91,6 +100,9 @@ void RegisterDialog::slotTryRegister() {
     emit tryRegister(username, password);
 }
 
+/*!
+ * \brief Wyświetla komunikat o udanej rejestracji.
+ */
 void RegisterDialog::slotRegisterResponse() {
     labelError->setStyleSheet("color: green;");
     labelError->setText("Register successful!");
@@ -99,6 +111,9 @@ void RegisterDialog::slotRegisterResponse() {
     spinnerLabel->hide();
 }
 
+/*!
+ * \brief Wyświetla komunikat, że użytkownik o podanej nazwie już istnieje.
+ */
 void RegisterDialog::userExists() {
     labelError->setStyleSheet("color: red;");
     labelError->setText("User exists!");
@@ -108,6 +123,10 @@ void RegisterDialog::userExists() {
 
 }
 
+/*!
+ * \brief Aktywuje przycisk rejestracji.
+ * \param enabled Czy aktywować
+ */
 void RegisterDialog::enableButton(bool enabled) {
     registerButton->setEnabled(enabled);
 }

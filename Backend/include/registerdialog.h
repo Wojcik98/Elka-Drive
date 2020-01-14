@@ -12,6 +12,9 @@
 #include <QDebug>
 #include <QMovie>
 
+/*!
+ * \brief RegisterDialog wyświetla okno rejestracji.
+ */
 class RegisterDialog : public QDialog {
 Q_OBJECT
 
@@ -44,6 +47,11 @@ private:
    void placeComponents();
 
 signals:
+   /*!
+    * \brief Żądanie rejestracji.
+    * \param username Nazwa użytkownika
+    * \param password Hasło
+    */
    void tryRegister(const QString &username, const QString &password);
 
 public slots:
