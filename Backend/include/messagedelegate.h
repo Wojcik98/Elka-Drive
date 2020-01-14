@@ -4,6 +4,9 @@
 #include <QPainter>
 #include <QStyledItemDelegate>
 
+/*!
+ * \brief MessageDelegate rysuje wiadomość z czatu.
+ */
 class MessageDelegate : public QStyledItemDelegate {
 public:
     MessageDelegate(QObject *parent = nullptr);

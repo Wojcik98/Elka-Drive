@@ -7,6 +7,9 @@
 
 class Model;
 
+/*!
+ * \brief Response przechowuje informacje o odpowiedzi na żądanie HTTP.
+ */
 class Response {
 public:
     Response(const QByteArray &body, const RequestType &type);

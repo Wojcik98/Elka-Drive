@@ -6,6 +6,9 @@
 #include <QDataStream>
 #include <QUrl>
 
+/*!
+ * \brief DownloadItem przechowuje informacje o pobieranym pliku i zapisuje do niego dane.
+ */
 class DownloadItem {
 public:
     DownloadItem(const int id, const QString &path, const QUrl &url);

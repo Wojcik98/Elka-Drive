@@ -6,6 +6,10 @@
 #include "include/messagereceiver.h"
 #include "include/rabbitconfig.h"
 
+/*!
+ * \brief RabbitReceiver Implementacja odbierania wiadomości czatu
+ * wykorzystująca bibliotekę QAMPQ do komunikacji z RabbitMQ.
+ */
 class RabbitReceiver : public MessageReceiver {
 public:
     RabbitReceiver(const RabbitConfig &config, QObject *parent = nullptr);

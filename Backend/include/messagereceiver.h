@@ -4,6 +4,9 @@
 #include <QObject>
 #include "include/message.h"
 
+/*!
+ * \brief MessageReceiver Interfejs do odbierania wiadomości z czatu.
+ */
 class MessageReceiver : public QObject {
 Q_OBJECT
 
@@ -16,6 +19,11 @@ public:
     virtual void connectOnlyGivenGroups(const QList<int> &groups) = 0;
 
 signals:
+    /*!
+     * \brief Emitowany gdy odebrano nową wiadomość.
+     * \param groupId ID grupy, do której przyszła wiadomość
+     * \param msg Wiadomość
+     */
     void messageReceived(const int groupId, const Message &msg);
 };
 

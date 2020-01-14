@@ -33,10 +33,37 @@ public:
     virtual void sendMsg(const int groupId, const QString &msg) = 0;
 
 signals:
-    void responseError(const QNetworkReply::NetworkError &error, const Response &requestType);
+    /*!
+     * \brief Emitowany gdy wystąpił błąd podczas przetwarzania żądania.
+     * \param error Rodzaj błędu
+     * \param response Odpowiedź
+     */
+    void responseError(const QNetworkReply::NetworkError &error, const Response &response);
+
+    /*!
+     * \brief Emitowany gdy uzyskano odpowiedź na żądanie.
+     * \param response Odpowiedź
+     */
     void gotResponse(const Response &response);
+
+    /*!
+     * \brief Informuje o aktualnym postępie pobierania.
+     * \param bytesReceived Liczba pobranych bajtów
+     * \param bytesTotal Całkowita liczba bajtów
+     */
     void downloadProgress(const qint64 bytesReceived, const qint64 bytesTotal);
+
+    /*!
+     * \brief Informuje o aktualnym postępie wysyłania.
+     * \param bytesSent Liczba wysłanych bajtów
+     * \param bytesTotal Całkowita liczba bajtów
+     */
     void uploadProgress(const qint64 bytesSent, const qint64 bytesTotal);
+
+    /*!
+     * \brief Emitowany gdy wystąpił błąd otwierania pliku do zapisu lub odczytu.
+     * \param filename Nazwa pliku
+     */
     void fileOpenError(const QString &filename);
 };
 

@@ -4,6 +4,9 @@
 #include <QString>
 #include <QJsonObject>
 
+/*!
+ * \brief User przechowuje informacje o użytkowniku.
+ */
 class User {
 public:
     User(const QString &name, const int id);

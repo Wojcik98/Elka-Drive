@@ -3,11 +3,21 @@
 #include <QApplication>
 #include <QDebug>
 
+/*!
+ * \brief Konstruktor.
+ * \param parent Rodzic w systemie Qt
+ */
 MessageDelegate::MessageDelegate(QObject *parent)
     : QStyledItemDelegate(parent) {
 
 }
 
+/*!
+ * \brief Rysuje wiadomość czatu wykorzystując podany painter.
+ * \param painter Painter
+ * \param option Opcje rysowania
+ * \param index Indeks modelu, przechowuje informacje o wiadomości
+ */
 void MessageDelegate::paint(QPainter *painter, const QStyleOptionViewItem &option, const QModelIndex &index) const {
     painter->save();
     QStyleOptionViewItem opt(option);
@@ -134,6 +144,12 @@ QRect MessageDelegate::messageBox(const QStyleOptionViewItem &option, const QMod
             .adjusted(0, 0, 1, 1);
 }
 
+/*!
+ * \brief Oblicza rozmiar rysowanej wiadomości.
+ * \param option Opcje rysowania
+ * \param indexIndeks modelu, przechowuje informacje o wiadomości
+ * \return Obliczony rozmiar rysunku wiadomości
+ */
 QSize MessageDelegate::sizeHint(const QStyleOptionViewItem &option, const QModelIndex &index) const {
     QStyleOptionViewItem opt(option);
     initStyleOption(&opt, index);

@@ -2,6 +2,11 @@
 #include <QJsonDocument>
 #include <QJsonObject>
 
+/*!
+ * \brief Konstruktor.
+ * \param config Konfiguracja RabbitMQ
+ * \param parent Rodzic w strukturze Qt
+ */
 RabbitReceiver::RabbitReceiver(const RabbitConfig &config, QObject *parent)
     : MessageReceiver(parent) {
     client.setAutoReconnect(true);
@@ -16,10 +21,16 @@ RabbitReceiver::~RabbitReceiver() {
 
 }
 
+/*!
+ * \param user Nazwa zalogowanego użytkownika
+ */
 void RabbitReceiver::setUser(const QString &user) {
     this->user = user;
 }
 
+/*!
+ * \brief Uruchamia komunikację z RabbitMQ.
+ */
 void RabbitReceiver::start() {
     connect(
         &client,
@@ -34,6 +45,10 @@ void RabbitReceiver::clientConnected() {
     connectedToHost = true;
 }
 
+/*!
+ * \brief Nasłuchuje wiadomości od żądanych grup i rozłącza się z resztą.
+ * \param groups Grupy do nasłuchiwania
+ */
 void RabbitReceiver::connectOnlyGivenGroups(const QList<int> &groups) {
     // connect to given groups
     for (auto group : groups) {

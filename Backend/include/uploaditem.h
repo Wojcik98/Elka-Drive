@@ -4,6 +4,9 @@
 #include <QObject>
 #include <QQueue>
 
+/*!
+ * \brief UploadItem przechowuje informacje o wysyłanym pliku.
+ */
 class UploadItem : public QObject {
 public:
     UploadItem(const QString &rootLocal, const QString &rootServer, const QString &relativePath);

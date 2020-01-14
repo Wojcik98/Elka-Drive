@@ -4,10 +4,18 @@
 #include <QNetworkRequest>
 #include "include/requesttype.h"
 
+/*!
+ * \brief Request przechowuje informacje o żądaniu HTTP.
+ */
 class Request {
 public:
+    /*!
+     * \brief Metoda HTTP
+     */
     enum Method {
-        GET, POST, DELETE
+        GET,    /*!< Metoda GET */
+        POST,   /*!< Metoda POST */
+        DELETE  /*!< Metoda DELETE */
     };
 
     Request(const Method &method, const QNetworkRequest &request, const RequestType &type);
