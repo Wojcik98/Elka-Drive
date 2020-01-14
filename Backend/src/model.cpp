@@ -7,6 +7,11 @@
 
 #include "include/model.h"
 
+/*!
+ * \brief Konstruktor.
+ * \param bridge APIBridge do komunikacji z serwerem
+ * \param receiver MessageReceiver do odbierania wiadomości z czatu
+ */
 Model::Model(APIBridge *bridge, MessageReceiver *receiver)
     : bridge(bridge), receiver(receiver) {
     receiver->start();
@@ -48,10 +53,16 @@ Model::Model(APIBridge *bridge, MessageReceiver *receiver)
     );
 }
 
+/*!
+ * \brief Czyści aktualną ścieżkę.
+ */
 void Model::clearPath() {
     path.clear();
 }
 
+/*!
+ * \brief Czyści wszystkie lokalne wiadomości.
+ */
 void Model::clearMsgs() {
     for (auto model : messages.values()) {
         model->deleteLater();
@@ -59,6 +70,9 @@ void Model::clearMsgs() {
     messages.clear();
 }
 
+/*!
+ * \brief Wysyła żądanie o informacje o grupach użytkownika.
+ */
 void Model::requestGroups() {
     if (!pathRequestInProgress) {
         pathRequestInProgress = true;
@@ -67,10 +81,18 @@ void Model::requestGroups() {
     }
 }
 
+/*!
+ * \brief Wysyła żądanie stworzenia nowej grupy.
+ * \param groupName Nazwa nowej grupy
+ */
 void Model::requestNewGroup(const QString &groupName) {
     bridge->requestNewGroup(groupName);
 }
 
+/*!
+ * \brief Wysyła żądanie o podścieżkę.
+ * \param index Obiekt do którego chcemy się dostać
+ */
 void Model::requestSubpath(const QModelIndex &index) {
     if (!pathRequestInProgress) {
         QString subdir;
@@ -90,6 +112,9 @@ void Model::requestSubpath(const QModelIndex &index) {
     }
 }
 
+/*!
+ * \brief Cofa ścieżkę o jeden poziom.
+ */
 void Model::goBack() {
     if (!pathRequestInProgress) {
         pathRequestInProgress = true;
@@ -104,6 +129,9 @@ void Model::goBack() {
     }
 }
 
+/*!
+ * \brief Wysyła żądanie o informacje o aktualnej ścieżce.
+ */
 void Model::refresh() {
     if (!pathRequestInProgress) {
         pathRequestInProgress = true;
@@ -116,6 +144,10 @@ void Model::refresh() {
     }
 }
 
+/*!
+ * \brief Wysyła żądanie usunięcia pliku lub folderu.
+ * \param index Obiekt do usunięcia
+ */
 void Model::requestDelete(const QModelIndex &index) {
     auto id = index.data(Model::ID_ROLE).toInt();
     auto filename = index.data().toString();
@@ -128,6 +160,11 @@ void Model::requestDelete(const QModelIndex &index) {
     }
 }
 
+/*!
+ * \brief Wysyła żądanie pobrania pliku lub folderu.
+ * \param index Obiekt do pobrania
+ * \param path Ścieżka zapisu pliku
+ */
 void Model::requestDownload(const QModelIndex &index, const QString &path) {
     auto id = index.data(ID_ROLE).toInt();
     int type = index.data(TYPE_ROLE).toInt();
@@ -139,39 +176,80 @@ void Model::requestDownload(const QModelIndex &index, const QString &path) {
     }
 }
 
+/*!
+ * \brief Wysyła żądanie logowania.
+ * \param user Nazwa użytkownika
+ * \param password Hasło
+ */
 void Model::requestLogin(const QString &user, const QString &password) {
     usernameTrying = user;
     bridge->requestLogin(user, password);
 }
 
+/*!
+ * \brief Wysyła żądanie rejestracji.
+ * \param user Nazwa użytkownika
+ * \param password Hasło
+ */
 void Model::requestRegister(const QString &user, const QString &password) {
     bridge->requestRegister(user, password);
 }
 
+/*!
+ * \brief Wysyła żądanie pobrania listy użytkowników w grupie.
+ * \param groupId ID grupy
+ */
 void Model::requestGroupUsers(int groupId) {
     bridge->requestGroupUsers(groupId);
 }
 
+/*!
+ * \brief Wysyła żądanie usunięcia grupy
+ * \param groupId ID grupy
+ */
 void Model::requestGroupDelete(int groupId) {
     bridge->requestGroupDelete(groupId);
 }
 
+/*!
+ * \brief Wysyła żądanie dodania użytkownika do grupy
+ * \param username Nazwa użytkownika
+ * \param groupId ID grupy
+ */
 void Model::requestAddUserToGroup(const QString &username, const int groupId) {
     bridge->requestAddUserToGroup(username, groupId);
 }
 
+/*!
+ * \brief Wysyła żądanie usunięcia użytkownika z grupy.
+ * \param username Nazwa użytkownika
+ * \param groupId ID grupy
+ */
 void Model::requestRemoveUserFromGroup(const QString &username, const int groupId) {
     bridge->requestRemoveUserFromGroup(username, groupId);
 }
 
+/*!
+ * \brief Wysyła żądanie stowrzenia nowego folderu.
+ * \param name Nazwa nowego folderu.
+ */
 void Model::requestNewFolder(const QString &name) {
     bridge->requestNewFolder(path.join("/") + "/" + name);
 }
 
+/*!
+ * \brief Wysyła żądanie wysłania pliku.
+ * \param rootLocal Folder odniesienia na komputerze użytkownika
+ * \param relativePath Ścieżka względna do pliku względem obu folderów
+ */
 void Model::requestFileUpload(const QString &rootLocal, const QString &relativePath) {
     bridge->requestFileUpload(rootLocal, this->path.join("/"), relativePath);
 }
 
+/*!
+ * \brief Wysyła wiadomość do aktualnej grupy.
+ * \param msg Tekst wiadomości.
+ */
 void Model::sendMsg(const QString &msg) {
     if (path.length() > 0) {
         auto groupId = path.first().toInt();
@@ -179,14 +257,24 @@ void Model::sendMsg(const QString &msg) {
     }
 }
 
+/*!
+ * \return Czy użytkownik jest zalogowany
+ */
 bool Model::isLogged() {
     return logged;
 }
 
+/*!
+ * \param logged Czy użytkownik jest zalogowany
+ */
 void Model::setLogged(bool logged) {
     this->logged = logged;
 }
 
+/*!
+ * \brief Obsługuje odpowiedź żądania.
+ * \param response Odpowiedź
+ */
 void Model::gotResponse(const Response &response) {
     switch (response.getType()) {
         case RequestType::LOGIN:
@@ -359,6 +447,11 @@ void Model::handleUploadResponse(const Response&) {
     emit uploadComplete();
 }
 
+/*!
+ * \brief Obsługuje nową wiadomość.
+ * \param groupId ID grupy, do której przyszła wiadomość
+ * \param msg Wiadomość
+ */
 void Model::gotMessage(const int groupId, const Message &msg) {
     QString text = msg.getMsg();
     auto item = new QStandardItem(text);
@@ -371,6 +464,9 @@ void Model::gotMessage(const int groupId, const Message &msg) {
     messages[groupId]->appendRow(item);
 }
 
+/*!
+ * \return Model wiadomości aktualnej grupy
+ */
 QStandardItemModel *Model::getCurrentGroupMessages() {
     if (path.size() > 0) {
         auto groupId = path.first().toInt();
@@ -393,6 +489,10 @@ void Model::handleResponseError(const QNetworkReply::NetworkError &error, const 
     emit responseError(error, response);
 }
 
+/*!
+ * \brief Zwraca aktualną ścieżkę zamieniając id grupy na jej nazwę. Jeśli ścieżka jest pusta zwraca string "Groups".
+ * \return Aktualna ścieżka
+ */
 QString Model::getPath() {
     if (path.size() > 0) {
         auto copy(path);
