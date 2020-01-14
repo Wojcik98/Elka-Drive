@@ -7,7 +7,7 @@
 
 GroupSettingsDialog::GroupSettingsDialog(const QString &groupName, const int groupID, QWidget *parent)
     : QDialog(parent), groupName(groupName), groupId(groupID) {
-    setWindowFlags(Qt::Window | Qt::WindowTitleHint | Qt::CustomizeWindowHint);
+    setWindowFlags(Qt::Window | Qt::WindowTitleHint | Qt::CustomizeWindowHint | Qt::WindowCloseButtonHint);
     setUpGUI();
     setWindowTitle("Group settings");
     setModal(true);
@@ -18,33 +18,44 @@ GroupSettingsDialog::~GroupSettingsDialog() {
 }
 
 void GroupSettingsDialog::setUpGUI() {
-    QGridLayout* formGridLayout = new QGridLayout(this);
+    mainLayout = new QGridLayout(this);
 
-    // top bar
+    initTopBar();
+    initList();
+    initAdvanced();
+    connectSlots();
+    placeComponents();
+}
+
+void GroupSettingsDialog::initTopBar() {
     labelUsers = new QLabel("Users: ", this);
     addUserButton = new QPushButton(QIcon(":/icons/add.svg"), "", this);
     removeUserButton = new QPushButton(QIcon(":/icons/remove.svg"), "", this);
-    QHBoxLayout *hbox = new QHBoxLayout();
-    hbox->addWidget(labelUsers);
-    hbox->addWidget(addUserButton);
-    hbox->addWidget(removeUserButton);
 
-    // list
+    topBarLayout = new QHBoxLayout();
+    topBarLayout->addWidget(labelUsers);
+    topBarLayout->addWidget(addUserButton);
+    topBarLayout->addWidget(removeUserButton);
+}
+
+void GroupSettingsDialog::initList() {
     usersList = new QListView(this);
     usersList->setSelectionMode(QAbstractItemView::SingleSelection);
     usersList->setEditTriggers(QAbstractItemView::NoEditTriggers);
+}
 
-    // delete
+void GroupSettingsDialog::initAdvanced() {
     advancedSettingsCheckbox = new QCheckBox("Advanced settings", this);
-
     advancedSettingsWidget = new QWidget(this);
     auto advancedLayout = new QHBoxLayout();
     deleteGroupButton = new QPushButton(QIcon(":/icons/delete.svg"), "Delete group", advancedSettingsWidget);
+
     advancedLayout->addWidget(deleteGroupButton);
     advancedSettingsWidget->setLayout(advancedLayout);
     advancedSettingsWidget->hide();
+}
 
-    // connects slots
+void GroupSettingsDialog::connectSlots() {
     connect(
         advancedSettingsCheckbox,
         &QCheckBox::stateChanged,
@@ -69,12 +80,13 @@ void GroupSettingsDialog::setUpGUI() {
         this,
         &GroupSettingsDialog::removeUser
     );
+}
 
-    // place components into the dialog
-    formGridLayout->addLayout(hbox, 0, 0, 1, 2);
-    formGridLayout->addWidget(usersList, 1, 0, 1, 2);
-    formGridLayout->addWidget(advancedSettingsCheckbox, 2, 0, 1, 2);
-    formGridLayout->addWidget(advancedSettingsWidget, 3, 0, 1, 2);
+void GroupSettingsDialog::placeComponents() {
+    mainLayout->addLayout(topBarLayout, 0, 0, 1, 2);
+    mainLayout->addWidget(usersList, 1, 0, 1, 2);
+    mainLayout->addWidget(advancedSettingsCheckbox, 2, 0, 1, 2);
+    mainLayout->addWidget(advancedSettingsWidget, 3, 0, 1, 2);
 }
 
 void GroupSettingsDialog::groupUsersReceived(const QList<User> &users) {

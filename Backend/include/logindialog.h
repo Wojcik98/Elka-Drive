@@ -31,8 +31,16 @@ private:
     QPushButton *loginButton;
     QPushButton *cancelButton;
     QPushButton *registerButton;
+    QHBoxLayout *buttonsLayout;
+    QGridLayout* mainLayout;
 
     void setUpGUI();
+    void initInputs();
+    void initLabels();
+    void initButtons();
+    void initSpinner();
+    void connectSlots();
+    void placeComponents();
 
 signals:
     void tryLogin(QString &username, QString &password);

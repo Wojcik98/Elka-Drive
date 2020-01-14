@@ -32,8 +32,16 @@ private:
    QLineEdit *editPassword;
    QPushButton *cancelButton;
    QPushButton *registerButton;
+   QHBoxLayout *buttonsLayout;
+   QGridLayout *mainLayout;
 
    void setUpGUI();
+   void initInputs();
+   void initLabels();
+   void initButtons();
+   void initSpinner();
+   void connectSlots();
+   void placeComponents();
 
 signals:
    void tryRegister(const QString &username, const QString &password);

@@ -13,13 +13,23 @@ LoginDialog::~LoginDialog() {
 }
 
 void LoginDialog::setUpGUI() {
-    QGridLayout* formGridLayout = new QGridLayout(this);
+    mainLayout = new QGridLayout(this);
 
+    initInputs();
+    initLabels();
+    initButtons();
+    initSpinner();
+    connectSlots();
+    placeComponents();
+}
+
+void LoginDialog::initInputs() {
     comboUsername = new QLineEdit(this);
     editPassword = new QLineEdit(this);
     editPassword->setEchoMode(QLineEdit::Password);
+}
 
-    // initialize the labels
+void LoginDialog::initLabels() {
     labelUsername = new QLabel(this);
     labelPassword = new QLabel(this);
     labelError = new QLabel(this);
@@ -29,24 +39,29 @@ void LoginDialog::setUpGUI() {
     labelPassword->setBuddy(editPassword);
     labelError->setText("");
     labelError->setStyleSheet("color: red;");
+}
 
-    // initialize buttons
+void LoginDialog::initButtons() {
     loginButton = new QPushButton(QIcon(":/icons/login.svg"), "Login", this);
     registerButton = new QPushButton(QIcon(":/icons/register.svg"), "Register", this);
     cancelButton = new QPushButton(QIcon(":/icons/cancel.svg"), "Close", this);
-    QHBoxLayout *hbox = new QHBoxLayout();
-    hbox->addWidget(cancelButton);
-    hbox->addWidget(registerButton);
-    hbox->addWidget(loginButton);
+    buttonsLayout = new QHBoxLayout();
+    buttonsLayout->addWidget(cancelButton);
+    buttonsLayout->addWidget(registerButton);
+    buttonsLayout->addWidget(loginButton);
+}
 
-    // spinner
+void LoginDialog::initSpinner() {
     spinnerLabel = new QLabel(this);
     spinnerMovie = new QMovie(":/gifs/spinner.gif");
     spinnerMovie->start();
     spinnerLabel->setMovie(spinnerMovie);
-    hbox->addWidget(spinnerLabel);
+    buttonsLayout->addWidget(spinnerLabel);
 
-    // connects slots
+    spinnerLabel->hide();
+}
+
+void LoginDialog::connectSlots() {
     connect(
         cancelButton,
         &QPushButton::clicked,
@@ -65,18 +80,16 @@ void LoginDialog::setUpGUI() {
         this,
         &LoginDialog::openRegister
     );
+}
 
-    // place components into the dialog
-    formGridLayout->addWidget(labelUsername, 0, 0);
-    formGridLayout->addWidget(comboUsername, 0, 1);
-    formGridLayout->addWidget(labelPassword, 1, 0);
-    formGridLayout->addWidget(editPassword, 1, 1);
-    formGridLayout->addWidget(editPassword, 1, 1);
-    formGridLayout->addWidget(labelError, 2, 0, 1, 2);
-    formGridLayout->addLayout(hbox, 3, 0, 1, 2);
-
-    setLayout(formGridLayout);
-    spinnerLabel->hide();
+void LoginDialog::placeComponents() {
+    mainLayout->addWidget(labelUsername, 0, 0);
+    mainLayout->addWidget(comboUsername, 0, 1);
+    mainLayout->addWidget(labelPassword, 1, 0);
+    mainLayout->addWidget(editPassword, 1, 1);
+    mainLayout->addWidget(editPassword, 1, 1);
+    mainLayout->addWidget(labelError, 2, 0, 1, 2);
+    mainLayout->addLayout(buttonsLayout, 3, 0, 1, 2);
 }
 
 void LoginDialog::slotTryLogin() {

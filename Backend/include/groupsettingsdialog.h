@@ -29,11 +29,19 @@ private:
     QCheckBox *advancedSettingsCheckbox;
     QWidget *advancedSettingsWidget;
     QPushButton *deleteGroupButton;
+    QHBoxLayout *topBarLayout;
+    QGridLayout* mainLayout;
 
     QString groupName;
     int groupId;
 
     void setUpGUI();
+    void initTopBar();
+    void initList();
+    void initAdvanced();
+    void connectSlots();
+    void placeComponents();
+
     void confirmGroupDelete();
     void addUser();
     void removeUser();

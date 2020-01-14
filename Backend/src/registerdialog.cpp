@@ -12,13 +12,23 @@ RegisterDialog::~RegisterDialog() {
 }
 
 void RegisterDialog::setUpGUI() {
-    QGridLayout* formGridLayout = new QGridLayout(this);
+    mainLayout = new QGridLayout(this);
 
+    initInputs();
+    initLabels();
+    initButtons();
+    initSpinner();
+    connectSlots();
+    placeComponents();
+}
+
+void RegisterDialog::initInputs() {
     editUsername = new QLineEdit(this);
     editPassword = new QLineEdit(this);
     editPassword->setEchoMode(QLineEdit::Password);
+}
 
-    // initialize the labels
+void RegisterDialog::initLabels() {
     labelUsername = new QLabel(this);
     labelPassword = new QLabel(this);
     labelError = new QLabel(this);
@@ -27,22 +37,36 @@ void RegisterDialog::setUpGUI() {
     labelPassword->setText(tr("Password"));
     labelPassword->setBuddy(editPassword);
     labelError->setText("");
+}
 
-    // initialize buttons
+void RegisterDialog::initButtons() {
     registerButton = new QPushButton(QIcon(":/icons/register.svg"), "Register", this);
     cancelButton = new QPushButton(QIcon(":/icons/cancel.svg"), "Cancel", this);
-    QHBoxLayout *hbox = new QHBoxLayout(this);
-    hbox->addWidget(cancelButton);
-    hbox->addWidget(registerButton);
+    buttonsLayout = new QHBoxLayout();
+    buttonsLayout->addWidget(cancelButton);
+    buttonsLayout->addWidget(registerButton);
+}
 
-    // spinner
+void RegisterDialog::initSpinner() {
     spinnerLabel = new QLabel(this);
     spinnerMovie = new QMovie(":/gifs/spinner.gif");
     spinnerMovie->start();
     spinnerLabel->setMovie(spinnerMovie);
-    hbox->addWidget(spinnerLabel);
+    buttonsLayout->addWidget(spinnerLabel);
+    spinnerLabel->hide();
+}
 
-    // connects slots
+void RegisterDialog::placeComponents() {
+    mainLayout->addWidget(labelUsername, 0, 0);
+    mainLayout->addWidget(editUsername, 0, 1, 1, 2);
+    mainLayout->addWidget(labelPassword, 1, 0);
+    mainLayout->addWidget(editPassword, 1, 1);
+    mainLayout->addWidget(editPassword, 1, 1, 1, 2);
+    mainLayout->addWidget(labelError, 2, 0, 1, 2);
+    mainLayout->addLayout(buttonsLayout, 3, 0, 1, 2);
+}
+
+void RegisterDialog::connectSlots() {
     connect(
         cancelButton,
         &QPushButton::clicked,
@@ -55,18 +79,8 @@ void RegisterDialog::setUpGUI() {
         this,
         &RegisterDialog::slotTryRegister
     );
-
-    // place components into the dialog
-    formGridLayout->addWidget(labelUsername, 0, 0);
-    formGridLayout->addWidget(editUsername, 0, 1, 1, 2);
-    formGridLayout->addWidget(labelPassword, 1, 0);
-    formGridLayout->addWidget(editPassword, 1, 1);
-    formGridLayout->addWidget(editPassword, 1, 1, 1, 2);
-    formGridLayout->addWidget(labelError, 2, 0, 1, 2);
-    formGridLayout->addLayout(hbox, 3, 0, 1, 2);
-
-    spinnerLabel->hide();
 }
+
 
 void RegisterDialog::slotTryRegister() {
     spinnerLabel->show();
