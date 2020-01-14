@@ -128,7 +128,7 @@ void MainWindow::setController(Controller *newController) {
         ui->fileList,
         &QAbstractItemView::clicked,
         controller,
-        &Controller::fileClicked
+        &Controller::fileSelected
     );
     connect(
         ui->backButton,

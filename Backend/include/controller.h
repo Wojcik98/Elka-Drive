@@ -12,6 +12,10 @@
 
 class View;
 
+/*!
+ * \brief Controller Kontroler wzorca MVC. Jest odpowiedzialny za komunikację
+ * modelu i widoku.
+ */
 class Controller : public QObject {
     Q_OBJECT
 public:
@@ -40,6 +44,9 @@ private:
     void unknownError();
 
 signals:
+    /*!
+     * \brief Emitowany gdy należy wyłączyć aplikację.
+     */
     void closeApp();
 
 public slots:
@@ -49,11 +56,11 @@ public slots:
     void requestDownload(const QModelIndex &index);
     void requestDelete(const QModelIndex &index);
     void fileDoubleClicked(const QModelIndex &index);
-    void fileClicked(const QModelIndex &index);
+    void fileSelected(const QModelIndex &index);
     void goBack();
     void refresh();
     void groupsReceived(const QList<QStandardItem*> &groups);
-    void newGroupStatusCode();
+    void newGroupCreated();
     void pathReceived(const QList<QStandardItem*> &dirs);
     void openGroupSettings(const QModelIndex &index);
     void createNewFolder();
