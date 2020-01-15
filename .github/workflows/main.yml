@@ -25,6 +25,8 @@ jobs:
     - name: Run tests
       run: |
         ./tests/TestModel/test
+        ./tests/TestUploadItem/test
+        ./tests/TestUser/test
 
   integration-windows:
     runs-on: windows-latest
@@ -50,4 +52,6 @@ jobs:
         cp qamqp/src/qamqp0.dll tests/TestModel/release
         echo "run test"
         ./tests/TestModel/release/test.exe
+        ./tests/TestUploadItem/release/test.exe
+        ./tests/TestUser/release/test.exe
 
